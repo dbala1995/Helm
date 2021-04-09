@@ -1,45 +1,68 @@
 /** @typedef {import("./types").SiteAuthConfiguration} SiteAuthConfiguration */
 
-/** @returns {SiteAuthConfiguration} */
-function getConfig() {
-    const jwtSigningSecret = process.env.SITEAUTH_JWTSIGNINGSECRET
-    const jwtExpiryString = process.env.SITEAUTH_JWTEXPIRY
-    const jwtSigningAlgorithm = process.env.SITEAUTH_JWTSIGNINGALGORITHM
-    const issuer = process.env.SITEAUTH_ISSUER
-    const audience = process.env.SITEAUTH_AUDIENCE
+const SecretManager = require("./config.secrets")
+const { MoleculerError } = require("moleculer").Errors
 
-    if (!jwtSigningSecret) {
-        throw Error("JWT Signing Secret not set")
+const secretManager = new SecretManager(process.env.GCP_PROJECT_ID)
+
+/** @returns {Promise<SiteAuthConfiguration>} */
+async function getConfig() {
+    const publicKey = await secretManager.getSecret("SITEAUTH_PUBLICKEY", true)
+    const privateKey = await secretManager.getSecret("SITEAUTH_PRIVATEKEY", true)
+    const jwtExpiryString = await secretManager.getSecret("SITEAUTH_JWTEXPIRY")
+    const jwtSigningAlgorithm = await secretManager.getSecret("SITEAUTH_JWTSIGNINGALGORITHM")
+    const issuer = await secretManager.getSecret("SITEAUTH_ISSUER")
+    const audience = await secretManager.getSecret("SITEAUTH_AUDIENCE")
+
+    const nhsNumberMapDetails = await secretManager.getSecret("NHS_NUMBER_MAP", true)
+
+    let nhsNumberMap = {}
+
+    if (nhsNumberMapDetails) {
+        nhsNumberMap =
+            typeof nhsNumberMapDetails === "string"
+                ? JSON.parse(nhsNumberMapDetails)
+                : JSON.parse(nhsNumberMapDetails.toString())
+    }
+
+    if (!privateKey) {
+        throw new MoleculerError("JWT Signing Secret not set", 500)
+    }
+
+    if (!publicKey) {
+        throw new MoleculerError("JWT Signing Secret not set", 500)
     }
 
     if (!jwtExpiryString) {
-        throw Error("JWT Expiry not set")
+        throw new MoleculerError("JWT Expiry not set", 500)
     }
 
     if (!jwtSigningAlgorithm) {
-        throw Error("JWT Signing Algorithm not set")
+        throw new MoleculerError("JWT Signing Algorithm not set", 500)
     }
 
     if (!issuer) {
-        throw Error("JWT Issuer not set")
+        throw new MoleculerError("JWT Issuer not set", 500)
     }
 
     if (!audience) {
-        throw Error("JWT Audience not set")
+        throw new MoleculerError("JWT Audience not set", 500)
     }
 
     const jwtExpiry = Number(jwtExpiryString)
 
     if (isNaN(jwtExpiry)) {
-        throw Error("JWT Expiry invalid")
+        throw new MoleculerError("JWT Expiry invalid", 500)
     }
 
     return {
-        jwtSigningSecret,
+        publicKey,
+        privateKey,
         jwtExpiry,
         jwtSigningAlgorithm,
         issuer,
         audience,
+        nhsNumberMap,
     }
 }
 

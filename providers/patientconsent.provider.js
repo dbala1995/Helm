@@ -6,13 +6,16 @@ const { getFromBundle } = require("../models/bundle.helpers")
 const { makeReference } = require("../models/resource.helpers")
 
 const { getPatientByNhsNumber, getPolicies } = require("../requestutilities/fhirrequest.utilities")
+const { MoleculerError } = require("moleculer").Errors
+const { PatientCacheProvider } = require("../providers/patientcache.provider")
 
 class PatientConsentProvider {
     /**
      * @param {Context} ctx
      * @param {ConsentConfig} configuration
+     * @param {PatientCacheProvider} cacheProvider
      */
-    constructor(ctx, configuration) {
+    constructor(ctx, configuration, cacheProvider) {
         /**
          * @private
          */
@@ -22,6 +25,11 @@ class PatientConsentProvider {
          * @private
          */
         this.configuration = configuration
+
+        /**
+         * @private
+         */
+        this.cacheProvider = cacheProvider
     }
 
     /**
@@ -31,6 +39,12 @@ class PatientConsentProvider {
      * @returns {Promise<boolean>} whether patient has consented or not
      */
     async patientHasConsented(nhsNumber) {
+        const consented = await this.cacheProvider.getPatientConsented(nhsNumber)
+
+        if (consented) {
+            return true
+        }
+
         const patient = await getPatientByNhsNumber(nhsNumber, this.ctx)
 
         const patientReference = makeReference(patient)
@@ -40,7 +54,13 @@ class PatientConsentProvider {
 
         const [policies, consents] = await Promise.all([policiesPromise, consentPromise])
 
-        return this.matchPoliciesToConsents(policies, /** @type {fhir.Consent[]} */ (consents))
+        const hasConsented = this.matchPoliciesToConsents(policies, /** @type {fhir.Consent[]} */ (consents))
+
+        if (hasConsented) {
+            this.cacheProvider.setPatientConsented(nhsNumber)
+        }
+
+        return hasConsented
     }
 
     /**
@@ -51,13 +71,15 @@ class PatientConsentProvider {
     async getPolicies() {
         const { policyNames, policyFriendlyNames } = this.configuration
 
-        const policies = await getPolicies(policyNames, this.ctx)
+        const policiesEntries = await getPolicies(policyNames, this.ctx)
+
+        const policies = /** @type {fhir.Resource[]} */ (policiesEntries.map((policy) => policy.resource))
 
         policyNames.forEach((pn, index) => {
             const policy = policies.find((policy) => policy.name === pn)
 
             if (!policy) {
-                throw Error("Mismatched Policies")
+                throw new MoleculerError("Mismatched Policies", 400)
             }
 
             const policyFriendlyName = policyFriendlyNames[index]
@@ -75,7 +97,7 @@ class PatientConsentProvider {
      * @returns {Promise<fhir.Consent[]>} consent resources
      */
     async getConsent(reference) {
-        const consentBundle = await this.ctx.call("fhirservice.search", {
+        const consentBundle = await this.ctx.call("internalfhirservice.search", {
             resourceType: ResourceType.Consent,
             query: { consentor: reference },
         })
@@ -96,7 +118,9 @@ class PatientConsentProvider {
         return policies.every((policy) => {
             const policyReference = makeReference(policy)
 
-            return consents.some((consent) => consent.policyRule === policyReference)
+            return consents.some((consent) =>
+                (consent.policy || []).some((cp) => cp.uri && cp.uri.includes(policyReference))
+            )
         })
     }
 }

@@ -5,159 +5,43 @@
 /** @typedef {import("../config/config.fhirstore").FhirStoreConfig} FhirStoreConfig */
 
 const request = require("request-promise-native")
+const https = require("https")
+const CoreFhirDataProvider = require("./corefhir.dataprovider")
+const { MoleculerError } = require("moleculer").Errors
 
-class FhirStoreDataProvider {
+class FhirStoreDataProvider extends CoreFhirDataProvider {
     /** @param {Logger} logger */
     /** @param {FhirStoreConfig} configuration */
-    constructor(configuration, logger) {
+    /** @param {import("./types").RequestAuthProvider} authProvider */
+    constructor(configuration, logger, authProvider) {
+        super(configuration, logger, authProvider)
+
         this.logger = logger
         this.configuration = configuration
+        this.authProvider = authProvider
     }
 
-    /**
-     * @param {string} resourceType
-     * @param {string} resourceID
-     * @param {string} authorization
-     * @returns {Promise<fhir.Resource>} response
-     */
-    async read(resourceType, resourceID, authorization) {
-        try {
-            const { configuration } = this
+    /** @protected */
+    configure(request) {
+        const { configuration } = this
 
-            /** @type {Options} */
-            const options = {
-                method: "GET",
-                uri: `${configuration.host}/${resourceType}/${resourceID}`,
-                json: true,
-                simple: true,
-                auth: { bearer: authorization },
-                rejectUnauthorized: false,
-            }
-            const result = await request(options)
-
-            return result.body
-        } catch (err) {
-            this.logger.error(err)
-
-            throw err
+        if (configuration.env !== "local") {
+            request.agent = new https.Agent({
+                host: configuration.agentHost,
+                port: configuration.agentPort,
+                passphrase: configuration.passphrase,
+                rejectUnauthorized: true,
+                cert: configuration.certFile,
+                key: configuration.keyFile,
+                ca: configuration.caFile,
+            })
+            request.rejectUnauthorized = true
+        } else {
+            request.rejectUnauthorized = false
         }
-    }
 
-    /**
-     * @param {string} resourceType
-     * @param {Object} query
-     * @param {string} authorization
-     * @returns {Promise<fhir.Bundle>} response
-     */
-    async search(resourceType, query, authorization) {
-        try {
-            const { configuration } = this
-
-            /** @type {Options} */
-            const options = {
-                method: "GET",
-                uri: `${configuration.host}/${resourceType}`,
-                json: true,
-                qs: query,
-                simple: true,
-                resolveWithFullResponse: true,
-                auth: { bearer: authorization, sendImmediately: true },
-                rejectUnauthorized: false,
-            }
-
-            const result = await request(options)
-
-            return result.body
-        } catch (err) {
-            console.log(err)
-            throw err
-        }
-    }
-
-    /**
-     * @param {string} resourceType
-     * @param {Object} resource
-     * @param {string} authorization
-     * @returns {Promise<FullResponse>} response
-     */
-    async create(resourceType, resource, authorization) {
-        try {
-            const { configuration } = this
-
-            /** @type {Options} */
-            const options = {
-                method: "POST",
-                uri: `${configuration.host}/${resourceType}`,
-                json: true,
-                body: resource,
-                simple: false,
-                headers: { "Content-Type": "application/json; charset=utf-8;" },
-                resolveWithFullResponse: true,
-                auth: { bearer: authorization, sendImmediately: true },
-                rejectUnauthorized: false,
-            }
-            const result = await request(options)
-
-            return result
-        } catch (err) {
-            this.logger.error(err)
-            throw err
-        }
-    }
-
-    /**
-     * @param {string} resourceType
-     * @param {string} resourceID
-     * @param {Object} resource
-     * @param {string} authorization
-     * @returns {Promise<FullResponse>} response
-     */
-    async update(resourceType, resourceID, resource, authorization) {
-        try {
-            const { configuration } = this
-
-            /** @type {Options} */
-            const options = {
-                method: "PUT",
-                uri: `${configuration.host}/${resourceType}/${resourceID}`,
-                json: true,
-                body: resource,
-                simple: false,
-                headers: { "Content-Type": "application/json; charset=utf-8;" },
-                resolveWithFullResponse: true,
-                auth: { bearer: authorization, sendImmediately: true },
-                rejectUnauthorized: false,
-            }
-            return await request(options)
-        } catch (err) {
-            this.logger.error(err)
-            throw err
-        }
-    }
-
-    /**
-     * @param {string} resourceType
-     * @param {string} resourceID
-     * @param {string} authorization
-     * @returns {Promise<FullResponse>} response
-     */
-    async remove(resourceType, resourceID, authorization) {
-        try {
-            const { configuration } = this
-
-            /** @type {Options} */
-            const options = {
-                method: "DELETE",
-                uri: `${configuration.host}/${resourceType}/${resourceID}`,
-                simple: false,
-                resolveWithFullResponse: true,
-                auth: { bearer: authorization, sendImmediately: true },
-                rejectUnauthorized: false,
-            }
-            return await request(options)
-        } catch (err) {
-            this.logger.error(err)
-            throw err
+        if (configuration.proxy) {
+            request.proxy = configuration.proxy
         }
     }
 }

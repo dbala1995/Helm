@@ -1,24 +1,25 @@
 /** @typedef {import("moleculer").Context<any, any>} Context */
 
 const { ResourceType } = require("../models/resourcetype.enum")
-const { getFromBundle } = require("../models/bundle.helpers")
+const { getFromBundle, getEntriesFromBundle } = require("../models/bundle.helpers")
+const { MoleculerError } = require("moleculer").Errors
 
 /**
  * get policies
  * @param {Context} ctx
  * @param {Array<string>} policyNames
- * @returns {Promise<fhir.Resource[]>} policy resources
+ * @returns {Promise<fhir.BundleEntry[]>} policy resources
  */
 const getPolicies = async (policyNames, ctx) => {
-    const policyBundle = await ctx.call("fhirservice.search", {
+    const policyBundle = await ctx.call("internalfhirservice.search", {
         resourceType: ResourceType.Policy,
         query: { "name:exact": policyNames.join(",") },
     })
 
-    const policies = /** @type {fhir.Resource[]} */ (getFromBundle(policyBundle, ResourceType.Policy))
+    const policies = /** @type {fhir.BundleEntry[]} */ (getEntriesFromBundle(policyBundle, ResourceType.Policy))
 
     if (!policies.length) {
-        throw Error("Site policies have not been set")
+        throw new MoleculerError("Site policies have not been set", 500)
     }
 
     return policies
@@ -33,16 +34,37 @@ const getPatientByNhsNumber = async (nhsNumber, ctx) => {
     /** @type {fhir.Bundle} */
     const patientsBundle = await ctx.call("fhirservice.search", {
         resourceType: ResourceType.Patient,
-        query: { identifier: nhsNumber },
+        query: { identifier: `https://fhir.nhs.uk/Id/nhs-number|${nhsNumber}` },
     })
 
     const patients = /** @type {fhir.Patient[]} */ (getFromBundle(patientsBundle, ResourceType.Patient))
 
     if (!patients.length) {
-        throw Error("Patient not found")
+        throw new MoleculerError("Patient not found", 400)
     }
 
     return patients[0]
+}
+
+/**
+ * @param {number | string} nhsNumber
+ * @param {Context} ctx
+ * @returns {Promise<fhir.BundleEntry>} the patient bundle entry
+ */
+const getPatientEntryByNhsNumber = async (nhsNumber, ctx) => {
+    /** @type {fhir.Bundle} */
+    const patientsBundle = await ctx.call("fhirservice.search", {
+        resourceType: ResourceType.Patient,
+        query: { identifier: `https://fhir.nhs.uk/Id/nhs-number|${nhsNumber}` },
+    })
+
+    const entries = getEntriesFromBundle(patientsBundle, ResourceType.Patient)
+
+    if (!entries.length) {
+        throw new MoleculerError("Patient bundle entry not found", 400)
+    }
+
+    return entries[0]
 }
 
 /**
@@ -52,7 +74,7 @@ const getPatientByNhsNumber = async (nhsNumber, ctx) => {
  * @returns {Promise<void>}
  */
 const createResource = async (resource, ctx) => {
-    await ctx.call("fhirservice.create", { resource })
+    await ctx.call("fhirservice.create", { resource, resourceType: resource.resourceType })
 }
 
-module.exports = { getPolicies, getPatientByNhsNumber, createResource }
+module.exports = { getPolicies, getPatientByNhsNumber, createResource, getPatientEntryByNhsNumber }

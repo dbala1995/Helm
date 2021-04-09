@@ -4,6 +4,7 @@
 const { ResourceType } = require("../models/resourcetype.enum")
 const { makeReference } = require("../models/resource.helpers")
 const { getPatientByNhsNumber, getPolicies, createResource } = require("../requestutilities/fhirrequest.utilities")
+const { MoleculerError } = require("moleculer").Errors
 
 class PatientConsentGenerator {
     /**
@@ -33,14 +34,16 @@ class PatientConsentGenerator {
 
         const patient = await getPatientByNhsNumber(nhsNumber, this.ctx)
 
-        const sitePolicies = await getPolicies(policyNames, this.ctx)
+        const sitePoliciesEntries = await getPolicies(policyNames, this.ctx)
+
+        const sitePolicies = /** @type {fhir.Resource[]} */ (sitePoliciesEntries.map((spe) => spe.resource))
 
         if (policies.length !== sitePolicies.length) {
-            throw Error("Not all site policies are being consented to")
+            throw new MoleculerError("Not all site policies are being consented to", 400)
         }
 
         if (!this.matchPolicies(policies, sitePolicies)) {
-            throw Error("Policies being consented to do not match site policies")
+            throw new MoleculerError("Policies being consented to do not match site policies", 400)
         }
 
         /** @type {fhir.Consent[]} */
@@ -48,13 +51,14 @@ class PatientConsentGenerator {
 
         const patientReference = makeReference(patient)
 
-        sitePolicies.forEach((sitePolicy) => {
-            const policyReference = makeReference(sitePolicy)
+        sitePoliciesEntries.forEach((sitePolicy) => {
+            const policyReference = sitePolicy.fullUrl
 
             consents.push({
                 resourceType: ResourceType.Consent,
-                policyRule: policyReference,
+                policy: [{ uri: policyReference }],
                 patient: { reference: patientReference },
+                status: "active",
                 consentingParty: [
                     {
                         reference: patientReference,
@@ -66,7 +70,11 @@ class PatientConsentGenerator {
         /** @type {Array<Promise<void>>} */
         const createPromises = []
 
-        consents.forEach((consent) => createPromises.push(createResource(consent, this.ctx)))
+        consents.forEach((consent) =>
+            createPromises.push(
+                this.ctx.call("internalfhirservice.create", { resource: consent, resourceType: consent.resourceType })
+            )
+        )
 
         await Promise.all(createPromises)
     }

@@ -4,11 +4,32 @@
  */
 
 /**
+ * @typedef {Object} LcrConsentAuthConfig
+ * @property {string} host
+ * @property {string} clientId
+ * @property {string} clientSecret
+ * @property {string} grantType
+ */
+
+/**
+ * @typedef {Object} LcrConsentConfig
+ * @property {string} host
+ */
+
+/**
  * @typedef {Object} FhirAuthConfig
  * @property {string} host
  * @property {string} clientId
  * @property {string} clientSecret
  * @property {string} grantType
+ * @property {string} scope
+ * @property {string} ods
+ * @property {string} rsn
+ * @property {string} rol
+ * @property {string} aud
+ * @property {string} sub
+ * @property {string} iss
+ * @property {string} azp
  */
 
 /**
@@ -49,8 +70,29 @@
  */
 
 /**
+ * @typedef {Object} OidcProviderConfiguration
+ * @property {string} issuer
+ * @property {string} privateKeyFilePath
+ * @property {string} verifyUrl
+ * @property {string} verifyClientId
+ * @property {string} verifyClientSecret
+ * @property {Array<string>} introspectionAllowedClients
+ */
+
+/**
+ * @typedef {Object} DatabaseConfiguration
+ * @property {string} host
+ * @property {string} user
+ * @property {string} password
+ * @property {number} port
+ * @property {string} database
+ * @property {string} schema
+ */
+
+/**
  * @typedef {Object} SiteAuthConfiguration
- * @property {string} jwtSigningSecret
+ * @property {string} publicKey
+ * @property {string} privateKey
  * @property {number} jwtExpiry
  * @property {string} issuer
  * @property {string} audience
@@ -61,6 +103,11 @@
  * @typedef {Object} ConsentConfiguration
  * @property {Array<string>} policyNames
  * @property {Array<string>} policyFriendlyNames
+ */
+
+/**
+ * @typedef {Object} RedisConfiguration
+ * @property {number} port
  */
 
 module.exports = {}

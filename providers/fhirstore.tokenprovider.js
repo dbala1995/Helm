@@ -1,12 +1,12 @@
 const moment = require("moment")
 
 /** @typedef {import("request-promise-native").RequestPromiseOptions} RequestPromiseOptions */
-/** @typedef {import("request-promise-native").Options} Options */
+/** @typedef {import("request-promise-native").Options} RequestOptions */
 /** @typedef {import("./types").Token} Token */
 /** @typedef {import("moleculer").LoggerInstance} Logger */
 
-/** FhirStoreTokenProvider */
-class FhirStoreTokenProvider {
+/** TokenProvider */
+class TokenProvider {
     /** @param {Logger} logger */
     /** @param {import("./fhirstore.authprovider")} authProvider */
     constructor(authProvider, logger) {
@@ -25,14 +25,15 @@ class FhirStoreTokenProvider {
     }
 
     /**
+     * @private
      * Get access token
      * @returns {Promise<string>}
      */
-    async getAccessToken() {
+    async getAccessToken(nhsNumber) {
         try {
-            if (!this.token || this.hasExpired()) {
-                this.token = await this.getToken()
-                this.expires = moment(moment.now()).add(this.token.expires, "s").toDate()
+            if (!this.token || this.hasExpired() || nhsNumber) {
+                this.token = await this.getToken(nhsNumber)
+                this.expires = moment(moment.now()).add(this.token.expires_in, "s").toDate()
             }
 
             return this.token.access_token
@@ -47,8 +48,8 @@ class FhirStoreTokenProvider {
      * @private
      * @returns {Promise<Token>}
      */
-    async getToken() {
-        return await this.authProvider.authenticate()
+    async getToken(nhsNumber) {
+        return await this.authProvider.authenticate(nhsNumber)
     }
 
     /**
@@ -61,8 +62,22 @@ class FhirStoreTokenProvider {
         }
         // check token expiry hasnt been hit
         // with small buffer in time to prevent expiry during request
-        return !moment(moment.now()).isAfter(moment(this.expires).subtract(1, "minute"))
+        const now = moment(moment.now())
+        const expires = moment(this.expires).subtract(1, "minute")
+
+        return now.isAfter(expires)
+    }
+
+    /**
+     * @public
+     * @param {RequestOptions} request
+     * @returns {Promise<void>}
+     */
+    async authorize(request, nhsNumber) {
+        const token = await this.getAccessToken(nhsNumber)
+
+        request.auth = { bearer: token }
     }
 }
 
-module.exports = FhirStoreTokenProvider
+module.exports = TokenProvider

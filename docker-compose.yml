@@ -1,0 +1,217 @@
+version: "3"
+
+services:
+  helm-configuration:
+    build:
+      context: "./server"
+      dockerfile: "Dockerfile"
+    volumes:
+      - ./server:/code
+      - ./keys:/code/keys
+    ports: 
+      - 8070:8070
+
+  redis:
+    image: redis
+    ports:
+        - "6379:6379"
+    restart: always
+
+  rabbitmq:
+    #image: "rabbitmq-delayed"
+    build:
+      context: "."
+      dockerfile: "RabbitDockerfile"
+    ports:
+        - "5672:5672"
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: always
+    environment:
+        - REDIS_HOSTS=local:redis:6379
+    ports:
+        - "8081:8081"
+
+  fhirstore:
+    image: synaneticsltd/synfhir-store:linux-v2.8.3
+    restart: always
+    environment:
+      - ADVANCED_CONSENT=false
+      - ASYNCPAGESIZE=1000
+      - ASYNCEXPIRES=7
+      - AUDIT_ACCESS=true
+      - CACHEEXPIRES=600
+      - FHIR_STORE_ASYNC_URL=https://fhir.staging.helm.org/fhir/stu4/bulk
+      - FHIR_STORE_BASE_URL=https://fhir.staging.helm.org/fhir/stu3
+      - LOGGER=true
+      - LOGLEVEL=debug
+      - MAX_CLIENTS=1
+      - MAXPAGESIZE=1000
+      - METRICSENABLE=false
+      - NODE_ENV=development
+      - PG_CONNECTION=postgresql://postgres:postgres@fhir-database:5432
+      - PORT=3000
+      - SERVICEDIR=services
+      - TAG={"system":"https://yhcr.nhs.uk/Source","code":"YHCR","display":"YHCR Portal"}
+      - VALIDATE_JWT=true
+      - JWT_SECRET_OR_PUBLIC_KEY=http://helm-configuration:8070/internal/certificate
+    ports:
+      - "3001:3000"
+
+  yhcr-fhirstore:
+    image: synaneticsltd/synfhir-store:linux-v2.8.3
+    restart: always
+    environment:
+      - ADVANCED_CONSENT=true
+      - ASYNCPAGESIZE=1000
+      - ASYNCEXPIRES=7
+      - AUDIT_ACCESS=true
+      - CACHEEXPIRES=600
+      - FHIR_STORE_ASYNC_URL=https://fhir.staging.helm.org/fhir/stu4/bulk
+      - FHIR_STORE_BASE_URL=https://fhir.staging.helm.org/fhir/stu3
+      - LOGGER=true
+      - LOGLEVEL=debug
+      - MAX_CLIENTS=1
+      - MAXPAGESIZE=1000
+      - METRICSENABLE=false
+      - NODE_ENV=development
+      - PG_CONNECTION=postgresql://postgres:postgres@fhir-database:5432
+      - PORT=3000
+      - SERVICEDIR=services
+      - TAG={"system":"https://yhcr.nhs.uk/Source","code":"YHCR","display":"YHCR Portal"}
+      - VALIDATE_JWT=true
+      - JWT_SECRET_OR_PUBLIC_KEY=http://helm-configuration:8070/internal/certificate
+    ports:
+      - "3002:3000"
+
+  # fhirstore:
+  #   build:
+  #     context: ../synfhir-store
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   environment:
+  #     - ADVANCED_CONSENT=false
+  #     - ASYNCPAGESIZE=1000
+  #     - ASYNCEXPIRES=7
+  #     - AUDIT_ACCESS=false
+  #     - CACHEEXPIRES=600
+  #     - FHIR_STORE_ASYNC_URL=https://fhir.staging.helm.org/fhir/stu4/bulk
+  #     - FHIR_STORE_BASE_URL=https://fhir.staging.helm.org/fhir/stu3
+  #     - LOGGER=true
+  #     - LOGLEVEL=debug
+  #     - MAX_CLIENTS=1
+  #     - MAXPAGESIZE=1000
+  #     - METRICSENABLE=false
+  #     - NODE_ENV=development
+  #     - PG_CONNECTION=postgresql://postgres:postgres@fhir-database:5432
+  #     - PORT=3000
+  #     - SERVICEDIR=services
+  #     - TAG={"system":"https://yhcr.nhs.uk/Source","code":"YHCR","display":"YHCR Portal"}
+  #     - VALIDATE_JWT=false
+  #   ports:
+  #     - "3001:3000"
+
+  fhir-database:
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5443:5432"
+
+  prometheus:
+    image: prom/prometheus:v2.16.0
+    ports:
+        - 9090:9090
+    volumes:
+        - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    ports:
+        - 3031:3000
+    depends_on:
+        - prometheus
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=zaq1ZAQ!
+        # - GF_AUTH_ANONYMOUS_ENABLED=true
+        # - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+
+  helm-yhcr:
+    build:
+      dockerfile: YhcrDockerfile  
+      context: ./run/k8s/local
+    ports:
+      - 3443:443
+    volumes:
+      - ./keys/helm-development1-bb8d6ad3e477.json:/tmp/account-key.json
+      - ./log:/var/log/nginx
+    environment:
+      - CA_CERT=gcp_sos_ca_cert
+      - TARGET=http://host.docker.internal:8090
+      - CERT=gcp_sos_dataprovider_server_cert
+      - KEY=gcp_sos_dataprovider_server_key
+      - PASSPHRASE=gcp_sos_dataprovider_server_passphrase
+      - SERVERNAME=212-03.sandpit.yhcr.nhs.uk
+      - NODE_ENV=development
+      - TLSMA=ENABLED
+      - GCP_PROJECT_ID=helm-development1
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/account-key.json
+
+  test:
+    build:
+      dockerfile: TestDockerfile
+      context: ./test
+    ports:
+      - 9999:9999
+
+  # storage:
+  #   image: openzipkin/zipkin-mysql
+  #   # Uncomment to expose the storage port for testing
+  #   # ports:
+  #   #   - 3306:3306
+
+  # # The zipkin process services the UI, and also exposes a POST endpoint that
+  # # instrumentation can send trace data to. Scribe is disabled by default.
+  # zipkin:
+  #   image: openzipkin/zipkin
+  #   # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+  #   environment:
+  #     - STORAGE_TYPE=mysql
+  #     # Point the zipkin at the storage backend
+  #     - MYSQL_HOST=storage
+  #     # Uncomment to enable scribe
+  #     # - SCRIBE_ENABLED=true
+  #     # Uncomment to enable self-tracing
+  #     # - SELF_TRACING_ENABLED=true
+  #     # Uncomment to enable debug logging
+  #     # - JAVA_OPTS=-Dlogging.level.zipkin2=DEBUG
+  #   ports:
+  #     # Port used for the Zipkin UI and HTTP Api
+  #     - 9411:9411
+  #     # Uncomment if you set SCRIBE_ENABLED=true
+  #     # - 9410:9410
+  #   depends_on:
+  #     - storage
+
+  # Adds a cron to process spans since midnight every hour, and all spans each day
+  # This data is served by http://192.168.99.100:8080/dependency
+  #
+  # For more details, see https://github.com/openzipkin/docker-zipkin-dependencies
+  # dependencies:
+  #   image: openzipkin/zipkin-dependencies
+  #   entrypoint: crond -f
+  #   environment:
+  #     - STORAGE_TYPE=mysql
+  #     - MYSQL_HOST=mysql
+  #     # Add the baked-in username and password for the zipkin-mysql image
+  #     - MYSQL_USER=zipkin
+  #     - MYSQL_PASS=zipkin
+  #     # Uncomment to see dependency processing logs
+  #     # - ZIPKIN_LOG_LEVEL=DEBUG
+  #     # Uncomment to adjust memory used by the dependencies job
+  #     # - JAVA_OPTS=-verbose:gc -Xms1G -Xmx1G
+  #   depends_on:
+  #     - storage

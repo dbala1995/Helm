@@ -8,7 +8,7 @@
 
 const { Issuer } = require("openid-client")
 const jose = require("jose")
-const fs = require("fs")
+const { MoleculerError } = require("moleculer").Errors
 
 class OidcClient {
     /** @param {OidcClientConfiguration} configuration */
@@ -26,6 +26,11 @@ class OidcClient {
          * @type {KeyStore | null}
          */
         this.keystore = null
+
+        /**
+         * @type {Client | null}
+         */
+        this.client = null
     }
 
     /**
@@ -78,7 +83,7 @@ class OidcClient {
         const { configuration } = this
         const { privateKeyFilePath } = configuration
 
-        const privateKey = fs.readFileSync(privateKeyFilePath)
+        const privateKey = privateKeyFilePath
 
         this.keystore = new jose.JWKS.KeyStore()
 
@@ -107,7 +112,7 @@ class OidcClient {
         }
 
         if (!this.issuer) {
-            throw Error("Configuration failed")
+            throw new MoleculerError("Configuration failed", 500)
         }
 
         this.client = new this.issuer.Client(clientMetaData, (keystore && keystore.toJWKS(true)) || undefined)
@@ -122,6 +127,10 @@ class OidcClient {
         const { configuration, client } = this
         const { scope, redirectUrl } = configuration
 
+        if (!client) {
+            throw new MoleculerError("Client does not exist", 403)
+        }
+
         /**
          * @type {AuthorizationParameters}
          */
@@ -129,8 +138,11 @@ class OidcClient {
             scope: scope.login,
             redirect_uri: redirectUrl,
             prompt: "login",
-            nonce: "test",
-            state: "test",
+        }
+
+        if (configuration.testState && configuration.testNonce) {
+            authParameters.state = configuration.testState
+            authParameters.nonce = configuration.testNonce
         }
 
         return client.authorizationUrl(authParameters)
@@ -144,7 +156,7 @@ class OidcClient {
         const { client, configuration } = this
 
         if (!client) {
-            throw Error("Client does not exist")
+            throw new MoleculerError("Client does not exist", 403)
         }
 
         const { redirectUrl } = configuration
@@ -152,10 +164,20 @@ class OidcClient {
         /** @type {CallbackParamsType} */
         const callbackParameters = {
             code: params.code,
-            state: params.state,
         }
 
-        const tokenSet = await client.callback(redirectUrl, callbackParameters, { nonce: "test", state: "test" })
+        if (params.state) {
+            callbackParameters.state = params.state
+        }
+
+        const callbackChecks = {}
+
+        if (configuration.testState && configuration.testNonce) {
+            callbackChecks.state = configuration.testState
+            callbackChecks.nonce = configuration.testNonce
+        }
+
+        const tokenSet = await client.callback(redirectUrl, callbackParameters, callbackChecks)
 
         return tokenSet
     }

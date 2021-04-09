@@ -16,10 +16,14 @@
 /** @typedef {import("moleculer").Context<any, any>} Context */
 
 const provisionClient = require("../clients/oidc.client")
-const getOidcConfiguration = require("../config/config.oidc")
+const getOidcConfiguration = require("../config/config.oidcclient")
 
 const SiteTokenProvider = require("../providers/siteauth.tokenprovider")
 const getSiteAuthConfiguration = require("../config/config.siteauth")
+const pg = require("pg")
+const TokenDataClient = require("../clients/token.dataclient")
+const moment = require("moment")
+const getDatabaseConfiguration = require("../config/config.database")
 
 /**
  * Handle logout
@@ -32,8 +36,13 @@ const getSiteAuthConfiguration = require("../config/config.siteauth")
  * */
 async function logoutHandler(ctx) {
     const { logger } = this
+    const { jti } = ctx.meta.user
 
-    const client = await provisionClient(getOidcConfiguration())
+    await ctx.call("jobservice.revokeOldToken", { jti })
+
+    const oidcConfig = await getOidcConfiguration()
+
+    const client = await provisionClient(oidcConfig)
 
     return {
         redirectURL: client.getRedirectUrl(),
@@ -48,7 +57,9 @@ async function logoutHandler(ctx) {
 async function getRedirectHandler(ctx) {
     const { logger } = this
 
-    const client = await provisionClient(getOidcConfiguration())
+    const oidcConfig = await getOidcConfiguration()
+
+    const client = await provisionClient(oidcConfig)
 
     return {
         redirectURL: client.getRedirectUrl(),
@@ -58,27 +69,60 @@ async function getRedirectHandler(ctx) {
 /**
  * @this {Service}
  * @param {Context} ctx
- * @returns {Promise<void>}
+ * @returns {Promise<any>}
  * */
-async function callbackHandler(ctx) {
+async function callbackHandler(ctx, connectionPool) {
     const { logger } = this
 
     const { code, state } = ctx.params
 
-    const client = await provisionClient(getOidcConfiguration())
+    const oidcConfig = await getOidcConfiguration()
+    const authConfig = await getSiteAuthConfiguration()
+
+    const client = await provisionClient(oidcConfig)
 
     const tokenSet = await client.authorisationCallback({ code, state })
 
-    const tokenProvider = new SiteTokenProvider(getSiteAuthConfiguration())
+    const tokenProvider = new SiteTokenProvider(authConfig, new TokenDataClient(connectionPool))
 
-    const token = tokenProvider.generateSiteToken(tokenSet)
+    const { payload, token } = await tokenProvider.generateSiteToken(tokenSet)
 
-    ctx.meta.$responseHeaders = {
-        "Set-Cookie": `JSESSIONID=${token}; Path=/;`,
-    }
+    ctx.call("jobservice.patientlogin", { token: tokenSet.access_token, nhsNumber: payload.sub })
 
-    ctx.meta.$location = "/"
+    return { token }
+}
+
+/**
+ * @this {Service}
+ * @param {Context} ctx
+ * @returns {Promise<any>}
+ * */
+async function returnHandler(ctx) {
+    const { logger } = this
+
+    const { code, state } = ctx.params
+
+    const stateQuery = state ? `&state=${state}` : ""
+
+    ctx.meta.$location = `/#/login?code=${code}${stateQuery}`
     ctx.meta.$statusCode = 302
+}
+
+/**
+ * Updates the token activity
+ * @this {Service}
+ * @param {Context} ctx
+ * @returns {Promise<any>}
+ * */
+async function tokenActiveHandler(ctx, connectionPool) {
+    const { logger } = this
+    const { jti } = ctx.meta.user
+
+    const tokenDataClient = new TokenDataClient(connectionPool)
+
+    const now = moment(moment.now()).seconds()
+
+    tokenDataClient.updateTokenActive(jti, now)
 }
 
 /** @type {ServiceSchema} */
@@ -86,8 +130,36 @@ const OidcClientService = {
     name: "oidcclientservice",
     actions: {
         getRedirect: getRedirectHandler,
-        callback: callbackHandler,
-        logout: logoutHandler,
+        callback: {
+            handler(ctx) {
+                return callbackHandler(ctx, this.connectionPool)
+            },
+        },
+        return: {
+            handler(ctx) {
+                return returnHandler(ctx)
+            },
+        },
+        logout: {
+            handler(ctx) {
+                return logoutHandler(ctx)
+            },
+        },
+        tokenActive: {
+            handler(ctx) {
+                return tokenActiveHandler(ctx, this.connectionPool)
+            },
+        },
+    },
+    async started() {
+        try {
+            const config = await getDatabaseConfiguration()
+
+            this.connectionPool = new pg.Pool(config)
+        } catch (error) {
+            this.logger.error(error.stack || error.message)
+            throw error
+        }
     },
 }
 

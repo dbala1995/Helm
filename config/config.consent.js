@@ -1,18 +1,23 @@
 /** @typedef {import("./types").ConsentConfiguration} ConsentConfig */
 
-/** @returns {ConsentConfig} */
-function getConfig() {
-    const policyNamesConfig = process.env.CONSENT_POLICYNAMES
-    const policyFriendlyNamesConfig = process.env.CONSENT_POLICYFRIENDLYNAMES
+const SecretManager = require("./config.secrets")
+const { MoleculerError } = require("moleculer").Errors
+
+const secretManager = new SecretManager(process.env.GCP_PROJECT_ID)
+
+/** @returns {Promise<ConsentConfig>} */
+async function getConfig() {
+    const policyNamesConfig = await secretManager.getSecret("CONSENT_POLICYNAMES")
+    const policyFriendlyNamesConfig = await secretManager.getSecret("CONSENT_POLICYFRIENDLYNAMES")
 
     if (!policyNamesConfig) {
-        throw Error("Site policies not set")
+        throw new MoleculerError("Site policies not set", 500)
     }
 
     const policyNames = policyNamesConfig.split(",")
 
     if (!policyNames.length) {
-        throw Error("Site policies not set")
+        throw new MoleculerError("Site policies not set", 500)
     }
 
     const policyFriendlyNames = policyFriendlyNamesConfig ? policyFriendlyNamesConfig.split(",") : []

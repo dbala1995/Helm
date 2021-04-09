@@ -4,6 +4,54 @@
 const { getFromBundle } = require("../models/bundle.helpers")
 const { ResourceType } = require("../models/resourcetype.enum")
 const { getResourceTypeReference, splitReference } = require("../models/resource.helpers")
+const { matchCoding } = require("../models/coding.helpers")
+const { MoleculerError } = require("moleculer").Errors
+
+function parseResolved(patient) {
+    return isResolvedByCode(patient, "01")
+}
+
+/**
+ * @param {string} code
+ * @param {fhir.Patient} patient
+ */
+function isResolvedByCode(patient, code) {
+    const { identifier } = patient
+
+    if (!identifier) {
+        return false
+    }
+
+    const nhsNumberIdentifier = identifier.find((id) => id.system === "https://fhir.nhs.uk/Id/nhs-number")
+
+    if (!nhsNumberIdentifier) {
+        return false
+    }
+
+    const { extension } = nhsNumberIdentifier
+
+    if (!extension) {
+        return false
+    }
+
+    const nhsVerifiedExtension = extension.find((ex) => {
+        return (
+            ex.valueCodeableConcept &&
+            matchCoding(ex.valueCodeableConcept, [
+                {
+                    system: "https://fhir.hl7.org.uk/STU3/CodeSystem/CareConnect-NHSNumberVerificationStatus-1",
+                    code,
+                },
+                {
+                    system: "https://fhir.hl7.org.uk/STU3/ValueSet/CareConnect-NHSNumberVerificationStatus-1",
+                    code,
+                },
+            ])
+        )
+    })
+
+    return !!nhsVerifiedExtension
+}
 
 /**
  * Checks if period for name/address is valid
@@ -164,6 +212,26 @@ function parseTelecom(telecomArray) {
     return primaryTelecom.value
 }
 
+function parseEmail(telecomArray) {
+    let blankTelecom = null
+
+    if (!telecomArray || !Array.isArray(telecomArray)) return blankTelecom
+
+    const filteredTelecoms = telecomArray.filter((tel) => {
+        if (tel.system !== "email" || tel.use === "old") return false
+
+        return isActive(tel.period)
+    })
+
+    if (!filteredTelecoms.length) return blankTelecom
+
+    let primaryTelecom = filteredTelecoms.find((tel) => tel.use === "home" && tel.value && tel.value !== "Not Recorded")
+
+    if (!primaryTelecom) return blankTelecom
+
+    return primaryTelecom.value
+}
+
 class DemographicsProvider {
     /**
      * @param {fhir.Reference[]} references
@@ -218,7 +286,7 @@ class DemographicsProvider {
         const patients = getFromBundle(patientBundle, ResourceType.Patient)
 
         if (!patients.length) {
-            throw Error("Patient not found")
+            throw new MoleculerError("Patient not found", 400)
         }
 
         const [patient] = patients
@@ -251,24 +319,52 @@ class DemographicsProvider {
             identifier && identifier.find((ident) => ident.system === "https://fhir.nhs.uk/Id/nhs-number")
 
         if (!nhsIdentifier || !nhsIdentifier.value) {
-            throw Error("NHS number not found for patient")
+            throw new MoleculerError("NHS number not found for patient", 500)
         }
 
-        const gpAddress =
-            (organisation && parseAddress(organisation.address, "work")) ||
-            (practitioner && parseAddress(practitioner.address, "work")) ||
-            "Not known"
+        const resolved = parseResolved(patient)
+
+        const detailNotFoundMessage = resolved ? "" : "Loading..."
+
+        const gpDetails = {
+            name: (organisation && organisation.name) || null,
+            address: (organisation && parseAddress(organisation.address, "work")) || null,
+        }
+
+        function buildGpDetails(gpDetails) {
+            let { name, address } = gpDetails
+
+            if (!name || !address) {
+                return null
+            }
+
+            name = name.trim()
+            address = address.trim()
+
+            if (!name || !address) {
+                return null
+            }
+
+            if (name && address) {
+                return `${name}, ${address}`
+            }
+
+            return name || address || null
+        }
 
         return {
             id: nhsIdentifier.value,
             nhsNumber: nhsIdentifier.value,
-            gender: gender || "Not Known",
-            telephone: parseTelecom(telecom) || "Not Known",
-            name: parseName(name) || "Not Known",
-            address: parseAddress(address, "home") || "Not Known",
-            dateOfBirth: (birthDate && new Date(birthDate).getTime()) || null,
-            gpName: (practitioner && parseName(practitioner.name)) || "Not known",
-            gpAddress,
+            gender: gender || detailNotFoundMessage,
+            phone: parseTelecom(telecom) || detailNotFoundMessage,
+            email: parseEmail(patient.telecom) || detailNotFoundMessage,
+            name: parseName(name) || detailNotFoundMessage,
+            address: parseAddress(address, "home") || detailNotFoundMessage,
+            dateOfBirth: (birthDate && new Date(birthDate).getTime()) || detailNotFoundMessage,
+            gpName: gpDetails.name || detailNotFoundMessage,
+            gpAddress: gpDetails.address || detailNotFoundMessage,
+            gpFullAddress: buildGpDetails(gpDetails) || detailNotFoundMessage,
+            resolved,
         }
     }
 }
