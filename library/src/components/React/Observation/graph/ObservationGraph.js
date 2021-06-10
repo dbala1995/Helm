@@ -1,26 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"
 
-import moment from 'moment';
+import moment from "moment"
 
-import { Line } from "react-chartjs-2";
+import { Line } from "react-chartjs-2"
 
-import {
-    useSelector,
-    useDispatch
-} from 'react-redux';
-import {
-    selectDisplayRows,
-    selectRows
-} from '../table/TableSlice';
-import {
-    selectValue
-} from '../tabs/ObservationTabsSlice';
-import {
-    populateDatasets,
-    populateLabels,
-    selectDatasets,
-    selectLabels
-} from "./ObservationGraphSlice";
+import { useSelector, useDispatch } from "react-redux"
+import { selectDisplayRows, selectRows } from "../table/TableSlice"
+import { selectValue } from "../tabs/ObservationTabsSlice"
+import { populateDatasets, populateLabels, selectDatasets, selectLabels } from "./ObservationGraphSlice"
 
 export default function ObservationGraph(props) {
     const value = useSelector(selectValue)
@@ -77,7 +64,7 @@ export default function ObservationGraph(props) {
 
         newLabels.map((date) => {
             const nullObj = {
-                "Date": date
+                Date: date,
             }
             for (var key in rows[value]) {
                 if (key !== "Date") {
@@ -101,15 +88,15 @@ export default function ObservationGraph(props) {
         const dateA = a.Date
         const dateB = b.Date
 
-        let comparison = 0;
+        let comparison = 0
         if (dateA > dateB) {
-            comparison = 1;
-        };
+            comparison = 1
+        }
         if (dateB > dateA) {
             comparison = -1
-        };
+        }
 
-        return comparison;
+        return comparison
     }
 
     const obtainLast30DaysLabels = () => {
@@ -122,8 +109,6 @@ export default function ObservationGraph(props) {
         }
         return newLabels
     }
-
-
 
     const obtainFormattedDate = (date) => {
         const [day, month, year] = date.toLocaleDateString("en-GB").split("/")
@@ -139,10 +124,5 @@ export default function ObservationGraph(props) {
         return keyArray
     }
 
-
-
-
-    return (
-        <Line data={{ labels: labels, datasets: datasets }} />
-    );
+    return <Line data={{ labels: labels, datasets: datasets }} />
 }

@@ -1,28 +1,28 @@
 import React from "react"
-import { ThemeProvider, Typography } from "@material-ui/core";
-import { getCurrentTheme } from './Styles';
-import { Provider } from 'react-redux';
-import { store } from '../app/observationStore';
+import { Provider } from "react-redux"
+import { store } from "../app/observationStore"
 import { withCanvas, withResource, withSubmit, withResourceRoot, withConfiguration } from "synrb-panel-library"
-import { ReactMaterialComponentBase } from "./ReactMaterialComponentBase";
-import Observation from '../React/Observation/Observation';
+import { ReactMaterialComponentBase } from "./ReactMaterialComponentBase"
+import Observation from "../React/Observation/Observation"
 
 class ObservationComponent extends ReactMaterialComponentBase {
     constructor() {
         super()
         this.jsxRootComponent = () => {
-            console.log(this.resources)
-            console.log((this.configuration))
             const configuration = this.configuration || null
             const observations = this.resources["Observation"] || []
 
-            return <Provider store={store} ><ThemeProvider theme={getCurrentTheme()}><Observation
-                configuration={configuration}
-                observations={observations}
-                getObservations={(codes) => this.refreshResources(codes)}
-                saveObservations={(observations) => this.saveResources(observations)} /></ThemeProvider></Provider >
+            return (
+                <Provider store={store}>
+                    <Observation
+                        configuration={configuration}
+                        observations={observations}
+                        getObservations={(codes) => this.refreshResources(codes)}
+                        saveObservations={(observations) => this.saveResources(observations)}
+                    />
+                </Provider>
+            )
         }
-
     }
 
     /**
@@ -46,7 +46,7 @@ class ObservationComponent extends ReactMaterialComponentBase {
         // }))
         const changeRequest = {
             changeOperation: "POST",
-            changedResource: observations
+            changedResource: observations,
         }
 
         return this.submit([changeRequest])
@@ -57,4 +57,7 @@ class ObservationComponent extends ReactMaterialComponentBase {
     }
 }
 
-customElements.define("helm-observation-component", withConfiguration(withResourceRoot(withSubmit(withCanvas(ObservationComponent)), "ObservationResponse")))
+customElements.define(
+    "helm-observation-component",
+    withConfiguration(withResourceRoot(withSubmit(withCanvas(ObservationComponent)), "ObservationResponse"))
+)

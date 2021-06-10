@@ -1,49 +1,41 @@
-import React, { useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import React, { useEffect } from "react"
+import { makeStyles, useTheme } from "@material-ui/core/styles"
+import AppBar from "@material-ui/core/AppBar"
+import Tabs from "@material-ui/core/Tabs"
+import Tab from "@material-ui/core/Tab"
 
-
-import { useSelector, useDispatch } from 'react-redux';
-import {
-    selectTabTitles,
-    selectValue,
-    setValue,
-    setTabTitles
-} from './ObservationTabsSlice';
+import { useSelector, useDispatch } from "react-redux"
+import { selectTabTitles, selectValue, setValue, setTabTitles } from "./ObservationTabsSlice"
 
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.paper,
         width: "100%",
     },
-}));
+}))
 
 export default function ObservationTabs(props) {
-    const classes = useStyles();
-    const theme = useTheme();
-    const value = useSelector(selectValue);
-    const tabTitles = useSelector(selectTabTitles);
-    const dispatch = useDispatch();
+    const classes = useStyles()
+    const theme = useTheme()
+    const value = useSelector(selectValue)
+    const tabTitles = useSelector(selectTabTitles)
+    const dispatch = useDispatch()
 
-    const {
-        configuration
-    } = props
+    const { configuration } = props
 
     useEffect(() => {
         dispatch(setTabTitles(configuration.observations))
     }, [])
 
     const handleChange = (event, newValue) => {
-        dispatch(setValue(newValue));
-    };
+        dispatch(setValue(newValue))
+    }
 
     function a11yProps(index) {
         return {
             id: `simple-tab-${index}`,
-            'aria-controls': `simple-tabpanel-${index}`,
-        };
+            "aria-controls": `simple-tabpanel-${index}`,
+        }
     }
 
     return (
@@ -60,9 +52,8 @@ export default function ObservationTabs(props) {
                     {tabTitles.map((tabTitle, index) => (
                         <Tab label={tabTitle} {...a11yProps(index)} />
                     ))}
-
                 </Tabs>
             </AppBar>
-        </div >
-    );
+        </div>
+    )
 }
