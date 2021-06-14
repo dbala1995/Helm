@@ -290,7 +290,6 @@ async function transformEntries(entries) {
             console.log(finalEntry)
             const submitT3T = await fhirStoreDataProvider.create("QuestionnaireResponse", finalEntry, null)
             await console.log("response from FhirStore: ", submitT3T.body)
-
         }
     })
 

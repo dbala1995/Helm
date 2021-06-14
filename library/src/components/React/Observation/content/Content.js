@@ -54,11 +54,8 @@ export default function content(props) {
                         </Typography>
                         <Typography variant="subtitle1">
                             {informationArray.length > 0 ?
-                                <ul>
-                                    {informationArray[value].body.map((point) => (
-                                        <li dangerouslySetInnerHTML={{ __html: point }}></li>
-                                    ))}
-                                </ul>
+                                <p dangerouslySetInnerHTML={{ __html: informationArray[value].body.join("") }}>
+                                </p>
                                 : null}
                         </Typography>
                     </Grid>
@@ -93,11 +90,8 @@ export default function content(props) {
                                 {informationArray[value].footer.header}
                             </Typography>
                                 <Typography>
-                                    <ul>
-                                        {informationArray[value].footer.body.map((point) => (
-                                            <li>{point}</li>
-                                        ))}
-                                    </ul>
+                                    <p dangerouslySetInnerHTML={{ __html: informationArray[value].footer.body.join("") }}>
+                                    </p>
                                 </Typography>
                             </div> : null}
                     </Grid>
