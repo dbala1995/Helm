@@ -1,31 +1,31 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
 
 const ObservationSlice = createSlice({
     name: "observation",
     initialState: {
         observations: [],
-        prevResponses: []
+        prevResponses: [],
     },
     reducers: {
         setObservations: (state, action) => {
             const observations = action.payload
-            state.observations = observations;
+            state.observations = observations
         },
         setPrevResponses: (state, action) => {
-            const observations = action.payload;
+            const observations = action.payload
             const newPrevResponses = []
             observations.map((obj) => {
                 const objToPush = {}
                 obj.input.definitions.map((defObj) => {
-                    const observationName = defObj.code.text;
+                    const observationName = defObj.code.text
                     objToPush[observationName] = {
-                        "values": [],
-                        "unit": defObj.quantitativeDetails.customaryUnit.coding[0].unit
+                        values: [],
+                        unit: defObj.quantitativeDetails.customaryUnit.coding[0].unit,
                     }
                 })
                 newPrevResponses.push(objToPush)
             })
-            state.prevResponses = newPrevResponses;
+            state.prevResponses = newPrevResponses
         },
         updatePrevResponses: (state, action) => {
             const prevSubmittedResponsesArray = action.payload
@@ -49,7 +49,7 @@ const ObservationSlice = createSlice({
                     value: value,
                     date: date,
                     notes: notes,
-                    id: id
+                    id: id,
                 }
                 var push = true
                 state.prevResponses[indexOfObservationArray][fieldName].values.map((alreadyExitingObj) => {
@@ -61,18 +61,13 @@ const ObservationSlice = createSlice({
                     state.prevResponses[indexOfObservationArray][fieldName].values.push(updateObj)
                 }
             })
-
-        }
-    }
+        },
+    },
 })
 
-export const selectObservations = (state) => state.observation.observations;
-export const selectPrevResponses = (state) => state.observation.prevResponses;
+export const selectObservations = (state) => state.observation.observations
+export const selectPrevResponses = (state) => state.observation.prevResponses
 
-export const {
-    setObservations,
-    setPrevResponses,
-    updatePrevResponses
-} = ObservationSlice.actions;
+export const { setObservations, setPrevResponses, updatePrevResponses } = ObservationSlice.actions
 
-export default ObservationSlice.reducer;
+export default ObservationSlice.reducer

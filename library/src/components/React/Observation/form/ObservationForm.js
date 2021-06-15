@@ -1,16 +1,10 @@
-import { FormControl, InputAdornment, Button, Grid, TextField, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import SaveIcon from '@material-ui/icons/Save';
+import { FormControl, InputAdornment, Grid, TextField, Typography, IconButton } from "@material-ui/core"
+import React, { useContext, useEffect, useRef, useState } from "react"
+import SaveIcon from "@material-ui/icons/Save"
 
-import { useSelector, useDispatch } from 'react-redux';
-import {
-    selectObservations,
-    selectPrevResponses
-} from '../ObservationSlice';
-import {
-    selectValue,
-    selectTabTitles
-} from '../tabs/ObservationTabsSlice';
+import { useSelector, useDispatch } from "react-redux"
+import { selectObservations, selectPrevResponses } from "../ObservationSlice"
+import { selectValue, selectTabTitles } from "../tabs/ObservationTabsSlice"
 import {
     selectFieldsArray,
     populateFieldsArray,
@@ -19,15 +13,16 @@ import {
     onFieldsValueChangeHandler,
     onFieldsErrorChangeHandler,
     selectOpen,
-    setOpen
-} from './ObservationFormSlice';
-import ObservationDialog from '../Dialog/ObservationDialog';
+    setOpen,
+} from "./ObservationFormSlice"
+import ObservationDialog from "../Dialog/ObservationDialog"
+import { ShadowFocus } from "../../Shadow/ShadowFocus"
 
 export default function ObservationForm(props) {
-    const observations = useSelector(selectObservations);
-    const value = useSelector(selectValue);
-    const tabTitles = useSelector(selectTabTitles);
-    const fieldsArray = useSelector(selectFieldsArray);
+    const observations = useSelector(selectObservations)
+    const value = useSelector(selectValue)
+    const tabTitles = useSelector(selectTabTitles)
+    const fieldsArray = useSelector(selectFieldsArray)
     const fieldsValue = useSelector(selectFieldsValue)
     const open = useSelector(selectOpen)
     const prevResponses = useSelector(selectPrevResponses)
@@ -35,10 +30,7 @@ export default function ObservationForm(props) {
 
     const [errorPresent, setErrorPresent] = useState(false)
 
-    const {
-        saveObservations,
-        getObservations
-    } = props
+    const { saveObservations, getObservations } = props
 
     useEffect(() => {
         dispatch(populateFieldsArray(observations))
@@ -56,9 +48,9 @@ export default function ObservationForm(props) {
             console.log("values: ", values)
             if (values.length > 0) {
                 const payload = {
-                    "tabNo": value,
-                    "fieldName": key,
-                    "newValue": values[values.length - 1].value
+                    tabNo: value,
+                    fieldName: key,
+                    newValue: values[values.length - 1].value,
                 }
                 dispatch(onFieldsValueChangeHandler(payload))
             }
@@ -70,35 +62,39 @@ export default function ObservationForm(props) {
         const [day, month, year] = date.toLocaleDateString("en-GB").split("/")
         const transformedDate = `${year}-${month}-${day}`
         const payload = {
-            "tabNo": value,
-            "fieldName": "Date",
-            "newValue": transformedDate
+            tabNo: value,
+            fieldName: "Date",
+            newValue: transformedDate,
         }
-        dispatch(onFieldsValueChangeHandler(payload));
+        dispatch(onFieldsValueChangeHandler(payload))
     }
     const getFieldsArrayForTab = () => {
-        return fieldsArray[value][tabTitles[value]];
+        return fieldsArray[value][tabTitles[value]]
     }
 
     const decimalPlaceCheck = (payload, fieldObj) => {
-        const noOfDecimalPlacesEntered = payload.newValue.includes(".") ? payload.newValue.split(".")[1].toString().length : 0
+        const noOfDecimalPlacesEntered = payload.newValue.includes(".")
+            ? payload.newValue.split(".")[1].toString().length
+            : 0
         if (noOfDecimalPlacesEntered > fieldObj.decimalPlaces) {
-            onFieldErrorChange(payload.fieldName, true, `Do not add more than ${fieldObj.decimalPlaces} decimal places to your entry`)
+            onFieldErrorChange(
+                payload.fieldName,
+                true,
+                `Do not add more than ${fieldObj.decimalPlaces} decimal places to your entry`
+            )
             setErrorPresent(true)
             return false
-        }
-        else if (payload.newValue.toString().length == 0) {
+        } else if (payload.newValue.toString().length == 0) {
             dispatch(onFieldsValueChangeHandler(payload))
             onFieldErrorChange(payload.fieldName, true, `Response empty`)
             setErrorPresent(true)
             return false
-        }
-        else {
+        } else {
             const errorPayload = {
-                "tabNo": value,
-                "fieldName": payload.fieldName,
-                "newValue": false,
-                "errorMessage": ``
+                tabNo: value,
+                fieldName: payload.fieldName,
+                newValue: false,
+                errorMessage: ``,
             }
             setErrorPresent(false)
             dispatch(onFieldsErrorChangeHandler(errorPayload))
@@ -113,33 +109,29 @@ export default function ObservationForm(props) {
         fieldsForTab.map((fieldObj) => {
             if (fieldObj.calculated.value) {
                 const derivedValue = calculateDerivedField(fieldObj.calculated.derivedFrom)
-                dispatch(onFieldsValueChangeHandler({ "tabNo": value, fieldName: fieldObj.text, "newValue": derivedValue }))
+                dispatch(onFieldsValueChangeHandler({ tabNo: value, fieldName: fieldObj.text, newValue: derivedValue }))
             }
         })
 
         return decimalPlaceCheck(payload, fieldObj)
     }
 
-
-
     const onFieldValueChange = (e, fieldName) => {
         const newValue = e.target.value
         const payload = {
-            "tabNo": value,
-            "fieldName": fieldName,
-            "newValue": newValue
+            tabNo: value,
+            fieldName: fieldName,
+            newValue: newValue,
         }
-        onFieldValueChangeCheck(payload) ?
-            dispatch(onFieldsValueChangeHandler(payload))
-            : null
+        onFieldValueChangeCheck(payload) ? dispatch(onFieldsValueChangeHandler(payload)) : null
     }
 
     const onDateNoteValueChange = (e, fieldName) => {
         const newValue = e.target.value
         const payload = {
-            "tabNo": value,
-            "fieldName": fieldName,
-            "newValue": newValue
+            tabNo: value,
+            fieldName: fieldName,
+            newValue: newValue,
         }
         switch (fieldName) {
             case "Date": {
@@ -168,10 +160,10 @@ export default function ObservationForm(props) {
 
     const onFieldErrorChange = (fieldName, newValue, errorMessage) => {
         const payload = {
-            "tabNo": value,
-            "fieldName": fieldName,
-            "newValue": newValue,
-            "errorMessage": errorMessage
+            tabNo: value,
+            fieldName: fieldName,
+            newValue: newValue,
+            errorMessage: errorMessage,
         }
         dispatch(onFieldsErrorChangeHandler(payload))
     }
@@ -211,19 +203,18 @@ export default function ObservationForm(props) {
         const observationsToSave = []
         getFieldsArrayForTab().map((fieldObj) => {
             const observationResource = {
-                "resourceType": "Observation",
-                "status": "final",
-                "code": fieldObj.code,
-                "effectiveDateTime": fieldsValue[value]["Date"].value,
+                resourceType: "Observation",
+                status: "final",
+                code: fieldObj.code,
+                effectiveDateTime: fieldsValue[value]["Date"].value,
                 valueQuantity: {
-                    "value": fieldsValue[value][fieldObj.text].value,
-                    "unit": fieldObj.unit
+                    value: fieldsValue[value][fieldObj.text].value,
+                    unit: fieldObj.unit,
                 },
-                "comment": fieldsValue[value]["Notes"].value
+                comment: fieldsValue[value]["Notes"].value,
             }
             observationsToSave.push(observationResource)
         })
-
 
         observationsToSave.map((observationResource) => {
             saveObservations(observationResource)
@@ -233,94 +224,122 @@ export default function ObservationForm(props) {
     }
 
     const calculateDerivedField = (derivedString) => {
-        return (fieldsValue[value]["Weight"].value / ((fieldsValue[value]["Height"].value / 100) ** 2)).toFixed(2)
+        return (fieldsValue[value]["Weight"].value / (fieldsValue[value]["Height"].value / 100) ** 2).toFixed(2)
     }
+
+    console.log(document.activeElement)
 
     return (
         <div>
             <FormControl margin="normal">
-                {fieldsArray.length > 0 ?
-                    getFieldsArrayForTab().map((fieldObj) => (
-                        fieldObj.display ?
-                            <Grid
-                                container
-                                direction="row"
-                                justify="flex-start"
-                                alignItems="center"
-                                spacing={3}>
-                                <Grid item>
-                                    <TextField
-                                        color="primary"
-                                        label={fieldsValue[value][fieldObj.text].error ? fieldObj.text : null}
-                                        variant="outlined"
-                                        value={fieldsValue[value][fieldObj.text].value}
-                                        onChange={(e) => onFieldValueChange(e, fieldObj.text)}
-                                        helperText={fieldsValue[value][fieldObj.text].error ? fieldsValue[value][fieldObj.text].errorMessage : fieldObj.text}
-                                        error={fieldsValue[value][fieldObj.text].error}
-                                        type={fieldObj.type === "Quantity" && "number"}
-                                        InputProps={{
-                                            endAdornment: <InputAdornment position="end">{fieldObj.unit}</InputAdornment>,
-                                        }} />
-                                </Grid>
-                                <Grid item>
-
-
-                                    {prevResponses[value][fieldObj.text].values.length > 0 ?
-                                        <Typography>Last updated on:&nbsp;{prevResponses[value][fieldObj.text].values[prevResponses[value][fieldObj.text].values.length - 1].date}
-                                        </Typography>
-                                        : null}
-
-                                </Grid>
-                            </Grid>
-                            : null
-                    ))
+                {fieldsArray.length > 0
+                    ? getFieldsArrayForTab().map((fieldObj) =>
+                          fieldObj.display ? (
+                              <Grid container direction="row" justify="flex-start" alignItems="center" spacing={3}>
+                                  <Grid item xs={12}>
+                                      <ShadowFocus>
+                                          {({ inputRef, focus }) => (
+                                              <TextField
+                                                  color="primary"
+                                                  fullWidth={true}
+                                                  className={focus ? "input--focused" : ""}
+                                                  label={fieldsValue[value][fieldObj.text].error ? fieldObj.text : null}
+                                                  value={fieldsValue[value][fieldObj.text].value}
+                                                  onChange={(e) => onFieldValueChange(e, fieldObj.text)}
+                                                  helperText={
+                                                      fieldsValue[value][fieldObj.text].error
+                                                          ? fieldsValue[value][fieldObj.text].errorMessage
+                                                          : fieldObj.text
+                                                  }
+                                                  error={fieldsValue[value][fieldObj.text].error}
+                                                  type={(fieldObj.type === "Quantity" && "number") || ""}
+                                                  InputProps={{
+                                                      endAdornment: (
+                                                          <InputAdornment position="end">
+                                                              {fieldObj.unit}
+                                                          </InputAdornment>
+                                                      ),
+                                                      inputRef,
+                                                  }}
+                                              />
+                                          )}
+                                      </ShadowFocus>
+                                  </Grid>
+                                  <Grid item>
+                                      {prevResponses[value][fieldObj.text].values.length > 0 ? (
+                                          <Typography>
+                                              Last updated on:&nbsp;
+                                              {
+                                                  prevResponses[value][fieldObj.text].values[
+                                                      prevResponses[value][fieldObj.text].values.length - 1
+                                                  ].date
+                                              }
+                                          </Typography>
+                                      ) : null}
+                                  </Grid>
+                              </Grid>
+                          ) : null
+                      )
                     : null}
 
-                {fieldsArray.length > 0 ? <TextField
-                    id="date"
-                    type="date"
-                    variant="outlined"
-                    onChange={(e) => onDateNoteValueChange(e, "Date")}
-                    error={fieldsValue[value]["Date"].error}
-                    helperText={fieldsValue[value]["Date"].error ? fieldsValue[value]["Date"].errorMessage : "Date"}
-                    // defaultValue={fieldsValue.length > 0 && getDateNow()}
-                    value={fieldsArray.length > 0 && fieldsValue[value]["Date"].value}
-                    InputLabelProps={{
-                        shrink: false,
-                    }} /> : null}
-
+                {fieldsArray.length > 0 ? (
+                    <ShadowFocus>
+                        {({ inputRef, focus }) => (
+                            <TextField
+                                id="date"
+                                type="date"
+                                className={focus ? "input--focused" : ""}
+                                onChange={(e) => onDateNoteValueChange(e, "Date")}
+                                error={fieldsValue[value]["Date"].error}
+                                helperText={fieldsValue[value]["Date"].error ? fieldsValue[value]["Date"].errorMessage : "Date"}
+                                value={fieldsArray.length > 0 && fieldsValue[value]["Date"].value}
+                                InputLabelProps={{
+                                    shrink: false,
+                                }}
+                                InputProps={{
+                                    inputRef
+                                }}
+                            />
+                        )}
+                    </ShadowFocus>
+                ) : null}
             </FormControl>
-            <Grid
-                container
-                directino="row"
-                justify="flex-start"
-                alignItems="center"
-                spacing={3}>
-                <Grid item xs={10}>
+            <Grid container direction="row" justify="flex-start" alignItems="center" spacing={3}>
+                <Grid item xs={9}>
                     <FormControl fullWidth>
-                        <TextField
-                            fullWidth
-                            helperText="Notes"
-                            variant="outlined"
-                            onChange={(e) => onDateNoteValueChange(e, "Notes")}
-                            value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}
-                            multiline
-                            rowsMax={3} />
+                    <ShadowFocus>
+                        {({ inputRef, focus }) => (
+                            <TextField
+                                fullWidth
+                                helperText="Notes"
+                                className={focus ? "input--focused" : ""}
+                                onChange={(e) => onDateNoteValueChange(e, "Notes")}
+                                value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}
+                                multiline
+                                rowsMax={3}
+                                InputProps={{
+                                    inputRef
+                                }}
+                            />
+                        )}
+                    </ShadowFocus>
                     </FormControl>
                 </Grid>
-                <Grid item xs={2}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        size="large"
+                <Grid item xs={3}>
+                    <IconButton
+                        className={"button--primary"}
                         onClick={() => onClickSaveButton()}
-                        startIcon={<SaveIcon />}
                     >
                         Save
-                    </Button>
+                        <SaveIcon />
+                    </IconButton>
                 </Grid>
             </Grid>
-            <ObservationDialog title={errorPresent ? "Error" : "Saved entries"} contentText={errorPresent ? "Fix all the errors before saving entries" : ""} buttonName={errorPresent ? "Understood" : "OK"} />
+            <ObservationDialog
+                title={errorPresent ? "Error" : "Saved entries"}
+                contentText={errorPresent ? "Fix all the errors before saving entries" : ""}
+                buttonName={errorPresent ? "Understood" : "OK"}
+            />
         </div>
     )
 }

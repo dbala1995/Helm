@@ -1,16 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
 
 const ObservationGraphSlice = createSlice({
     name: "observationGraph",
     initialState: {
         labels: [],
         datasets: [],
-        colourArray: [
-            "rgba(75,192,192,1)",
-            "#742774",
-            "#808080",
-            "#808000"
-        ]
+        colourArray: ["rgba(75,192,192,1)", "#742774", "#808080", "#808000"],
     },
     reducers: {
         populateLabels: (state, action) => {
@@ -32,13 +27,13 @@ const ObservationGraphSlice = createSlice({
                 }
             })
             state.datasets = newDatasetArray
-        }
-    }
+        },
+    },
 })
 
-export const selectLabels = (state) => state.observationGraph.labels;
-export const selectDatasets = (state) => state.observationGraph.datasets;
+export const selectLabels = (state) => state.observationGraph.labels
+export const selectDatasets = (state) => state.observationGraph.datasets
 
-export const { populateLabels, populateDatasets } = ObservationGraphSlice.actions;
+export const { populateLabels, populateDatasets } = ObservationGraphSlice.actions
 
-export default ObservationGraphSlice.reducer;
+export default ObservationGraphSlice.reducer
