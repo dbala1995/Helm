@@ -13,7 +13,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   selectActiveStep,
   handleReset,
-  changeToQuestion
+  changeToQuestion,
+  selectAdjustedActiveStep
 } from './VerticalLinearStepperSlice';
 import {
   selectQuestions,
@@ -64,7 +65,14 @@ export default function VerticalLinearStepper(props) {
   const activeStep = useSelector(selectActiveStep);
   const questionnaireResponse = useSelector(selectQuestionnaireResponse);
   const dispatch = useDispatch()
-  const steps = useSelector(selectQuestions)
+  const additionalSteps = useSelector(selectQuestions)
+  const adjustedActiveStep = useSelector(selectAdjustedActiveStep)
+
+  const steps = [{ prefix: "Summary" }]
+
+  additionalSteps.map((step) => {
+    steps.push(step)
+  })
 
 
   const onSubmitHandler = async () => {

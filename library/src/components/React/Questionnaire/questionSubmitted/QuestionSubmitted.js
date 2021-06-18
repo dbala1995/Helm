@@ -12,8 +12,6 @@ export default function QuestionSubmitted(props) {
     const questions = useSelector(selectQuestions);
     const questionResponseItems = useSelector(selectQuestionResponseItems);
 
-
-
     const getAnswer = (linkId) => {
         var responseEntered = ""
         questionResponseItems.map((item, index) => {

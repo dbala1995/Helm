@@ -5,7 +5,10 @@ import React, { useEffect } from 'react';
 
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectActiveStep } from '../stepper/VerticalLinearStepperSlice';
+import {
+    selectActiveStep,
+    selectAdjustedActiveStep
+} from '../stepper/VerticalLinearStepperSlice';
 import {
     selectMaxPrevAnswers,
     selectPreviousAnswers,
@@ -31,13 +34,15 @@ export default function PastAnswers(props) {
 
     const { requestResources } = props;
 
+    const adjustActiveStep = useSelector(selectAdjustedActiveStep)
+
 
     useEffect(() => {
         const extractPrevAnswers = () => {
             requestResources("QuestionnaireResponse", "", {})
         }
         extractPrevAnswers()
-        totalPages = groupedPrevAnswers[activeStep] ? Math.ceil(groupedPrevAnswers[activeStep].length / maxPrevAnswers) : 0
+        totalPages = groupedPrevAnswers[activeStep + adjustActiveStep] ? Math.ceil(groupedPrevAnswers[activeStep + adjustActiveStep].length / maxPrevAnswers) : 0
         dispatch(resetPageNo())
     }, [activeStep])
 
@@ -53,7 +58,7 @@ export default function PastAnswers(props) {
             justify="flex-start"
             alignItems="stretch"
             spacing={2}>
-            { groupedPrevAnswers[activeStep] && groupedPrevAnswers[activeStep].map((item, index) => (
+            { groupedPrevAnswers[activeStep + adjustActiveStep] && groupedPrevAnswers[activeStep + adjustActiveStep].map((item, index) => (
                 index < maxPrevAnswers * (pageNo + 1) && index >= maxPrevAnswers * pageNo &&
 
                 < Grid item >

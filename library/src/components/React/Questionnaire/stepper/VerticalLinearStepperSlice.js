@@ -4,6 +4,7 @@ const VerticalLinearStepperSlice = createSlice({
     name: "verticalLinearStepper",
     initialState: {
         activeStep: 0,
+        adjustedActiveStep: -1
     },
     reducers: {
         handleNext: (state) => {
@@ -27,7 +28,7 @@ const VerticalLinearStepperSlice = createSlice({
 })
 
 export const selectActiveStep = (state) => state.verticalLinearStepper.activeStep;
-
+export const selectAdjustedActiveStep = (state) => state.verticalLinearStepper.adjustedActiveStep;
 
 export const { handleNext, handleBack, handleReset, changeToQuestion } = VerticalLinearStepperSlice.actions;
 
