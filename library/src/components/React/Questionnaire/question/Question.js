@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import EditIcon from '@material-ui/icons/Edit';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import DoneIcon from '@material-ui/icons/Done';
 
 import PastAnswers from '../pastAnswers/PastAnswers';
@@ -191,7 +191,7 @@ export default function Question(props) {
 
                 </FormControl>
             </Grid>
-            <Grid item>
+            {/* <Grid item>
                 <div className={classes.buttonRight}>
                     <Button
                         variant="contained"
@@ -212,6 +212,78 @@ export default function Question(props) {
                         </div>}
                     </Button>
                 </div>
+            </Grid> */}
+
+            <Grid item>
+                <Grid
+                    container
+                    direction="row"
+                    justify="space-between"
+                    alignItems="flex-end">
+                    <Grid item>
+                        {activeStep > 0 ?
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => onBackClickHandler()}
+                                className={classes.button}
+                                startIcon={<NavigateBeforeIcon />}
+                            >
+                                BACK
+                            </Button>
+                            : null}
+                    </Grid>
+                    <Grid item>
+                        {/* Ensuring button does not show after all questions answered */}
+                        <div className={classes.buttonRight}>
+                            {/* <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    edit ?
+                                        onNextClickHandler()
+                                        :
+                                        dispatch(setEdit(!edit)) &&
+                                        dispatch(setDate(new Date().toString()))
+                                }}
+                                className={classes.button}
+                            > */}
+                            {
+                                edit ?
+                                    activeStep === questionsObjects.length - 1 ?
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            endIcon={<NavigateNextIcon />}
+                                            onClick={() => onNextClickHandler()}>
+                                            Finish
+                                            </Button> :
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            endIcon={<NavigateNextIcon />}
+                                            onClick={() => onNextClickHandler()}>
+                                            Continue
+                                            </Button>
+                                    :
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={<EditIcon />}
+                                        onClick={
+                                            () => {
+                                                dispatch(setEdit(!edit))
+                                                dispatch(setDate(new Date().toString()))
+                                            }
+                                        }>
+                                        edit
+                                        </Button>
+                            }
+
+                            {/* </Button> */}
+                        </div>
+                    </Grid>
+                </Grid>
             </Grid>
 
             <Grid item>
@@ -228,46 +300,6 @@ export default function Question(props) {
                     </AccordionDetails>
                 </Accordion>
             </Grid>
-
-            <Grid item>
-                <Grid
-                    container
-                    direction="row"
-                    justify="space-between"
-                    alignItems="flex-end">
-                    <Grid item>
-                        {activeStep > 0 ?
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => onBackClickHandler()}
-                                className={classes.button}
-                            >
-                                <ArrowBackIosIcon />
-                            BACK
-                            </Button>
-                            : null}
-                    </Grid>
-                    <Grid item>
-                        {/* Ensuring button does not show after all questions answered */}
-                        <div className={classes.buttonRight}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                    onNextClickHandler()
-                                }}
-                                className={classes.button}
-                            >
-                                {activeStep === questionsObjects.length - 1 ? 'Finish' : 'Next'}
-                                <NavigateNextIcon />
-                            </Button>
-                        </div>
-                    </Grid>
-                </Grid>
-            </Grid>
-
-
         </Grid >
     )
 }
