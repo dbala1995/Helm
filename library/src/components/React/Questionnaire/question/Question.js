@@ -141,16 +141,6 @@ export default function Question(props) {
     }
 
     const countNoOfPrevAnswers = () => {
-        // var noOfPrevAnswers = 0
-        // prevAnswers.map((prevAnswer) => {
-        //     const answers = prevAnswer.answers
-        //     answers.map((answerObj) => {
-        //         if (answerObj.linkId == activeStepToLinkIdObj[activeStep]) {
-        //             noOfPrevAnswers++
-        //         }
-        //     })
-        // })
-        // return noOfPrevAnswers
         if (groupedPrevAnswers[activeStep]) {
             return groupedPrevAnswers[activeStep].length
         }
@@ -191,28 +181,6 @@ export default function Question(props) {
 
                 </FormControl>
             </Grid>
-            {/* <Grid item>
-                <div className={classes.buttonRight}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                            dispatch(setEdit(!edit))
-                            dispatch(setDate(new Date().toString()))
-                            // onUpdateAnswer().then(obtainCurrentResponse(0))
-                        }}
-                        className={classes.button}
-                    >
-                        {edit ?
-                            <div><DoneIcon />Done</div>
-                            :
-                            <div>
-                                <EditIcon />
-                                Edit
-                        </div>}
-                    </Button>
-                </div>
-            </Grid> */}
 
             <Grid item>
                 <Grid
@@ -236,18 +204,6 @@ export default function Question(props) {
                     <Grid item>
                         {/* Ensuring button does not show after all questions answered */}
                         <div className={classes.buttonRight}>
-                            {/* <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => {
-                                    edit ?
-                                        onNextClickHandler()
-                                        :
-                                        dispatch(setEdit(!edit)) &&
-                                        dispatch(setDate(new Date().toString()))
-                                }}
-                                className={classes.button}
-                            > */}
                             {
                                 edit ?
                                     activeStep === questionsObjects.length - 1 ?
@@ -279,8 +235,6 @@ export default function Question(props) {
                                         edit
                                         </Button>
                             }
-
-                            {/* </Button> */}
                         </div>
                     </Grid>
                 </Grid>
