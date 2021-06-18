@@ -19,7 +19,6 @@ import {
 import { selectPrevResponses } from '../ObservationSlice';
 import { selectValue } from '../tabs/ObservationTabsSlice';
 import { selectFieldsArray } from '../form/ObservationFormSlice';
-import { Typography } from '@material-ui/core';
 
 
 const useStyles = makeStyles({

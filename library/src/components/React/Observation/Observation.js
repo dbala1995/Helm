@@ -63,15 +63,23 @@ export default function Observation(props) {
                 </Grid>
             </Paper>
             :
-
             <Grid
                 container
                 direction="column"
                 justify="flex-start"
-                alignItems="stretch"
+                alignItems="flex-start"
                 spacing={3}>
                 <Grid item >
-                    <ObservationTabs configuration={configuration} />
+                    <Grid
+                        container
+                        direction="row"
+                        justify="flex-start"
+                        alignItems="stretch"
+                        spacing={3}>
+                        <Grid item xs={12}>
+                            <ObservationTabs configuration={configuration} />
+                        </Grid>
+                    </Grid>
                 </Grid>
                 <Grid item>
                     <Grid
