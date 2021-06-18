@@ -4,7 +4,7 @@ const ObservationFormSlice = createSlice({
     name: "observationForm",
     initialState: {
         fieldsArray: [],
-        fieldsValue: [],
+        fieldsValue: JSON.parse(sessionStorage.getItem("fieldsValue")) || [],
         open: false
     },
     reducers: {
@@ -33,40 +33,43 @@ const ObservationFormSlice = createSlice({
             state.fieldsArray = newFieldsArray;
         },
         populateFieldsValue: (state, action) => {
-            const observations = action.payload;
-            const newFieldsValue = []
-            observations.map((obj) => {
-                const fieldNames = []
-                obj.input.definitions.map((defObj) => {
-                    fieldNames.push(defObj.code.text);
-                })
-                const fieldNamesObj = {}
-                fieldNames.map((name) => {
-                    fieldNamesObj[name] = {
+            if (state.fieldsValue === []) {
+                const observations = action.payload;
+                const newFieldsValue = []
+                observations.map((obj) => {
+                    const fieldNames = []
+                    obj.input.definitions.map((defObj) => {
+                        fieldNames.push(defObj.code.text);
+                    })
+                    const fieldNamesObj = {}
+                    fieldNames.map((name) => {
+                        fieldNamesObj[name] = {
+                            "value": "",
+                            "error": false,
+                            "errorMessage": ""
+                        }
+                    })
+                    fieldNamesObj["Date"] = {
                         "value": "",
                         "error": false,
                         "errorMessage": ""
                     }
+                    fieldNamesObj["Notes"] = {
+                        "value": "",
+                        "error": false,
+                        "errorMessage": ""
+                    }
+                    newFieldsValue.push(fieldNamesObj)
                 })
-                fieldNamesObj["Date"] = {
-                    "value": "",
-                    "error": false,
-                    "errorMessage": ""
-                }
-                fieldNamesObj["Notes"] = {
-                    "value": "",
-                    "error": false,
-                    "errorMessage": ""
-                }
-                newFieldsValue.push(fieldNamesObj)
-            })
-            state.fieldsValue = newFieldsValue
+                state.fieldsValue = newFieldsValue
+            }
         },
         onFieldsValueChangeHandler: (state, action) => {
             const tabNo = action.payload.tabNo
             const newValue = action.payload.newValue
             const fieldName = action.payload.fieldName
             state.fieldsValue[tabNo][fieldName].value = newValue;
+            sessionStorage.setItem("fieldsValue", JSON.stringify(state.fieldsValue))
         },
         onFieldsErrorChangeHandler: (state, action) => {
             const tabNo = action.payload.tabNo
