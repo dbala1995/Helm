@@ -22,6 +22,16 @@ export default function QuestionSubmitted(props) {
         return responseEntered;
     }
 
+    const getHelperText = (linkId) => {
+        var responseEntered = ""
+        questionResponseItems.map((item, index) => {
+            if (item.linkId === linkId) {
+                responseEntered = questionResponseItems[index].answer[0].valueDateTime;
+            }
+        })
+        return "Updated on: " + responseEntered;
+    }
+
     return (
         <div>
             <Grid
@@ -46,6 +56,7 @@ export default function QuestionSubmitted(props) {
                                 rows={4}
                                 defaultValue="prev answer 1"
                                 value={getAnswer(question.linkId)}
+                                helperText={getHelperText(question.linkId)}
                                 variant="outlined"
                                 disabled
                             />

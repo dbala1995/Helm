@@ -23,7 +23,7 @@ export default function AlertDialogSlide() {
     const dispatch = useDispatch();
 
     const onCloseHandler = () => {
-        dispatch(handleReset())
+        // dispatch(handleReset())
         dispatch(setOpen(false))
     }
 
