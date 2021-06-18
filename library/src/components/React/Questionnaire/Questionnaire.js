@@ -98,11 +98,12 @@ export default function Questionnaire(props) {
                                 </Typography>
                             }
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid item xs={5}>
                             {activeStep + adjustActiveStep === questionList.length ?
                                 <QuestionSubmitted submit={props.submit} /> :
                                 <Question submit={props.submit} requestResources={props.requestResources} />}
                         </Grid>
+                        <Grid item xs={1}></Grid>
                         <Grid item xs={5}>
                             <VerticalLinearStepper submit={props.submit} />
                         </Grid>
