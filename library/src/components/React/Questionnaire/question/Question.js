@@ -62,6 +62,14 @@ export default function Question(props) {
         obtainCurrentResponse(0)
     }, [activeStep])
 
+    useEffect(() => {
+        obtainCurrentResponse(0)
+    }, [groupedPrevAnswers])
+
+    useEffect(() => {
+        dispatch(obtainAnsweredQuestions())
+    }, [edit])
+
     const onUpdateAnswer = () => {
         if (activeStep <= questionsObjects.length - 1) {
             const item = {
@@ -105,7 +113,6 @@ export default function Question(props) {
     }
 
 
-
     const obtainPrevResponse = (step) => {
         if (questionsObjects.length > 0 && groupedPrevAnswers[activeStep]) {
             // const foundPrevObj = prevAnswers[0].answers.find((item) => item.linkId == questionsObjects[activeStep + step].linkId)
@@ -120,17 +127,6 @@ export default function Question(props) {
             dispatch(setQuestionResponse("")) && dispatch(setDate(""))
         }
 
-    }
-
-    const getLatestPrevAnswer = () => {
-        var latestPrevAnswer = ""
-        if (prevAnswers.length > 0) {
-            prevAnswers[prevAnswers.length - 1].answers.map((item) => {
-                item.linkId === questionsObjects[activeStep].linkId ?
-                    latestPrevAnswer = item.answer[0].valueString : null
-            })
-        }
-        return latestPrevAnswer
     }
 
     const activeStepToLinkIdObj = {

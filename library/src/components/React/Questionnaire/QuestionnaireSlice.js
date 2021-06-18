@@ -5,7 +5,7 @@ const questionnaireSlice = createSlice({
     initialState: {
         questions: [],
         questionnaireResponse: {},
-        questionResponseItems: [],
+        questionResponseItems: JSON.parse(sessionStorage.getItem("questionResponseItems")) || [],
         questionnaireId: ""
     },
     reducers: {
@@ -31,7 +31,7 @@ const questionnaireSlice = createSlice({
             if (count === 0) {
                 state.questionResponseItems.push(questionResponse)
             }
-
+            sessionStorage.setItem("questionResponseItems", JSON.stringify(state.questionResponseItems))
         },
         obtainAnsweredQuestions: (state) => {
             const finalObject = {
