@@ -42,7 +42,13 @@ export default function QuestionSubmitted(props) {
                 spacing={3}>
                 <Grid item>
                     <FormControl fullWidth>
-                        <Typography>All steps completed - you&apos;re finished</Typography>
+                        <Typography variant="h4">
+                            <b>Submit &amp; Save</b>
+                        </Typography>
+                        <Typography variant="h6"><b>All steps completed - you&apos;re finished</b></Typography>
+                        <Typography>
+                            Review answers and submit.
+                        </Typography>
                     </FormControl>
                 </Grid>
                 {questions.map((question, index) => (

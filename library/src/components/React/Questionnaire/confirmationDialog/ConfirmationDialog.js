@@ -40,17 +40,24 @@ export default function AlertDialogSlide() {
                 aria-describedby="alert-dialog-slide-description"
 
             >
-                <DialogTitle id="alert-dialog-slide-title">{"About me submitted successfully"}</DialogTitle>
+                <DialogTitle id="alert-dialog-slide-title">{"Don't forget"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        About me responses have been submitted successfully.
+                        If you need urgent medical attention please contact your GP surgery, ring 111 or 999.
+
+                        You remain responsible for acting on the health concerns you may have. The information you enter here will be shared with health and care practitioners involved in your care.
                 </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button
                         color="primary"
                         onClick={() => onCloseHandler()} >
-                        OK
+                        Cancel
+                    </Button>
+                    <Button
+                        color="primary"
+                        onClick={() => onCloseHandler()} >
+                        Accept &amp; Continue
                     </Button>
                 </DialogActions>
             </Dialog>
