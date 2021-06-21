@@ -258,6 +258,7 @@ export default function ObservationForm(props) {
                                         helperText={fieldsValue[value][fieldObj.text].error ? fieldsValue[value][fieldObj.text].errorMessage : fieldObj.text}
                                         error={fieldsValue[value][fieldObj.text].error}
                                         type={fieldObj.type === "Quantity" && "number"}
+                                        onKeyDown={(evt) => fieldObj.type === "Quantity" && evt.key === 'e' && evt.preventDefault()}
                                         InputProps={{
                                             endAdornment: <InputAdornment position="end">{fieldObj.unit}</InputAdornment>,
                                         }} />
