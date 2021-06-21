@@ -1,5 +1,5 @@
 import { CircularProgress, Grid, Paper } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ObservationTabs from './tabs/ObservationTabs';
 import Content from './content/Content';
 
@@ -24,6 +24,8 @@ export default function Observation(props) {
 
     const dispatch = useDispatch()
 
+    const [show, setShow] = useState(false)
+
 
 
     useEffect(() => {
@@ -38,8 +40,12 @@ export default function Observation(props) {
         dispatch(updatePrevResponses(observations))
     }, [observations])
 
+    useEffect(() => {
+        setTimeout(() => { setShow(true) }, 2 * 1000)
+    }, [show])
+
     return (
-        observationsState.length == 0 ?
+        !show ?
             <Paper elevation={0}>
                 <Grid container spacing={0}>
                     <Grid item xs={12} style={{ position: "relative", height: 300 }}>
@@ -62,37 +68,37 @@ export default function Observation(props) {
                     </Grid>
                 </Grid>
             </Paper>
-            :
-            <Grid
-                container
-                direction="column"
-                justify="flex-start"
-                alignItems="flex-start"
-                spacing={3}>
-                <Grid item >
-                    <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="stretch"
-                        spacing={3}>
-                        <Grid item xs={12}>
-                            <ObservationTabs configuration={configuration} />
+            : observationsState.length == 0 ? null :
+                <Grid
+                    container
+                    direction="column"
+                    justify="flex-start"
+                    alignItems="flex-start"
+                    spacing={3}>
+                    <Grid item >
+                        <Grid
+                            container
+                            direction="row"
+                            justify="flex-start"
+                            alignItems="stretch"
+                            spacing={3}>
+                            <Grid item xs={12}>
+                                <ObservationTabs configuration={configuration} />
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-                <Grid item>
-                    <Grid
-                        container
-                        direction="row"
-                        justify="space-evenly"
-                        alignItems="stretch"
-                        spacing={3}>
-                        <Grid item xs={12}>
-                            <Content saveObservations={saveObservations} getObservations={getObservations} />
+                    <Grid item>
+                        <Grid
+                            container
+                            direction="row"
+                            justify="space-evenly"
+                            alignItems="stretch"
+                            spacing={3}>
+                            <Grid item xs={12}>
+                                <Content saveObservations={saveObservations} getObservations={getObservations} />
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
-            </Grid >
+                </Grid >
     )
 }
