@@ -34,8 +34,6 @@ export default function Questionnaire(props) {
     const questionnaireList = resources.Questionnaire;
     const questionnaireResponse = resources.QuestionnaireResponse;
 
-    console.log(activeStep + adjustActiveStep, "===", questionList.length)
-
     const obtainQuestionObjects = (questionnaireList) => {
         var questionsArray = []
         var id = ""
@@ -88,7 +86,6 @@ export default function Questionnaire(props) {
                 </Grid>
             </Paper>
             : questionList.length === 0 ? null :
-
                 <div>
                     <div className={classes.sectionDesktop}>
                         <Grid

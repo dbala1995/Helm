@@ -300,7 +300,7 @@ export default function ObservationForm(props) {
                     <FormControl fullWidth>
                         <TextField
                             fullWidth
-                            helperText="Notes"
+                            helperText="Notes about this measurement"
                             variant="outlined"
                             onChange={(e) => onDateNoteValueChange(e, "Notes")}
                             value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}

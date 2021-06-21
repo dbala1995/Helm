@@ -14,24 +14,25 @@ const ObservationGraphSlice = createSlice({
     },
     reducers: {
         populateLabels: (state, action) => {
-            console.log("populateLabels: ", action.payload)
             state.labels = action.payload["Date"]
         },
         populateDatasets: (state, action) => {
-            const keyArray = Object.keys(action.payload)
-            const newDatasetArray = []
-            keyArray.map((label, index) => {
-                if (label !== "Date") {
-                    const dataset = {}
-                    dataset.label = label
-                    dataset.data = action.payload[label]
-                    dataset.borderColor = state.colourArray[index]
-                    dataset.spanGaps = true
-                    dataset.tension = 0.4
-                    newDatasetArray.push(dataset)
-                }
-            })
-            state.datasets = newDatasetArray
+            if (action.payload) {
+                const keyArray = Object.keys(action.payload)
+                const newDatasetArray = []
+                keyArray.map((label, index) => {
+                    if (label !== "Date") {
+                        const dataset = {}
+                        dataset.label = label
+                        dataset.data = action.payload[label]
+                        dataset.borderColor = state.colourArray[index]
+                        dataset.spanGaps = true
+                        dataset.tension = 0.4
+                        newDatasetArray.push(dataset)
+                    }
+                })
+                state.datasets = newDatasetArray
+            }
         }
     }
 })
