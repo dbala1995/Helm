@@ -8,7 +8,7 @@ import Question from './question/Question';
 import QuestionSubmitted from './questionSubmitted/QuestionSubmitted';
 import VerticalLinearStepper from './stepper/VerticalLinearStepper';
 import {
-    selectActiveStep
+    selectActiveStep, selectAdjustedActiveStep
 } from './stepper/VerticalLinearStepperSlice';
 import {
     selectQuestions,
@@ -25,11 +25,14 @@ export default function Questionnaire(props) {
     const activeStep = useSelector(selectActiveStep);
     const questionList = useSelector(selectQuestions);
     const id = useSelector(selectId)
+    const adjustActiveStep = useSelector(selectAdjustedActiveStep)
     const dispatch = useDispatch()
 
     const { resources } = props;
     const questionnaireList = resources.Questionnaire;
     const questionnaireResponse = resources.QuestionnaireResponse;
+
+    console.log(activeStep + adjustActiveStep, "===", questionList.length)
 
     const obtainQuestionObjects = (questionnaireList) => {
         var questionsArray = []
@@ -89,17 +92,18 @@ export default function Questionnaire(props) {
                         alignItems="flex-start"
                         spacing={1}>
                         <Grid item xs={1}>
-                            {activeStep === questionList.length ? null :
+                            {activeStep + adjustActiveStep === questionList.length ? null :
                                 <Typography variant="h5" align="right">
-                                    {activeStep + 1} -
-                        </Typography>
+                                    {activeStep !== 0 && activeStep + "-"}
+                                </Typography>
                             }
                         </Grid>
-                        <Grid item xs={6}>
-                            {activeStep === questionList.length ?
+                        <Grid item xs={5}>
+                            {activeStep + adjustActiveStep === questionList.length ?
                                 <QuestionSubmitted submit={props.submit} /> :
                                 <Question submit={props.submit} requestResources={props.requestResources} />}
                         </Grid>
+                        <Grid item xs={1}></Grid>
                         <Grid item xs={5}>
                             <VerticalLinearStepper submit={props.submit} />
                         </Grid>
@@ -114,7 +118,7 @@ export default function Questionnaire(props) {
                         spacing={3}>
 
                         <Grid item xs={10}>
-                            {activeStep === questionList.length ?
+                            {activeStep + adjustActiveStep === questionList.length ?
                                 <QuestionSubmitted submit={props.submit} /> :
                                 <Question submit={props.submit} requestResources={props.requestResources} />}
                         </Grid>

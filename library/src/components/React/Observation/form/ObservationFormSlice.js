@@ -4,7 +4,7 @@ const ObservationFormSlice = createSlice({
     name: "observationForm",
     initialState: {
         fieldsArray: [],
-        fieldsValue: JSON.parse(sessionStorage.getItem("fieldsValue")) || [],
+        fieldsValue: JSON.parse(sessionStorage.getItem("fieldsValue")) ? JSON.parse(sessionStorage.getItem("fieldsValue")) : [],
         open: false
     },
     reducers: {
@@ -33,7 +33,7 @@ const ObservationFormSlice = createSlice({
             state.fieldsArray = newFieldsArray;
         },
         populateFieldsValue: (state, action) => {
-            if (state.fieldsValue === []) {
+            if (state.fieldsValue.length === 0) {
                 const observations = action.payload;
                 const newFieldsValue = []
                 observations.map((obj) => {

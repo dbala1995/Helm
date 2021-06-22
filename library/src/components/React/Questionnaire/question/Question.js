@@ -14,7 +14,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     selectActiveStep,
     handleNext,
-    handleBack
+    handleBack,
+    selectAdjustedActiveStep
 } from '../stepper/VerticalLinearStepperSlice';
 import {
     selectQuestionResponse,
@@ -40,6 +41,7 @@ import {
 import {
     getDate
 } from '../Utils/Utils';
+import Summary from '../summary/Summary';
 
 
 export default function Question(props) {
@@ -58,23 +60,28 @@ export default function Question(props) {
 
     const { submit } = props;
 
+    const adjustActiveStep = useSelector(selectAdjustedActiveStep)
+
     useEffect(() => {
-        obtainCurrentResponse(0)
+        if (activeStep !== 0)
+            obtainCurrentResponse(adjustActiveStep)
     }, [activeStep])
 
     useEffect(() => {
-        obtainCurrentResponse(0)
+        if (activeStep !== 0)
+            obtainCurrentResponse(adjustActiveStep)
     }, [groupedPrevAnswers])
 
     useEffect(() => {
-        dispatch(obtainAnsweredQuestions())
+        if (activeStep !== 0)
+            dispatch(obtainAnsweredQuestions())
     }, [edit])
 
-    const onUpdateAnswer = () => {
-        if (activeStep <= questionsObjects.length - 1) {
+    const onUpdateAnswer = (step) => {
+        if (activeStep <= questionsObjects.length) {
             const item = {
-                "linkId": questionsObjects[activeStep].linkId,
-                "text": questionsObjects[activeStep].prefix,
+                "linkId": questionsObjects[activeStep + step].linkId,
+                "text": questionsObjects[activeStep + step].prefix,
                 "answer": [{ "valueString": questionResponse, "valueDateTime": date === null ? new Date().toString() : date }]
             }
             dispatch(updateQuestionResponses(item))
@@ -89,13 +96,13 @@ export default function Question(props) {
     const onNextClickHandler = async () => {
         edit ? dispatch(setEdit(false)) : null
         await dispatch(handleNext())
-        onUpdateAnswer()
+        onUpdateAnswer(adjustActiveStep)
     }
 
     const onBackClickHandler = async () => {
         edit ? dispatch(setEdit(false)) : null
         await dispatch(handleBack())
-        onUpdateAnswer()
+        onUpdateAnswer(adjustActiveStep)
     }
 
     const obtainCurrentResponse = (step) => {
@@ -114,9 +121,9 @@ export default function Question(props) {
 
 
     const obtainPrevResponse = (step) => {
-        if (questionsObjects.length > 0 && groupedPrevAnswers[activeStep]) {
+        if (questionsObjects.length > 0 && groupedPrevAnswers[activeStep + step]) {
             // const foundPrevObj = prevAnswers[0].answers.find((item) => item.linkId == questionsObjects[activeStep + step].linkId)
-            const foundPrevObj = groupedPrevAnswers[activeStep][0]
+            const foundPrevObj = groupedPrevAnswers[activeStep + step][0]
             if (foundPrevObj) {
                 dispatch(setQuestionResponse(foundPrevObj.valueString))
                 dispatch(setDate(foundPrevObj.valueDateTime))
@@ -136,121 +143,122 @@ export default function Question(props) {
         3: "item4"
     }
 
-    const countNoOfPrevAnswers = () => {
-        if (groupedPrevAnswers[activeStep]) {
-            return groupedPrevAnswers[activeStep].length
+    const countNoOfPrevAnswers = (step) => {
+        if (groupedPrevAnswers[activeStep + step]) {
+            return groupedPrevAnswers[activeStep + step].length
         }
         return 0
     }
 
 
     return (
-
-        <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="stretch"
-            spacing={2}>
-            <Grid item>
-                <Typography variant="h5">
-                    {questionsObjects[activeStep].prefix}
-                </Typography>
-            </Grid>
-            <Grid item>
-                <FormControl fullWidth >
-                    <Typography>
-                        <p dangerouslySetInnerHTML={{ __html: questionsObjects[activeStep].text }}>
-                        </p>
+        activeStep !== 0 ?
+            <Grid
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="stretch"
+                spacing={2}>
+                <Grid item>
+                    <Typography variant="h5">
+                        {questionsObjects[activeStep + adjustActiveStep].prefix}
                     </Typography>
-                    <TextField
-                        id="outlined-multiline-static"
-                        // label="Multiline"
-                        multiline
-                        rows={4}
-                        // defaultValue={getLatestPrevAnswer()}
-                        value={questionResponse}
-                        variant="outlined"
-                        helperText={displayDate}
-                        onChange={(e) => onAnswerChangeHandler(e)}
-                        disabled={!edit}
-                    />
+                </Grid>
+                <Grid item>
+                    <FormControl fullWidth >
+                        <Typography>
+                            <p dangerouslySetInnerHTML={{ __html: questionsObjects[activeStep + adjustActiveStep].text }}>
+                            </p>
+                        </Typography>
+                        <TextField
+                            id="outlined-multiline-static"
+                            // label="Multiline"
+                            multiline
+                            rows={4}
+                            // defaultValue={getLatestPrevAnswer()}
+                            value={questionResponse}
+                            variant="outlined"
+                            helperText={displayDate}
+                            onChange={(e) => onAnswerChangeHandler(e)}
+                            disabled={!edit}
+                        />
 
-                </FormControl>
-            </Grid>
+                    </FormControl>
+                </Grid>
 
-            <Grid item>
-                <Grid
-                    container
-                    direction="row"
-                    justify="space-between"
-                    alignItems="flex-end">
-                    <Grid item>
-                        {activeStep > 0 ?
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() => onBackClickHandler()}
-                                className={classes.button}
-                                startIcon={<NavigateBeforeIcon />}
-                            >
-                                Previous
+                <Grid item>
+                    <Grid
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="flex-end">
+                        <Grid item>
+                            {activeStep + adjustActiveStep > 0 ?
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => onBackClickHandler()}
+                                    className={classes.button}
+                                    startIcon={<NavigateBeforeIcon />}
+                                >
+                                    Previous
                             </Button>
-                            : null}
-                    </Grid>
-                    <Grid item>
-                        {/* Ensuring button does not show after all questions answered */}
-                        <div className={classes.buttonRight}>
-                            {
-                                edit ?
-                                    activeStep === questionsObjects.length - 1 ?
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            endIcon={<NavigateNextIcon />}
-                                            onClick={() => onNextClickHandler()}>
-                                            Finish
+                                : null}
+                        </Grid>
+                        <Grid item>
+                            {/* Ensuring button does not show after all questions answered */}
+                            <div className={classes.buttonRight}>
+                                {
+                                    edit ?
+                                        activeStep === questionsObjects.length ?
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                endIcon={<NavigateNextIcon />}
+                                                onClick={() => onNextClickHandler()}>
+                                                Finish
                                             </Button> :
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                endIcon={<NavigateNextIcon />}
+                                                onClick={() => onNextClickHandler()}>
+                                                Next
+                                            </Button>
+                                        :
                                         <Button
                                             variant="contained"
                                             color="primary"
-                                            endIcon={<NavigateNextIcon />}
-                                            onClick={() => onNextClickHandler()}>
-                                            Next
-                                            </Button>
-                                    :
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        startIcon={<EditIcon />}
-                                        onClick={
-                                            () => {
-                                                dispatch(setEdit(!edit))
-                                                dispatch(setDate(new Date().toString()))
-                                            }
-                                        }>
-                                        edit
+                                            startIcon={<EditIcon />}
+                                            onClick={
+                                                () => {
+                                                    dispatch(setEdit(!edit))
+                                                    dispatch(setDate(new Date().toString()))
+                                                }
+                                            }>
+                                            edit
                                         </Button>
-                            }
-                        </div>
+                                }
+                            </div>
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
 
-            <Grid item>
-                <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content">
-                        <Typography>
-                            <u><b>Previous answers ({countNoOfPrevAnswers()})</b></u>
-                        </Typography>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <PastAnswers requestResources={props.requestResources} noOfPrevAnswers={countNoOfPrevAnswers()} />
-                    </AccordionDetails>
-                </Accordion>
-            </Grid>
-        </Grid >
+                <Grid item>
+                    <Accordion>
+                        <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            aria-controls="panel1a-content">
+                            <Typography>
+                                <u><b>Previous answers ({countNoOfPrevAnswers(adjustActiveStep)})</b></u>
+                            </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <PastAnswers requestResources={props.requestResources} noOfPrevAnswers={countNoOfPrevAnswers(adjustActiveStep)} />
+                        </AccordionDetails>
+                    </Accordion>
+                </Grid>
+            </Grid > :
+            <Summary />
     )
 }

@@ -12,8 +12,6 @@ export default function QuestionSubmitted(props) {
     const questions = useSelector(selectQuestions);
     const questionResponseItems = useSelector(selectQuestionResponseItems);
 
-
-
     const getAnswer = (linkId) => {
         var responseEntered = ""
         questionResponseItems.map((item, index) => {
@@ -22,6 +20,16 @@ export default function QuestionSubmitted(props) {
             }
         })
         return responseEntered;
+    }
+
+    const getHelperText = (linkId) => {
+        var responseEntered = ""
+        questionResponseItems.map((item, index) => {
+            if (item.linkId === linkId) {
+                responseEntered = questionResponseItems[index].answer[0].valueDateTime;
+            }
+        })
+        return "Updated on: " + responseEntered;
     }
 
     return (
@@ -34,7 +42,13 @@ export default function QuestionSubmitted(props) {
                 spacing={3}>
                 <Grid item>
                     <FormControl fullWidth>
-                        <Typography>All steps completed - you&apos;re finished</Typography>
+                        <Typography variant="h4">
+                            <b>Submit &amp; Save</b>
+                        </Typography>
+                        <Typography variant="h6"><b>All steps completed - you&apos;re finished</b></Typography>
+                        <Typography>
+                            Review answers and submit.
+                        </Typography>
                     </FormControl>
                 </Grid>
                 {questions.map((question, index) => (
@@ -48,6 +62,7 @@ export default function QuestionSubmitted(props) {
                                 rows={4}
                                 defaultValue="prev answer 1"
                                 value={getAnswer(question.linkId)}
+                                helperText={getHelperText(question.linkId)}
                                 variant="outlined"
                                 disabled
                             />
