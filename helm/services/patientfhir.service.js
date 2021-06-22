@@ -90,6 +90,62 @@ class PatientSubjectResourceChecker {
     }
 }
 
+/** @type {PatientResourceChecker} */
+class PatientObservationResourceChecker {
+    /**
+     * @param {fhir.Resource & ResourceWithSubject} resource
+     * @param {fhir.Identifier} patientIdentifier
+     * @returns {boolean}
+     */
+    isAccessibleResource(resource, patientReference, patientIdentifier) {
+        // resource has no subject
+        if (!resource.subject) {
+            throw new MoleculerError(`Resource ${resource.resourceType} has no subject`, 400)
+        }
+
+        const { subject } = resource
+
+        const { identifier, reference } = subject
+
+        // check the identifier
+        if (identifier && !matchIdentifier(identifier, patientIdentifier)) {
+            return false
+        }
+
+        if (reference && reference === patientReference) {
+            return true
+        }
+
+        // return false
+        return false
+    }
+
+    /**
+     * @param {fhir.Observation & ResourceWithSubject} resource
+     * @param {fhir.Identifier} patientIdentifier
+     * @returns {fhir.Resource & ResourceWithSubject}
+     */
+    setAsPatientResource(resource, patientReference, patientIdentifier) {
+        resource.subject = {
+            reference: patientReference,
+            identifier: patientIdentifier,
+        }
+
+        resource.performer = [{
+            reference: patientReference,
+            identifier: patientIdentifier,
+        }]
+
+        return resource
+    }
+
+    applyIdentifierToSearch(params, patientReference, patientIdentifier) {
+        params.subject = patientReference
+
+        return params
+    }
+}
+
 class NonPatientCentricResourceChecker {
     /**
      * @param {fhir.Resource} resource
@@ -143,6 +199,8 @@ class PatientFhirResourceChecker {
      */
     isAllowedResource(resourceType) {
         const { allowedResources } = this.configuration
+        console.log("allowedResources: ", allowedResources)
+        console.log("resourceType: ", resourceType)
 
         return allowedResources.some((allowedResource) => allowedResource === resourceType)
     }
@@ -213,16 +271,18 @@ class PatientFhirResourceChecker {
 
 const nonPatientCentricResourceChecker = new NonPatientCentricResourceChecker()
 const subjectResourceChecker = new PatientSubjectResourceChecker()
+const observationResourceChecker = new PatientObservationResourceChecker()
 
 const patientResourceChecker = new PatientFhirResourceChecker(
     {
-        allowedResources: ["Composition", "Questionnaire", "QuestionnaireResponse"],
+        allowedResources: ["Composition", "Questionnaire", "QuestionnaireResponse", "Observation"],
         patientIdentifierSystem: "https://fhir.nhs.uk/Id/nhs-number",
     },
     {
         Composition: subjectResourceChecker,
         QuestionnaireResponse: subjectResourceChecker,
         Questionnaire: nonPatientCentricResourceChecker,
+        Observation: observationResourceChecker
     }
 )
 
@@ -292,6 +352,7 @@ const PatientFhirService = {
             return patientResourceChecker.checkResource(searchResult, reference, identifier)
         },
         async createActionHandler(ctx) {
+            console.log("patientFhirService.create ctx: ", ctx)
             const { reference } = ctx.meta.user
 
             if (!reference) {
@@ -311,6 +372,7 @@ const PatientFhirService = {
             }
 
             resource = patientResourceChecker.setAsPatientResource(resource, reference, identifier)
+
 
             return await ctx.call("internalfhirservice.create", { ...ctx.params, resource })
         },

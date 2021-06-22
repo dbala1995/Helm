@@ -1,0 +1,532 @@
+{
+    "observations": [
+        {
+            "title": "Weight & Height",
+            "information": {
+                "header": "Weigh yourself:",
+                "body": [
+                    "<ul><li>Once a week</li>",
+                    "<li>In the mornings</li>",
+                    "<li>During the same conditions (e.g. same scales, with or without clothes etc.)</li>",
+                    "<li>If you are worried about your weight being too high or too low or if your weight is causing you anxiety, click here</li></ul>"
+                ],
+                "footer": {
+                    "header": "As an adult if your BMI is:",
+                    "body": [
+                        "<ul><li>below 18.5 - you are in the underweight range</li>",
+                        "<li>between 18.5 and 24.9 - you are in the healthy weight range</li>",
+                        "<li>between 25.0 and 29.9 - you are in the overweight range</li>",
+                        "<li>between 30.0 and 39.9 - you are in the obese range</li></ul"
+                    ]
+                }
+            },
+            "input": {
+                "definitions": [
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "27113001",
+                                    "display": "Body Weight"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "29463-7"
+                                }
+                            ],
+                            "text": "Weight"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "kg"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "kg"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 2
+                        },
+                        "display": "true",
+                        "calculated": {
+                            "value": false
+                        }
+                    },
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "50373000",
+                                    "display": "Body Height"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "8302-2"
+                                }
+                            ],
+                            "text": "Height"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "cm"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "cm"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 2
+                        },
+                        "display": "true",
+                        "calculated": {
+                            "value": false
+                        }
+                    },
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "60621009",
+                                    "display": "Body Mass Index"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "35925-4"
+                                }
+                            ],
+                            "text": "Body Mass Index"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "kg/m^2"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "kg/m^2"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 2
+                        },
+                        "display": "false",
+                        "calculated": {
+                            "value": true,
+                            "derivedFrom": "Weight / ( Height/100 * Height/100 )"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "title": "Pulse",
+            "information": {
+                "header": "Pulse",
+                "body": [
+                    "You can check your heart rate by taking your pulse and counting how many times your heart beats in a minute.<br><br>",
+                    "Your heart rate varies depending on what you're doing – for example, it will be slower if you're sleeping and faster if you're exercising.<br><br>",
+                    "To get your resting heart rate, you need to have been resting for at least 5 minutes before checking your pulse."
+                ],
+                "footer": {
+                    "header": "",
+                    "body": []
+                }
+            },
+            "input": {
+                "definitions": [
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "364075005",
+                                    "display": "Heart rate"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "8867-4"
+                                }
+                            ],
+                            "text": "Heart Rate"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "/min"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "/min"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 0
+                        },
+                        "display": "true",
+                        "calculated": {
+                            "value": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "title": "Blood Pressure",
+            "information": {
+                "header": "Blood Pressure",
+                "body": [
+                    "Blood pressure is the term used to describe the strength with which your blood is pumped around your body.",
+                    " It can vary through the day and multiple readings after at least 5 minutes of rest (sitting with legs uncrossed) are useful to monitor this.",
+                    " A persistent high or low blood pressure can put you at risk of certain health conditions and is important to identify and manage this. <br><br>",
+                    "Blood pressure is measured in millimetres of mercury (mmHg) and is given as 2 figures:",
+                    "<ul><li>systolic pressure – the pressure when your heart pushes blood out</li>",
+                    "<li>diastolic pressure – the pressure when your heart rests between beats</li></ul>"
+                ],
+                "footer": {
+                    "header": "",
+                    "body": []
+                }
+            },
+            "input": {
+                "definitions": [
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "271649006",
+                                    "display": "Systolic blood pressure"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "8480-6"
+                                }
+                            ],
+                            "text": "Systolic Blood Pressure"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "mm[Hg]"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "mm[Hg]"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 1
+                        },
+                        "display": "true",
+                        "calculated": {
+                            "value": false
+                        }
+                    },
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "271650006",
+                                    "display": "Diastolic blood pressure"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "8480-6"
+                                }
+                            ],
+                            "text": "Diastolic Blood Pressure"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "mm[Hg]"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "mm[Hg]"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 1
+                        },
+                        "display": "true",
+                        "calculated": {
+                            "value": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "title": "Oxygen Saturation",
+            "information": {
+                "header": "Oxygen Saturation",
+                "body": [
+                    "Oxygen is carried around in your red blood cells by a molecule called haemoglobin. Pulse oximetry measures how much oxygen the haemoglobin in your blood is carrying.<br><br>",
+                    "This is called the oxygen saturation and is a percentage (scored out of 100). It’s a simple, painless test which uses a sensor placed on your fingertip or earlobe."
+                ],
+                "footer": {
+                    "header": "",
+                    "body": []
+                }
+            },
+            "input": {
+                "definitions": [
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "431314004",
+                                    "display": "Oxygen Saturation"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "59408-5"
+                                }
+                            ],
+                            "text": "Oxygen Saturation"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "%"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "%"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 2
+                        },
+                        "display": "true",
+                        "calculated": {
+                            "value": false
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "title": "Peak Flow",
+            "information": {
+                "header": "Peak Flow",
+                "body": [
+                    "Peak flow is a simple measurement of how quickly you can blow air out of your lungs. It's often used to help diagnose and monitor asthma.<br><br>",
+                    "Your peak flow score – also known as your peak expiratory flow (PEF) – will be displayed on the side of your peak flow meter. This is given in litres of air breathed out per minute (l/min).<br><br>",
+                    "What's considered a normal score depends on your age, height and gender. Ask your GP or asthma nurse for more information on what would be considered a normal score for you."
+                ],
+                "footer": {
+                    "header": "",
+                    "body": []
+                }
+            },
+            "input": {
+                "definitions": [
+                    {
+                        "resourceType": "ObservationDefinition",
+                        "category": [
+                            {
+                                "coding": [
+                                    {
+                                        "system": "http://hl7.org/fhir/observation-category",
+                                        "code": "vital-signs",
+                                        "display": "Vital Signs"
+                                    }
+                                ]
+                            }
+                        ],
+                        "code": {
+                            "coding": [
+                                {
+                                    "system": "http://snomed.info/sct",
+                                    "code": "86290005",
+                                    "display": "Respiratory Rate"
+                                },
+                                {
+                                    "system": "http://loinc.org",
+                                    "code": "9279-1"
+                                }
+                            ],
+                            "text": "Respiratory Rate"
+                        },
+                        "permittedDataType": "Quantity",
+                        "quantitativeDetails": {
+                            "customaryUnit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "L/min"
+                                    }
+                                ]
+                            },
+                            "unit": {
+                                "coding": [
+                                    {
+                                        "system": "http://unitsofmeasure.org",
+                                        "unit": "L/min"
+                                    }
+                                ]
+                            },
+                            "conversionFactor": 1,
+                            "decimalPrecision": 2
+                        },
+                        "display": "true",
+                        "calculated": {
+                            "value": false
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

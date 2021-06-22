@@ -7,13 +7,10 @@ import TopThreeThingsCreate from "../plugins/TopThreeThings/TopThreeThingsCreate
 import Directory from "../pages/Directory"
 // NHS WIDGETS
 import NhsWidgets from "../plugins/NhsWidgets/NhsWidgets"
+import AboutMe from "../plugins/AboutMe/AboutMe"
+import Measurements from "../plugins/Measurements/Measurements"
 
 export default [
-  {
-    name: "top3Things",
-    label: "Top Three Things",
-    list: TopThreeThingsCreate,
-  },
   {
     name: "leeds-information",
     label: "Leeds Information",
@@ -23,5 +20,15 @@ export default [
     name: "nhs-resources",
     label: "NHS Resources",
     list: NhsWidgets,
+  },
+  {
+    name: "about-me",
+    label: "About Me",
+    list: AboutMe,
+  },
+  {
+    name: "measurements",
+    label: "Measurements",
+    list: Measurements
   },
 ]
