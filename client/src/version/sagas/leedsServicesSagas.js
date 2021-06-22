@@ -12,7 +12,7 @@ export const getLeedsServicesSaga = takeEvery(SYNOPSIS_LEEDSSERVICES_ACTION.REQU
         {
           text: (
             <React.Fragment>
-              <a href="https://www.commlinks.co.uk/?service=linking-leeds" rel="noopener noreferrer" target="_blank">
+              <a href="https://linkingleeds.com/" rel="noopener noreferrer" target="_blank">
                 <Typography>Social Prescribing</Typography>
               </a>
               <Typography>
