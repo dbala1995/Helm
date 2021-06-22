@@ -1,15 +1,10 @@
 import React, { useRef } from "react"
-import { Grid, Card, makeStyles, Hidden, SvgIcon } from "@material-ui/core"
 import TableHeader from "../../../core/common/TableHeader"
 import Breadcrumbs from "../../../core/common/Breadcrumbs"
 import backgroundImage from "../../images/Artboard.png"
-import Accordion from "@material-ui/core/Accordion"
-import AccordionSummary from "@material-ui/core/AccordionSummary"
-import AccordionDetails from "@material-ui/core/AccordionDetails"
-import Typography from "@material-ui/core/Typography"
 import { useEffect, useState } from "react"
 import { PageTitle } from "../../../core/common/PageTitle"
-import ErrorDialog from "../AboutMe/ErrorDialog"
+import ErrorDialog from "../../common/Dialogs/ErrorDialog"
 
 export default function Measurements(props) {
     const canvasRef = useRef(null)
@@ -25,7 +20,7 @@ export default function Measurements(props) {
             }
         )
     }
-
+    
     const apiCall = async () => {
         const response = await fetch("http://helm-local.com/api/patient/fhir/Observation", {
             method: "GET",

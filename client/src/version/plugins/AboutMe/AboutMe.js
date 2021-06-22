@@ -1,30 +1,37 @@
 import React, { useRef } from "react"
-import { Grid, Card, makeStyles, Hidden, SvgIcon } from "@material-ui/core"
 import TableHeader from "../../../core/common/TableHeader"
 import Breadcrumbs from "../../../core/common/Breadcrumbs"
 import backgroundImage from "../../images/Artboard.png"
-import Accordion from "@material-ui/core/Accordion"
-import AccordionSummary from "@material-ui/core/AccordionSummary"
-import AccordionDetails from "@material-ui/core/AccordionDetails"
-import Typography from "@material-ui/core/Typography"
 import { useEffect, useState } from "react"
 import { PageTitle } from "../../../core/common/PageTitle"
-import HandleErrorModal from "../../../core/common/HandleErrorModal"
-import ErrorDialog from "./ErrorDialog"
+import ErrorDialog from "../../common/Dialogs/ErrorDialog"
+import get from "lodash/get"
+import { withRouter, Prompt } from "react-router-dom"
 
-export default function AboutMe(props) {
+
+function AboutMe(props) {
     const canvasRef = useRef(null)
 
     const [makeApiCall, setMakeApiCall] = useState(false)
     const [apiReturnMsg, setApiReturnMsg] = useState({ message: false, status: 200 })
 
+    const [mounted, setMounted] = useState(true)
+    const [open, setOpen] = useState(false)
+
+    useEffect(() => {
+        console.log("initial mounted: ", mounted)
+        return () => {
+            setMounted(false)
+            setOpen(true)
+            console.log("final mounted: ", mounted)
+        }
+    }, [])
+
     const removeErrorNotification = () => {
-        setApiReturnMsg(
-            {
-                message: false,
-                status: 200
-            }
-        )
+        setApiReturnMsg({
+            message: false,
+            status: 200
+        })
     }
 
     const apiCall = async () => {
@@ -99,6 +106,11 @@ export default function AboutMe(props) {
                     httpErrors={apiReturnMsg}
                     removeErrorNotification={removeErrorNotification}
                 />) : null}
+            <Prompt message={"Are you sure you wish to leave this page?\n\n" +
+                "Your answers haven't been saved. You can submit and save your answers by continuing to the last page of the questionnaire.\n\n" +
+                "Would you like to continue to leave this page?"} />
         </React.Fragment >
     )
 }
+
+export default withRouter(AboutMe)
