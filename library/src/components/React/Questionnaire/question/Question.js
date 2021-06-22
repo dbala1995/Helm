@@ -197,7 +197,7 @@ export default function Question(props) {
                                 className={classes.button}
                                 startIcon={<NavigateBeforeIcon />}
                             >
-                                BACK
+                                Previous
                             </Button>
                             : null}
                     </Grid>
@@ -219,7 +219,7 @@ export default function Question(props) {
                                             color="primary"
                                             endIcon={<NavigateNextIcon />}
                                             onClick={() => onNextClickHandler()}>
-                                            Continue
+                                            Next
                                             </Button>
                                     :
                                     <Button
