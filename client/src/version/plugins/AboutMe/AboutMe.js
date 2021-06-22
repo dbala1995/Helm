@@ -15,17 +15,15 @@ function AboutMe(props) {
     const [makeApiCall, setMakeApiCall] = useState(false)
     const [apiReturnMsg, setApiReturnMsg] = useState({ message: false, status: 200 })
 
-    const [mounted, setMounted] = useState(true)
-    const [open, setOpen] = useState(false)
+    const [responseEntered, setResponseEntered] = useState(sessionStorage.getItem("questionResponseItems"))
 
-    useEffect(() => {
-        console.log("initial mounted: ", mounted)
-        return () => {
-            setMounted(false)
-            setOpen(true)
-            console.log("final mounted: ", mounted)
+    setInterval(() => {
+        setResponseEntered(sessionStorage.getItem("questionResponseItems") || null)
+        if (sessionStorage.getItem("edit")) {
+            if (JSON.parse(sessionStorage.getItem("edit")))
+                setResponseEntered(true)
         }
-    }, [])
+    }, 1000)
 
     const removeErrorNotification = () => {
         setApiReturnMsg({
@@ -106,9 +104,9 @@ function AboutMe(props) {
                     httpErrors={apiReturnMsg}
                     removeErrorNotification={removeErrorNotification}
                 />) : null}
-            <Prompt message={"Are you sure you wish to leave this page?\n\n" +
+            {responseEntered && <Prompt message={"Are you sure you wish to leave this page?\n\n" +
                 "Your answers haven't been saved. You can submit and save your answers by continuing to the last page of the questionnaire.\n\n" +
-                "Would you like to continue to leave this page?"} />
+                "Would you like to continue to leave this page?"} />}
         </React.Fragment >
     )
 }
