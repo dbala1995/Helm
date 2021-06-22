@@ -69,7 +69,7 @@ function AboutMe(props) {
     }, [])
 
     useEffect(() => {
-        window.setInterval(apiCall(), 1.2 * 1000000)
+        window.setInterval(() => apiCall(), 1.2 * 1000000)
     }, [makeApiCall])
 
     const resourceUrl = "about-me"

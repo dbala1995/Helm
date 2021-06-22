@@ -20,7 +20,7 @@ export default function Measurements(props) {
             }
         )
     }
-    
+
     const apiCall = async () => {
         const response = await fetch("http://helm-local.com/api/patient/fhir/Observation", {
             method: "GET",
@@ -58,7 +58,10 @@ export default function Measurements(props) {
     }, [])
 
     useEffect(() => {
-        window.setInterval(apiCall(), 1.2 * 1000000)
+        window.setInterval(() => {
+            apiCall()
+            console.log("insideInterval")
+        }, 1.2 * 1000000)
     }, [makeApiCall])
 
     const resourceUrl = "measurements"
