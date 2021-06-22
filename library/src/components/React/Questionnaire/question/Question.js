@@ -164,7 +164,8 @@ export default function Question(props) {
             <Grid item>
                 <FormControl fullWidth >
                     <Typography>
-                        {questionsObjects[activeStep].text}
+                        <p dangerouslySetInnerHTML={{ __html: questionsObjects[activeStep].text }}>
+                        </p>
                     </Typography>
                     <TextField
                         id="outlined-multiline-static"
