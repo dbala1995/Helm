@@ -63,6 +63,7 @@ export default function Question(props) {
     const adjustActiveStep = useSelector(selectAdjustedActiveStep)
 
     useEffect(() => {
+        sessionStorage.setItem("activeStep", activeStep)
         if (activeStep !== 0)
             obtainCurrentResponse(adjustActiveStep)
     }, [activeStep])
@@ -202,7 +203,7 @@ export default function Question(props) {
                                     startIcon={<NavigateBeforeIcon />}
                                 >
                                     Previous
-                            </Button>
+                                </Button>
                                 : null}
                         </Grid>
                         <Grid item>

@@ -9,14 +9,11 @@ const TableSlice = createSlice({
     },
     reducers: {
         populateRows: (state, action) => {
-            console.log("populateRows")
-            console.log(action.payload)
             const newRowsArray = []
             const prevResponses = action.payload
             prevResponses.map((responseObjForTab) => {
                 const objToPush = {}
                 for (var observationKey in responseObjForTab) {
-                    console.log("responseObjForTab: ", responseObjForTab[observationKey])
                     if (typeof responseObjForTab[observationKey] === "object") {
                         const valueArray = []
                         const dateArray = []

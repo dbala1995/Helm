@@ -1,5 +1,5 @@
 import { Grid, Typography, CircularProgress, Paper } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 
 import { useStyles } from './Styles';
 
@@ -29,12 +29,11 @@ export default function Questionnaire(props) {
     const dispatch = useDispatch()
 
     const [show, setShow] = useState(false)
+    const [mounted, setMounted] = useState(true)
 
     const { resources } = props;
     const questionnaireList = resources.Questionnaire;
     const questionnaireResponse = resources.QuestionnaireResponse;
-
-    console.log(activeStep + adjustActiveStep, "===", questionList.length)
 
     const obtainQuestionObjects = (questionnaireList) => {
         var questionsArray = []
@@ -48,6 +47,8 @@ export default function Questionnaire(props) {
         dispatch(updateQuestions(questionsArray));
         dispatch(updateId(id))
     }
+
+
 
     useEffect(() => {
         obtainQuestionObjects(questionnaireList);
@@ -88,7 +89,6 @@ export default function Questionnaire(props) {
                 </Grid>
             </Paper>
             : questionList.length === 0 ? null :
-
                 <div>
                     <div className={classes.sectionDesktop}>
                         <Grid

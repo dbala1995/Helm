@@ -76,14 +76,14 @@ export default function VerticalLinearStepper(props) {
 
 
   const onSubmitHandler = async () => {
-    dispatch(obtainAnsweredQuestions())
-    const changedResources = {
-      changedResource: questionnaireResponse,
-      changeOperation: "POST",
-    }
-    await props.submit(changedResources)
+    // dispatch(obtainAnsweredQuestions())
+    // const changedResources = {
+    //   changedResource: questionnaireResponse,
+    //   changeOperation: "POST",
+    // }
+    // await props.submit(changedResources)
     dispatch(setOpen(true))
-    sessionStorage.removeItem("questionResponseItems")
+    // sessionStorage.removeItem("questionResponseItems")
   }
 
   return (
@@ -114,10 +114,10 @@ export default function VerticalLinearStepper(props) {
                     dispatch(handleReset())
                   }} className={classes.button}>
                     Reset
-             </Button>
+                  </Button>
                   <Button onClick={() => onSubmitHandler()} color="primary" variant="contained" className={classes.button}>
                     Submit
-              </Button>
+                  </Button>
                 </Paper>
               )
             }
@@ -140,12 +140,12 @@ export default function VerticalLinearStepper(props) {
                 }
                 } >
                   Reset
-               </Button>
+                </Button>
               </Grid>
               <Grid item xs={6}>
                 <Button size="small" onClick={() => onSubmitHandler()} color="primary" variant="contained">
                   Submit
-               </Button>
+                </Button>
               </Grid>
             </Grid>
           </FormControl>

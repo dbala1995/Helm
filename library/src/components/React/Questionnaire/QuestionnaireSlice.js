@@ -20,7 +20,6 @@ const questionnaireSlice = createSlice({
          */
         updateQuestionResponses: (state, actions) => {
             const questionResponse = Object(actions.payload)
-            console.log("updateQuestionResponses: ", questionResponse)
             var count = 0;
             state.questionResponseItems.map((item, index) => {
                 if (item.linkId === questionResponse.linkId) {

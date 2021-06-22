@@ -32,18 +32,16 @@ export default function ObservationGraph(props) {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(populateDatasets(rows[value]))
-        dispatch(populateLabels(rows[value]))
-    }, [displayRows])
-
-    useEffect(() => {
-        orderData()
+        if (rows[value]) {
+            dispatch(populateDatasets(rows[value]))
+            dispatch(populateLabels(rows[value]))
+            orderData()
+        }
     }, [displayRows])
 
     const orderData = () => {
         const newLabels = obtainLast30DaysLabels()
         const newDisplayRows = obtainNewDisplayRows(newLabels)
-        console.log("newDisplayRows: ", newDisplayRows)
 
         const allData = {}
 
@@ -52,7 +50,6 @@ export default function ObservationGraph(props) {
             allData[key] = obtainKeyArray(key, newDisplayRows)
         })
 
-        console.log("allData: ", allData)
 
         dispatch(populateDatasets(allData))
         dispatch(populateLabels(allData))

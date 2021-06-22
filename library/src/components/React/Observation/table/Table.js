@@ -100,7 +100,7 @@ export default function BasicTable() {
                 <TableHead>
                     <TableRow>
                         {headers.length > 0 && headers[value].map((headersObj, index) => (
-                            <TableCell >
+                            <TableCell key={index}>
                                 {headersObj.header}&nbsp;{headersObj.unit ? `(${headersObj.unit})` : null}
                             </TableCell>
                         ))}
