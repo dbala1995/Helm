@@ -9,13 +9,7 @@ import { FormControl, Grid, MobileStepper } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  selectEdit,
-  selectQuestionResponse,
-  setDate,
-  selectDate,
-  setQuestionResponse
-} from '../question/QuestionSlice';
+
 import {
   selectActiveStep,
   handleReset,
@@ -24,14 +18,9 @@ import {
 import {
   selectQuestions,
   selectQuestionnaireResponse,
-  selectQuestionResponseItems,
   obtainAnsweredQuestions,
-  updateQuestionResponses,
 } from '../QuestionnaireSlice';
-import {
-  selectGroupedPrevAnswers,
-  selectPreviousAnswers
-} from '../pastAnswers/PastAnswersSlice';
+
 
 import {
   setOpen
@@ -73,27 +62,9 @@ export default function VerticalLinearStepper(props) {
 
   const classes = useStyles();
   const activeStep = useSelector(selectActiveStep);
-  const edit = useSelector(selectEdit);
-  const date = useSelector(selectDate);
   const questionnaireResponse = useSelector(selectQuestionnaireResponse);
-  const questionsObjects = useSelector(selectQuestions);
-  const questionResponse = useSelector(selectQuestionResponse);
-  const questionResponseItems = useSelector(selectQuestionResponseItems);
-  const prevAnswers = useSelector(selectPreviousAnswers);
-  const groupedPrevAnswers = useSelector(selectGroupedPrevAnswers);
   const dispatch = useDispatch()
   const steps = useSelector(selectQuestions)
-
-
-  useEffect(() => {
-    obtainPrevResponse(0)
-    // dispatch(handleReset())
-  }, [groupedPrevAnswers])
-
-  useEffect(() => {
-    onUpdateAnswer()
-    dispatch(obtainAnsweredQuestions())
-  }, [edit])
 
 
   const onSubmitHandler = async () => {
@@ -104,40 +75,7 @@ export default function VerticalLinearStepper(props) {
     }
     await props.submit(changedResources)
     dispatch(setOpen(true))
-  }
-
-  const onUpdateAnswer = () => {
-    if (activeStep <= questionsObjects.length - 1) {
-      const item = {
-        "linkId": questionsObjects[activeStep].linkId,
-        "text": questionsObjects[activeStep].prefix,
-        "answer": [{ "valueString": questionResponse, "valueDateTime": date }]
-      }
-      dispatch(updateQuestionResponses(item))
-    }
-  }
-
-  const obtainCurrentResponse = (step) => {
-    if (questionsObjects.length > 0) {
-      const foundQuestionObj = questionResponseItems.find((item) => item.linkId == questionsObjects[step].linkId)
-      if (foundQuestionObj) {
-        dispatch(setQuestionResponse(foundQuestionObj.answer[0].valueString))
-        dispatch(setDate(foundQuestionObj.answer[0].valueDateTime))
-      }
-      else { dispatch(setQuestionResponse("")) && dispatch(setDate("")) }
-    }
-  }
-
-  const obtainPrevResponse = (step) => {
-    if (questionsObjects.length > 0 && groupedPrevAnswers[activeStep]) {
-      const foundPrevObj = groupedPrevAnswers[activeStep][0]
-      if (foundPrevObj) {
-        dispatch(setQuestionResponse(foundPrevObj.valueString))
-        dispatch(setDate(foundPrevObj.valueDateTime))
-      } else {
-        obtainCurrentResponse(step)
-      }
-    }
+    sessionStorage.removeItem("questionResponseItems")
   }
 
   return (
@@ -152,8 +90,8 @@ export default function VerticalLinearStepper(props) {
                     className={classes.question}
                     onClick={() => {
                       activeStep > index ?
-                        dispatch(changeToQuestion(index)) &&
-                        obtainPrevResponse(0, activeStep) : null
+                        dispatch(changeToQuestion(index))
+                        : null
                     }}>
                     <Typography gutterBottom={true}><u><b>{label.prefix}</b></u></Typography>
                   </StepLabel>
@@ -165,7 +103,6 @@ export default function VerticalLinearStepper(props) {
                 <Paper square elevation={0} className={classes.resetContainer}>
                   {/* <Typography>All steps completed - you&apos;re finished</Typography> */}
                   <Button onClick={() => {
-                    obtainPrevResponse(0, 0)
                     dispatch(handleReset())
                   }} className={classes.button}>
                     Reset
@@ -190,7 +127,7 @@ export default function VerticalLinearStepper(props) {
               spacing={10} >
               <Grid item xs={6}>
                 <Button size="small" onClick={() => {
-                  obtainPrevResponse(0, 0)
+                  // obtainPrevResponse(0)
                   dispatch(handleReset())
                 }
                 } >

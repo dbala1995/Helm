@@ -15,16 +15,22 @@ const questionSlice = createSlice({
         },
         setEdit: (state, action) => {
             const bool = Boolean(action.payload)
-            state.edit = bool;
+            if (bool !== state.edit) {
+                state.edit = bool;
+                sessionStorage.setItem("edit", state.edit)
+            }
         },
         setQuestionResponse: (state, action) => {
             const text = String(action.payload);
             state.questionResponse = text;
+            sessionStorage.setItem("questionResponse", state.questionResponse)
         },
         setDate: (state, action) => {
             const date = action.payload ? new Date(String(action.payload)) : null
             state.date = date ? date.toString() : null
+            sessionStorage.setItem("date", state.date)
             state.displayDate = date ? `Last updated: ${date.toLocaleTimeString("en-GB")} ${date.toDateString()} ` : null
+            sessionStorage.setItem("displayDate", state.displayDate)
         }
     }
 })
