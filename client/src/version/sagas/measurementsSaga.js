@@ -1,9 +1,24 @@
-import { takeEvery } from "redux-saga/effects"
+import React from "react"
+import { takeEvery, put } from "redux-saga/effects"
+import { Link } from "react-router-dom"
+import Typography from "@material-ui/core/Typography"
 
-export const measurementsSaga = takeEvery("RA/CRUD_CREATE_SUCCESS", function* (action) {
-    const { resource } = action.meta
+import { SYNOPSIS_MEASUREMENTS_ACTION, synopsisMeasurementsAction } from "../actions/synopsisActions"
 
-    if (resource === "measurement") {
-        window.location.reload()
-    }
+export const getMeasurementsSaga = takeEvery(SYNOPSIS_MEASUREMENTS_ACTION.REQUEST, function* (action) {
+    yield put(
+        synopsisMeasurementsAction.success({
+            heading: "measurements",
+            synopsis: [
+                {
+                    text: (
+                        <React.Fragment>
+                            <Typography>
+                                Record your personal health data such as blood pressure at home.
+                            </Typography>
+                        </React.Fragment>),
+                },
+            ],
+        })
+    )
 })

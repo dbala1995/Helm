@@ -72,7 +72,7 @@ export default function QuestionSubmitted(props) {
 
 
             </Grid>
-            <ConfirmationDialog />
+            <ConfirmationDialog submit={props.submit} />
         </div >
     )
 }

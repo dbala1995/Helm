@@ -17,7 +17,11 @@ export default function AboutMe(props) {
         window.analytics.page({ url: window.location.hash })
         const token = localStorage.getItem("token");
 
-        const headers = { Authorization: `Bearer ${token}`, "X-Requested-With": "XMLHttpRequest", "Content-Type": "application/json" }
+        const headers = {
+            Authorization: `Bearer ${token}`,
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json"
+        }
 
         canvasRef.current.setAuthHandler((request, options) => {
             request.headers = headers

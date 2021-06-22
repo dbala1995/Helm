@@ -35,7 +35,7 @@ export default ({ authProvider, dataProvider, history, customSagas, customReduce
     composeEnhancers(
       applyMiddleware(
         sagaMiddleware,
-        routerMiddleware(history)
+        routerMiddleware(history),
         // add your own middlewares here
       )
       // add your own enhancers here

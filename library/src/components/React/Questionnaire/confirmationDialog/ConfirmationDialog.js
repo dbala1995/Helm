@@ -12,19 +12,35 @@ import {
     selectOpen,
     setOpen
 } from './ConfirmationDialogSlice';
-import { handleReset } from '../stepper/VerticalLinearStepperSlice';
+import {
+    selectQuestions,
+    selectQuestionnaireResponse,
+    obtainAnsweredQuestions,
+} from '../QuestionnaireSlice';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function AlertDialogSlide() {
+export default function AlertDialogSlide(props) {
     const open = useSelector(selectOpen);
+    const questionnaireResponse = useSelector(selectQuestionnaireResponse);
     const dispatch = useDispatch();
 
     const onCloseHandler = () => {
         // dispatch(handleReset())
         dispatch(setOpen(false))
+    }
+
+    const onSubmitHandler = async () => {
+        dispatch(obtainAnsweredQuestions())
+        const changedResources = {
+            changedResource: questionnaireResponse,
+            changeOperation: "POST",
+        }
+        await props.submit(changedResources)
+        dispatch(setOpen(false))
+        sessionStorage.removeItem("questionResponseItems")
     }
 
     return (
@@ -46,7 +62,7 @@ export default function AlertDialogSlide() {
                         If you need urgent medical attention please contact your GP surgery, ring 111 or 999.
 
                         You remain responsible for acting on the health concerns you may have. The information you enter here will be shared with health and care practitioners involved in your care.
-                </DialogContentText>
+                    </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button
@@ -56,7 +72,7 @@ export default function AlertDialogSlide() {
                     </Button>
                     <Button
                         color="primary"
-                        onClick={() => onCloseHandler()} >
+                        onClick={() => onSubmitHandler()} >
                         Accept &amp; Continue
                     </Button>
                 </DialogActions>
