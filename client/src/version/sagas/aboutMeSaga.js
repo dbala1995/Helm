@@ -20,9 +20,13 @@ const getLastResponse = async () => {
     var result = { id: "NONE" }
     if (response.status === 200) {
         result = await response.json()
-        return obtainLatestResponses(result)
+        if (result.entry.length > 0)
+            return obtainLatestResponses(result)
+        else
+            return null
+
     } else {
-        return [{ question: "", answer: "" }]
+        return null
     }
 }
 
@@ -49,7 +53,7 @@ export const getAboutMeSaga = takeEvery(SYNOPSIS_ABOUT_ME_ACTION.REQUEST, functi
     yield put(
         synopsisAboutMeAction.success({
             heading: "about-me",
-            synopsis: [
+            synopsis: response ? [
                 {
                     text: (
                         <React.Fragment>
@@ -84,6 +88,24 @@ export const getAboutMeSaga = takeEvery(SYNOPSIS_ABOUT_ME_ACTION.REQUEST, functi
                         </React.Fragment >
                     )
                 }
+            ] : [
+                {
+                    text: (
+                        <React.Fragment>
+                            <Typography>
+                                4 questions designed to help you reflect on what matters to you.
+                            </Typography>
+                        </React.Fragment>),
+                },
+                {
+                    text: (
+                        <React.Fragment >
+                            <Typography>
+                                No previous entries.
+                            </Typography>
+                        </React.Fragment >
+                    )
+                },
             ],
         })
     )

@@ -54,9 +54,9 @@ function getQuestionnaire(config) {
                 prefix: "What Matters to Me?",
                 text: "<p>Think about your core values, spiritual beliefs, culture, ethnicity and religion as they relate to your care. " +
                     "Think about meaningful activities you enjoy, pets, objects, computer games, exercise sport, places you like to visit, " +
-                    "education or spending time with family and friends.<br></p>" +
-                    "<p>Please Do: Consider any preferences and what you want someone to do when caring for or supporting you.<br></p>" +
-                    "<p>Please Don’t: Consider the important things that you don’t want someone to do when caring for or supporting you." +
+                    "education or spending time with family and friends.<br><br>" +
+                    "Please Do: Consider any preferences and what you want someone to do when caring for or supporting you.<br><br>" +
+                    "Please Don’t: Consider the important things that you don’t want someone to do when caring for or supporting you." +
                     "  This could include not asking questions about certain topics, making assumptions about something, and providing support when it is not wanted.</p>",
                 maxLength: 500
 
@@ -89,11 +89,11 @@ function getQuestionnaire(config) {
                 type: "text",
                 id: "3",
                 prefix: 'What do I do to keep myself well?',
-                text: "<p>Consider how you feel on a typical day through to how you feel on a day when you are unwell or very unwell.<br></p>" +
+                text: "<p>Consider how you feel on a typical day through to how you feel on a day when you are unwell or very unwell. <br><br>" +
                     "Consider any conditions or symptoms that you live with, how they affect you and how you manage them.  This could" +
-                    " include, for example, long-term pain and how you currently manage it. " +
-                    "<p>Consider anything that can help or hinder your wellness.  Include what causes" +
-                    " you to become unwell and how you avoid or address them.<br></p> <p>Also Include any signs that may indicate that you are " +
+                    " include, for example, long-term pain and how you currently manage it. <br><br>" +
+                    "Consider anything that can help or hinder your wellness.  Include what causes" +
+                    " you to become unwell and how you avoid or address them.<br><br>Also Include any signs that may indicate that you are " +
                     "becoming unwell and how do you manage them.</p>",
                 maxLength: 500
             },
