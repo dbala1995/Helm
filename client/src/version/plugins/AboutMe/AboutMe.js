@@ -7,13 +7,15 @@ import { PageTitle } from "../../../core/common/PageTitle"
 import ErrorDialog from "../../common/Dialogs/ErrorDialog"
 import get from "lodash/get"
 import { withRouter, Prompt } from "react-router-dom"
+import jwt_decode from "jwt-decode";
+import moment from "moment";
 
 
 function AboutMe(props) {
     const canvasRef = useRef(null)
 
     const [makeApiCall, setMakeApiCall] = useState(false)
-    const [apiReturnMsg, setApiReturnMsg] = useState({ message: false, status: 200 })
+    const [apiReturnMsg, setApiReturnMsg] = useState({ message: false })
 
     const [responseEntered, setResponseEntered] = useState(sessionStorage.getItem("questionResponseItems"))
 
@@ -27,27 +29,22 @@ function AboutMe(props) {
 
     const removeErrorNotification = () => {
         setApiReturnMsg({
-            message: false,
-            status: 200
+            message: false
         })
     }
 
-    const apiCall = async () => {
-        const response = await fetch("http://helm-local.com/api/patient/fhir/Questionnaire?identifier=https://fhir.myhelm.org/questionnaire-identifier|aboutMe", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Requested-With": "XMLHttpRequest",
-                "Content-Type": "application/json"
-            }
-        })
+    const checkTokenValid = async () => {
+        const token = localStorage.getItem("token")
         const result = {}
-        if (response.status === 200) {
-            result.message = false
-        } else {
-            result.message = true
+        if (token) {
+            const decodedToken = jwt_decode(token)
+            const exp = decodedToken.exp
+            if (moment(moment.now()).isAfter(moment(exp * 1000))) {
+                result.message = true
+            } else {
+                result.message = false
+            }
         }
-        result.status = response.status
         setApiReturnMsg(result)
     }
 
@@ -69,7 +66,7 @@ function AboutMe(props) {
     }, [])
 
     useEffect(() => {
-        window.setInterval(() => apiCall(), 1.2 * 1000000)
+        window.setInterval(() => checkTokenValid(), 1.2 * 1000000)
     }, [makeApiCall])
 
     const resourceUrl = "about-me"
