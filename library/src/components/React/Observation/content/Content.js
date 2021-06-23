@@ -33,13 +33,10 @@ export default function content(props) {
                             {informationArray.length > 0 ? informationArray[value].header : null}
                         </Typography>
                         <Typography variant="subtitle1">
-                            {informationArray.length > 0 ? (
-                                <ul>
-                                    {informationArray[value].body.map((point) => (
-                                        <li dangerouslySetInnerHTML={{ __html: point }}></li>
-                                    ))}
-                                </ul>
-                            ) : null}
+                            {informationArray.length > 0 ?
+                                <p dangerouslySetInnerHTML={{ __html: informationArray[value].body.join("") }}>
+                                </p>
+                                : null}
                         </Typography>
                     </Grid>
                 </Grid>
@@ -62,11 +59,8 @@ export default function content(props) {
                             <div>
                                 <Typography>{informationArray[value].footer.header}</Typography>
                                 <Typography>
-                                    <ul>
-                                        {informationArray[value].footer.body.map((point) => (
-                                            <li>{point}</li>
-                                        ))}
-                                    </ul>
+                                    <p dangerouslySetInnerHTML={{ __html: informationArray[value].footer.body.join("") }}>
+                                    </p>
                                 </Typography>
                             </div>
                         ) : null}
