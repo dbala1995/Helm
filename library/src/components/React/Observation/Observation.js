@@ -1,5 +1,5 @@
 import { CircularProgress, Grid, Paper } from "@material-ui/core"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import ObservationTabs from "./tabs/ObservationTabs"
 import Content from "./content/Content"
 
@@ -13,6 +13,14 @@ export default function Observation(props) {
 
     const dispatch = useDispatch()
 
+    const [show, setShow] = useState(false)
+
+    useEffect(() => {
+        setTimeout(() => {
+            setShow(true)
+        }, 2.0 * 1000)
+    }, [show])
+
     useEffect(() => {
         if (configuration) {
             dispatch(setObservations(configuration.observations))
@@ -25,7 +33,7 @@ export default function Observation(props) {
         dispatch(updatePrevResponses(observations))
     }, [observations])
 
-    return observationsState.length == 0 ? (
+    return !show ? (
         <Paper elevation={0}>
             <Grid container spacing={0}>
                 <Grid item xs={12} style={{ position: "relative", height: 300 }}>
@@ -49,28 +57,30 @@ export default function Observation(props) {
             </Grid>
         </Paper>
     ) : (
-        <Grid
-            container
-            direction="column"
-            justify="flex-start"
-            alignItems="stretch"
-            spacing={3}
-            style={{ margin: 0, width: "100%" }}
-        >
-            <Grid item xs={12} style={{ padding: 0 }}>
-                <ObservationTabs configuration={configuration} />
-            </Grid>
-            <Grid item xs={12}>
-                <Grid container spacing={3}>
-                    <Grid item xs={12}>
-                        <Content
-                            sendMessage={sendMessage}
-                            saveObservations={saveObservations}
-                            getObservations={getObservations}
-                        />
+        observationsState.length !== 0 && (
+            <Grid
+                container
+                direction="column"
+                justify="flex-start"
+                alignItems="stretch"
+                spacing={3}
+                style={{ margin: 0, width: "100%" }}
+            >
+                <Grid item xs={12} style={{ padding: 0 }}>
+                    <ObservationTabs configuration={configuration} />
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                            <Content
+                                sendMessage={sendMessage}
+                                saveObservations={saveObservations}
+                                getObservations={getObservations}
+                            />
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>
-        </Grid>
+        )
     )
 }

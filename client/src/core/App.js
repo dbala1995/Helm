@@ -54,7 +54,6 @@ const AccessibilityNotice = ({ message }) => {
   const classes = useStyles()
 
   useEffect(() => {
-    console.log(message)
     setTimeout(() => setCurrentMessage(message), 10000)
   }, [message])
 
@@ -86,29 +85,27 @@ const StyleLoader = ({ contrastMode }) => {
   useEffect(() => {
     const styles = document.getElementsByTagName("style")
 
-    console.log(styles)
-
     let themeStyles = null
     let darkStyles = null
     let lightStyles = null
 
     for (let i = 0; i < styles.length; i++) {
-        console.log(styles[i].getAttribute("data-id"))
-
-        if (styles[i].getAttribute("data-id") === "theme") {
-            themeStyles = styles[i]
-        }
-        if (styles[i].getAttribute("data-id") === "dark") {
-            darkStyles = styles[i]
-        }
-        if (styles[i].getAttribute("data-id") === "light") {
-            lightStyles = styles[i]
-        }
+      if (styles[i].getAttribute("data-id") === "theme") {
+        themeStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "dark") {
+        darkStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "light") {
+        lightStyles = styles[i]
+      }
     }
 
     const additionalStyles = contrastMode ? darkStyles : lightStyles
 
-    theme.current.replaceSync(`${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`)
+    theme.current.replaceSync(
+      `${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`
+    )
 
     document.adoptedStyleSheets = [theme.current]
   }, [])
@@ -116,27 +113,27 @@ const StyleLoader = ({ contrastMode }) => {
   useEffect(() => {
     const styles = document.getElementsByTagName("style")
 
-    console.log(styles)
-
     let themeStyles = null
     let darkStyles = null
     let lightStyles = null
 
     for (let i = 0; i < styles.length; i++) {
-        if (styles[i].getAttribute("data-id") === "theme") {
-            themeStyles = styles[i]
-        }
-        if (styles[i].getAttribute("data-id") === "dark") {
-            darkStyles = styles[i]
-        }
-        if (styles[i].getAttribute("data-id") === "light") {
-            lightStyles = styles[i]
-        }
+      if (styles[i].getAttribute("data-id") === "theme") {
+        themeStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "dark") {
+        darkStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "light") {
+        lightStyles = styles[i]
+      }
     }
 
     const additionalStyles = contrastMode ? darkStyles : lightStyles
 
-    theme.current.replaceSync(`${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`)
+    theme.current.replaceSync(
+      `${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`
+    )
   }, [contrastMode])
 
   return null

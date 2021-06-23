@@ -169,8 +169,6 @@ const JobService = {
 
             const fhirAuthConfig = await getFhirAuthConfig()
 
-            console.log(JSON.stringify(fhirAuthConfig))
-
             const pixAuthConfig = await getPixAuthConfig()
             const fhirStoreConfig = await getFhirStoreConfig()
             const pixConfig = await getPixConfig()

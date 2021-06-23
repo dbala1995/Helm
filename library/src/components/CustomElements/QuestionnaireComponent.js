@@ -10,10 +10,8 @@ class QuestionnaireComponent extends ReactMaterialComponentBase {
         super()
 
         this.jsxRootComponent = () => {
-            console.log(this.resources)
             const questionnaireList = this.resources.Questionnaire
             const top3ThingsQuestionnaire = this.resources.top3ThingsQuestionnaire
-            console.log(top3ThingsQuestionnaire)
             return (
                 <Provider store={store}>
                     <Questionnaire

@@ -10,7 +10,10 @@ import { selectTabTitles, selectValue, setValue, setTabTitles } from "./Observat
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor: theme.palette.background.paper,
-        width: "100%",
+        display: "flex",
+        // width: "100%",
+        flex: 1,
+        "flex-grow": 1
     },
 }))
 
@@ -47,7 +50,7 @@ export default function ObservationTabs(props) {
                     indicatorColor="primary"
                     textColor="primary"
                     variant="scrollable"
-                    scrollButtons="off"
+                    scrollButtons="on"
                 >
                     {tabTitles.map((tabTitle, index) => (
                         <Tab label={tabTitle} {...a11yProps(index)} />

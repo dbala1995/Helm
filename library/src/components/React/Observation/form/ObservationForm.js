@@ -46,7 +46,6 @@ export default function ObservationForm(props) {
     const populateFieldsWithPrevResponse = () => {
         for (var key in prevResponses[value]) {
             const values = prevResponses[value][key].values
-            console.log("values: ", values)
             if (values.length > 0) {
                 const payload = {
                     tabNo: value,
@@ -245,7 +244,7 @@ export default function ObservationForm(props) {
                     ? getFieldsArrayForTab().map((fieldObj) =>
                           fieldObj.display ? (
                               <Grid container direction="row" justify="flex-start" alignItems="center" spacing={3}>
-                                  <Grid item xs={12}>
+                                  <Grid item>
                                       <ShadowFocus>
                                           {({ inputRef, focus }) => (
                                               <TextField
@@ -322,7 +321,7 @@ export default function ObservationForm(props) {
                             {({ inputRef, focus }) => (
                                 <TextField
                                     fullWidth
-                                    helperText="Notes"
+                                    helperText="Notes about this measurement"
                                     className={focus ? "input--focused" : ""}
                                     onChange={(e) => onDateNoteValueChange(e, "Notes")}
                                     value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}

@@ -45,6 +45,7 @@ const CustomLogoutButton = ({ classes, title = "Sign Out", hideIcon }) => {
         className={classes.button}
         onClick={() => {
           localStorage.setItem("logout", "true")
+          sessionStorage.removeItem("top3thingsInfo")
           logout()
         }}
         aria-label="Sign Out"

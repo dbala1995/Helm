@@ -5,15 +5,6 @@ import "regenerator-runtime/runtime"
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js"
 import "construct-style-sheets-polyfill"
 import "proxy-polyfill/proxy.min.js"
-import cssVars from "css-vars-ponyfill"
-
-window.cssVars = cssVars
-
-cssVars({
-    shadowDOM: true,
-    watch: true,
-    updateURLs: false
-})
 
 if (Element.prototype.getAttributeNames == undefined) {
   Element.prototype.getAttributeNames = function () {
@@ -28,10 +19,8 @@ if (Element.prototype.getAttributeNames == undefined) {
 }
 
 if (window.NodeList && !window.NodeList.prototype.forEach) {
-    window.NodeList.prototype.forEach = Array.prototype.forEach
+  window.NodeList.prototype.forEach = Array.prototype.forEach
 }
-
-console.log(window.NodeList.prototype.forEach)
 
 const script = document.createElement("script")
 script.src = "./importmapie.json"

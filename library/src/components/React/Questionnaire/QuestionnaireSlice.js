@@ -5,8 +5,8 @@ const questionnaireSlice = createSlice({
     initialState: {
         questions: [],
         questionnaireResponse: {},
-        questionResponseItems: [],
-        questionnaireId: "",
+        questionResponseItems: sessionStorage.getItem("questionResponseItems") ? JSON.parse(sessionStorage.getItem("questionResponseItems")) : [],
+        questionnaireId: ""
     },
     reducers: {
         updateQuestions: (state, action) => {
@@ -20,8 +20,7 @@ const questionnaireSlice = createSlice({
          */
         updateQuestionResponses: (state, actions) => {
             const questionResponse = Object(actions.payload)
-            console.log("updateQuestionResponses: ", questionResponse)
-            var count = 0
+            var count = 0;
             state.questionResponseItems.map((item, index) => {
                 if (item.linkId === questionResponse.linkId) {
                     state.questionResponseItems[index] = questionResponse
@@ -31,6 +30,7 @@ const questionnaireSlice = createSlice({
             if (count === 0) {
                 state.questionResponseItems.push(questionResponse)
             }
+            sessionStorage.setItem("questionResponseItems", JSON.stringify(state.questionResponseItems))
         },
         obtainAnsweredQuestions: (state) => {
             const finalObject = {

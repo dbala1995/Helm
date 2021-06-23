@@ -13,6 +13,9 @@ import { nonCoreSynopsisActions } from "../../../version/config/nonCoreSynopsis"
 import { getSummaryContainerStyles } from "./functions"
 import { PageTitle } from "../../common/PageTitle"
 
+import GeneralDialog from "../../../version/common/Dialogs/GeneralDialog"
+import ConfirmButton from "../../../version/common/Buttons/ConfirmButton"
+
 const styles = (theme) => ({
   summaryContainer: getSummaryContainerStyles(synopsisData),
   card: {
@@ -89,12 +92,31 @@ const styles = (theme) => ({
 })
 
 class PatientSummaryInfo extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      open: true,
+      dialogShown: sessionStorage.getItem("top3thingsInfo") || false,
+    }
+  }
+
   componentDidMount() {
     window.analytics.page({ url: window.location.hash })
 
     if (localStorage.getItem("userId") && localStorage.getItem("username")) {
       this.props.getPatientSynopsis()
     }
+
+    this.setState({
+      open: true,
+      dialogShown: sessionStorage.getItem("top3thingsInfo") || false,
+    })
+  }
+
+  closeDialog() {
+    sessionStorage.setItem("top3thingsInfo", "true")
+    this.setState({ open: false })
   }
 
   render() {
@@ -124,6 +146,15 @@ class PatientSummaryInfo extends Component {
           })}
           {FeedsPanels && <FeedsPanels />}
         </Grid>
+        {this.state.dialogShown !== "true" && (
+          <GeneralDialog
+            open={this.state.open}
+            onClose={this.closeDialog}
+            title="Looking for Top 3 Things?"
+            message="Top Three Things has now changed to About Me. Any information that was in Top Three Things has now moved to the About Me section."
+            options={[<ConfirmButton label="Ok" onClick={() => this.closeDialog()} />]}
+          />
+        )}
       </Grid>
     )
   }
