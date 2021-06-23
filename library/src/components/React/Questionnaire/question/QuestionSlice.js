@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
 
 const questionSlice = createSlice({
     name: "question",
@@ -6,12 +6,12 @@ const questionSlice = createSlice({
         questionResponse: "",
         edit: false,
         date: "",
-        displayDate: ""
+        displayDate: "",
     },
     reducers: {
         getResponse: (state, action) => {
             const questionNo = Number(action.payload)
-            // Carry out API call to obtain response for question 
+            // Carry out API call to obtain response for question
         },
         setEdit: (state, action) => {
             const bool = Boolean(action.payload)
@@ -35,12 +35,12 @@ const questionSlice = createSlice({
     }
 })
 
-export const selectQuestionAPIRes = (state) => state.question.questionAPIRes;
-export const selectQuestionResponse = (state) => state.question.questionResponse;
-export const selectEdit = (state) => state.question.edit;
-export const selectDate = (state) => state.question.date;
-export const selectDisplayDate = (state) => state.question.displayDate;
+export const selectQuestionAPIRes = (state) => state.question.questionAPIRes
+export const selectQuestionResponse = (state) => state.question.questionResponse
+export const selectEdit = (state) => state.question.edit
+export const selectDate = (state) => state.question.date
+export const selectDisplayDate = (state) => state.question.displayDate
 
-export const { setEdit, setQuestionResponse, setDate } = questionSlice.actions;
+export const { setEdit, setQuestionResponse, setDate } = questionSlice.actions
 
-export default questionSlice.reducer;
+export default questionSlice.reducer

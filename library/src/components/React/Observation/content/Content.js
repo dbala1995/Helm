@@ -4,17 +4,10 @@ import ObservationForm from '../form/ObservationForm';
 import ObeservationGraph from '../graph/ObservationGraph';
 import Table from '../table/Table';
 
-import { useSelector, useDispatch } from 'react-redux';
-import {
-    populateInformation,
-    selectInformation
-} from './ContentSlice';
-import {
-    selectValue
-} from '../tabs/ObservationTabsSlice';
-import {
-    selectObservations
-} from '../ObservationSlice';
+import { useSelector, useDispatch } from "react-redux"
+import { populateInformation, selectInformation } from "./ContentSlice"
+import { selectValue } from "../tabs/ObservationTabsSlice"
+import { selectObservations } from "../ObservationSlice"
 
 export const useStyles = makeStyles((theme) => ({
     sectionDesktop: {
@@ -39,10 +32,7 @@ export default function content(props) {
     const dispatch = useDispatch()
     const classes = useStyles()
 
-    const {
-        saveObservations,
-        getObservations
-    } = props
+    const { saveObservations, getObservations } = props
 
     useEffect(() => {
         dispatch(populateInformation(observations))
@@ -175,7 +165,8 @@ export default function content(props) {
                                     <p dangerouslySetInnerHTML={{ __html: informationArray[value].footer.body.join("") }}>
                                     </p>
                                 </Typography>
-                            </div> : null}
+                            </div>
+                            : null}
                     </Grid>
                 </Grid>
             </Grid>

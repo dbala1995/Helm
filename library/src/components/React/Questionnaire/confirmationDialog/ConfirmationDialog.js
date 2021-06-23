@@ -1,11 +1,11 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Slide from '@material-ui/core/Slide';
+import React from "react"
+import Button from "@material-ui/core/Button"
+import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogContentText from "@material-ui/core/DialogContentText"
+import DialogTitle from "@material-ui/core/DialogTitle"
+import Slide from "@material-ui/core/Slide"
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,8 +19,8 @@ import {
 } from '../QuestionnaireSlice';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
+    return <Slide direction="up" ref={ref} {...props} />
+})
 
 export default function AlertDialogSlide(props) {
     const open = useSelector(selectOpen);
@@ -54,7 +54,6 @@ export default function AlertDialogSlide(props) {
                 onClose={() => onCloseHandler()}
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
-
             >
                 <DialogTitle id="alert-dialog-slide-title">{"Don't forget"}</DialogTitle>
                 <DialogContent>
@@ -78,5 +77,5 @@ export default function AlertDialogSlide(props) {
                 </DialogActions>
             </Dialog>
         </div>
-    );
+    )
 }

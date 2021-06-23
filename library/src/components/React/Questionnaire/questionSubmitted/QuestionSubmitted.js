@@ -1,12 +1,9 @@
-import { FormControl, Grid, TextField, Typography } from '@material-ui/core';
-import React from 'react';
+import { FormControl, Grid, TextField, Typography } from "@material-ui/core"
+import React from "react"
 
-import { useSelector } from 'react-redux';
-import {
-    selectQuestions,
-    selectQuestionResponseItems,
-} from '../QuestionnaireSlice';
-import ConfirmationDialog from '../confirmationDialog/ConfirmationDialog';
+import { useSelector } from "react-redux"
+import { selectQuestions, selectQuestionResponseItems } from "../QuestionnaireSlice"
+import ConfirmationDialog from "../confirmationDialog/ConfirmationDialog"
 
 export default function QuestionSubmitted(props) {
     const questions = useSelector(selectQuestions);
@@ -16,10 +13,10 @@ export default function QuestionSubmitted(props) {
         var responseEntered = ""
         questionResponseItems.map((item, index) => {
             if (item.linkId === linkId) {
-                responseEntered = questionResponseItems[index].answer[0].valueString;
+                responseEntered = questionResponseItems[index].answer[0].valueString
             }
         })
-        return responseEntered;
+        return responseEntered
     }
 
     const getHelperText = (linkId) => {
@@ -34,12 +31,7 @@ export default function QuestionSubmitted(props) {
 
     return (
         <div>
-            <Grid
-                container
-                direction="column"
-                justify="center"
-                alignItems="stretch"
-                spacing={3}>
+            <Grid container direction="column" justify="center" alignItems="stretch" spacing={3}>
                 <Grid item>
                     <FormControl fullWidth>
                         <Typography variant="h4">
@@ -52,11 +44,9 @@ export default function QuestionSubmitted(props) {
                     </FormControl>
                 </Grid>
                 {questions.map((question, index) => (
-                    < Grid item >
+                    <Grid item>
                         <FormControl fullWidth>
-                            <Typography>
-                                {question.prefix}
-                            </Typography>
+                            <Typography>{question.prefix}</Typography>
                             <TextField
                                 multiline
                                 rows={4}
@@ -69,8 +59,6 @@ export default function QuestionSubmitted(props) {
                         </FormControl>
                     </Grid>
                 ))}
-
-
             </Grid>
             <ConfirmationDialog submit={props.submit} />
         </div >

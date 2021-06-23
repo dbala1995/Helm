@@ -13,14 +13,9 @@ import {
 
 
 export default function Observation(props) {
-    const {
-        configuration,
-        observations,
-        saveObservations,
-        getObservations
-    } = props
+    const { configuration, observations, saveObservations, getObservations } = props
 
-    const observationsState = useSelector(selectObservations);
+    const observationsState = useSelector(selectObservations)
 
     const dispatch = useDispatch()
 
@@ -70,36 +65,18 @@ export default function Observation(props) {
                 </Grid>
             </Paper>
             : observationsState.length !== 0 &&
-            <Grid
-                container
-                direction="column"
-                justify="flex-start"
-                alignItems="flex-start"
-                spacing={3}>
-                <Grid item >
-                    <Grid
-                        container
-                        direction="row"
-                        justify="flex-start"
-                        alignItems="stretch"
-                        spacing={3}>
-                        <Grid item xs={12}>
-                            <ObservationTabs configuration={configuration} />
-                        </Grid>
-                    </Grid>
+            <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={3} style={{ margin: 0, width: "100%" }}>
+                <Grid item xs={12} style={{ padding: 0 }}>
+                    <ObservationTabs configuration={configuration} />
                 </Grid>
-                <Grid item>
-                    <Grid
-                        container
-                        direction="row"
-                        justify="space-evenly"
-                        alignItems="stretch"
-                        spacing={3}>
+                <Grid item xs={12}>
+                    <Grid container spacing={3}>
                         <Grid item xs={12}>
                             <Content saveObservations={saveObservations} getObservations={getObservations} />
                         </Grid>
                     </Grid>
                 </Grid>
-            </Grid >
+            </Grid>
+
     )
 }

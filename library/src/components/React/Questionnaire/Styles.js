@@ -1,8 +1,8 @@
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles"
 
 export const useStyles = makeStyles((theme) => ({
     root: {
-        width: '100%',
+        width: "100%",
     },
     button: {
         marginTop: theme.spacing(1),
@@ -18,25 +18,25 @@ export const useStyles = makeStyles((theme) => ({
         cursor: "pointer",
     },
     buttonRight: {
-        float: 'right'
+        float: "right",
     },
     spinner: {
-        display: 'flex',
-        '& > * + *': {
+        display: "flex",
+        "& > * + *": {
             marginLeft: theme.spacing(2),
         },
     },
     sectionDesktop: {
-        display: 'none',
-        [theme.breakpoints.up('md')]: {
-            display: 'flex',
+        display: "none",
+        [theme.breakpoints.up("md")]: {
+            display: "flex",
         },
         paddingTop: "1%",
     },
     sectionMobile: {
-        display: 'flex',
-        [theme.breakpoints.up('md')]: {
-            display: 'none',
+        display: "flex",
+        [theme.breakpoints.up("md")]: {
+            display: "none",
         },
         paddingTop: "1%",
     },
@@ -60,4 +60,4 @@ export const useStyles = makeStyles((theme) => ({
         alignItems: "center",
         justifyContent: "center",
     },
-}));
+}))

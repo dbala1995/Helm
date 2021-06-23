@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
 
 const VerticalLinearStepperSlice = createSlice({
     name: "verticalLinearStepper",
@@ -30,6 +30,6 @@ const VerticalLinearStepperSlice = createSlice({
 export const selectActiveStep = (state) => state.verticalLinearStepper.activeStep;
 export const selectAdjustedActiveStep = (state) => state.verticalLinearStepper.adjustedActiveStep;
 
-export const { handleNext, handleBack, handleReset, changeToQuestion } = VerticalLinearStepperSlice.actions;
+export const { handleNext, handleBack, handleReset, changeToQuestion } = VerticalLinearStepperSlice.actions
 
-export default VerticalLinearStepperSlice.reducer;
+export default VerticalLinearStepperSlice.reducer

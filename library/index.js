@@ -58,7 +58,7 @@ function getManifest(env) {
                 webpackPath: "./src/components/CustomElements/ObservationComponent.js",
                 metadataPath: "",
                 tagName: "helm-observation-component",
-            }
+            },
         },
         libraries,
     }
