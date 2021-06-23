@@ -70,10 +70,6 @@ module.exports = (env) => {
             use: ["@svgr/webpack", "url-loader"],
           },
           {
-            test: /\.(PNG|png|jpg|gif)$/,
-            use: ["file-loader"],
-          },
-          {
             test: /\.(js|jsx)$/,
             exclude: /node_modules/,
             use: {
@@ -90,10 +86,6 @@ module.exports = (env) => {
                 ],
               },
             },
-          },
-          {
-            test: /\.(woff|woff2|eot|ttf|otf)$/,
-            use: ["file-loader"],
           },
         ],
       },
@@ -195,14 +187,6 @@ module.exports = (env) => {
           {
             test: /\.svg$/,
             use: ["@svgr/webpack", "url-loader"],
-          },
-          {
-            test: /\.(PNG|png|jpg|gif)$/,
-            use: ["file-loader"],
-          },
-          {
-            test: /\.(woff|woff2|eot|ttf|otf)$/,
-            use: ["file-loader"],
           },
         ],
       },
