@@ -1,7 +1,7 @@
 import { Grid, Typography, CircularProgress, Paper } from '@material-ui/core';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { useStyles } from './Styles';
+import { useStyles } from "./Styles"
 
 import { useSelector, useDispatch } from 'react-redux'
 import Question from './question/Question';
@@ -22,14 +22,13 @@ import {
 
 export default function Questionnaire(props) {
     const classes = useStyles()
-    const activeStep = useSelector(selectActiveStep);
-    const questionList = useSelector(selectQuestions);
+    const activeStep = useSelector(selectActiveStep)
+    const questionList = useSelector(selectQuestions)
     const id = useSelector(selectId)
     const adjustActiveStep = useSelector(selectAdjustedActiveStep)
     const dispatch = useDispatch()
 
     const [show, setShow] = useState(false)
-    const [mounted, setMounted] = useState(true)
 
     const { resources } = props;
     const questionnaireList = resources.Questionnaire;
@@ -38,20 +37,20 @@ export default function Questionnaire(props) {
     const obtainQuestionObjects = (questionnaireList) => {
         var questionsArray = []
         var id = ""
-        questionnaireList ?
-            questionnaireList.map((questionnaire, index) => {
-                questionsArray = (questionnaire.item);
+        questionnaireList
+            ? questionnaireList.map((questionnaire, index) => {
+                questionsArray = questionnaire.item
                 id = questionnaire.id
             })
             : null
-        dispatch(updateQuestions(questionsArray));
+        dispatch(updateQuestions(questionsArray))
         dispatch(updateId(id))
     }
 
 
 
     useEffect(() => {
-        obtainQuestionObjects(questionnaireList);
+        obtainQuestionObjects(questionnaireList)
     }, [questionnaireList])
 
     useEffect(() => {

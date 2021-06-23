@@ -24,8 +24,8 @@ import {
     selectDate,
     setDate,
     selectDisplayDate,
-    setQuestionResponse
-} from './QuestionSlice';
+    setQuestionResponse,
+} from "./QuestionSlice"
 import {
     selectQuestions,
     selectQuestionnaireResponse,
@@ -37,28 +37,23 @@ import {
     selectGroupedPrevAnswers,
     selectPreviousAnswers
 } from '../pastAnswers/PastAnswersSlice';
-
-import {
-    getDate
-} from '../Utils/Utils';
-import Summary from '../summary/Summary';
-
+import { ShadowFocus } from "../../Shadow/ShadowFocus"
 
 export default function Question(props) {
-    const classes = useStyles();
-    const activeStep = useSelector(selectActiveStep);
-    const questionsObjects = useSelector(selectQuestions);
-    const date = useSelector(selectDate);
-    const displayDate = useSelector(selectDisplayDate);
-    const questionResponseItems = useSelector(selectQuestionResponseItems);
-    const prevAnswers = useSelector(selectPreviousAnswers);
-    const questionnnaireResponse = useSelector(selectQuestionnaireResponse);
-    const groupedPrevAnswers = useSelector(selectGroupedPrevAnswers);
-    const edit = useSelector(selectEdit);
-    const questionResponse = useSelector(selectQuestionResponse);
-    const dispatch = useDispatch();
+    const classes = useStyles()
+    const activeStep = useSelector(selectActiveStep)
+    const questionsObjects = useSelector(selectQuestions)
+    const date = useSelector(selectDate)
+    const displayDate = useSelector(selectDisplayDate)
+    const questionResponseItems = useSelector(selectQuestionResponseItems)
+    const prevAnswers = useSelector(selectPreviousAnswers)
+    const questionnnaireResponse = useSelector(selectQuestionnaireResponse)
+    const groupedPrevAnswers = useSelector(selectGroupedPrevAnswers)
+    const edit = useSelector(selectEdit)
+    const questionResponse = useSelector(selectQuestionResponse)
+    const dispatch = useDispatch()
 
-    const { submit } = props;
+    const { submit } = props
 
     const adjustActiveStep = useSelector(selectAdjustedActiveStep)
 
@@ -108,22 +103,21 @@ export default function Question(props) {
 
     const obtainCurrentResponse = (step) => {
         if (questionsObjects.length > 0) {
-            const foundQuestionObj = questionResponseItems.find((item) => item.linkId == questionsObjects[activeStep + step].linkId)
+            const foundQuestionObj = questionResponseItems.find(
+                (item) => item.linkId == questionsObjects[activeStep + step].linkId
+            )
             if (foundQuestionObj) {
                 dispatch(setQuestionResponse(foundQuestionObj.answer[0].valueString))
                 dispatch(setDate(foundQuestionObj.answer[0].valueDateTime))
-            }
-            else {
+            } else {
                 obtainPrevResponse(step)
             }
-
         }
     }
 
 
     const obtainPrevResponse = (step) => {
         if (questionsObjects.length > 0 && groupedPrevAnswers[activeStep + step]) {
-            // const foundPrevObj = prevAnswers[0].answers.find((item) => item.linkId == questionsObjects[activeStep + step].linkId)
             const foundPrevObj = groupedPrevAnswers[activeStep + step][0]
             if (foundPrevObj) {
                 dispatch(setQuestionResponse(foundPrevObj.valueString))
@@ -134,14 +128,13 @@ export default function Question(props) {
         } else {
             dispatch(setQuestionResponse("")) && dispatch(setDate(""))
         }
-
     }
 
     const activeStepToLinkIdObj = {
         0: "item1",
         1: "item2",
         2: "item3",
-        3: "item4"
+        3: "item4",
     }
 
     const countNoOfPrevAnswers = (step) => {
@@ -150,7 +143,6 @@ export default function Question(props) {
         }
         return 0
     }
-
 
     return (
         activeStep !== 0 ?
@@ -171,19 +163,23 @@ export default function Question(props) {
                             <p dangerouslySetInnerHTML={{ __html: questionsObjects[activeStep + adjustActiveStep].text }}>
                             </p>
                         </Typography>
-                        <TextField
-                            id="outlined-multiline-static"
-                            // label="Multiline"
-                            multiline
-                            rows={4}
-                            // defaultValue={getLatestPrevAnswer()}
-                            value={questionResponse}
-                            variant="outlined"
-                            helperText={displayDate}
-                            onChange={(e) => onAnswerChangeHandler(e)}
-                            disabled={!edit}
-                        />
-
+                        <ShadowFocus>
+                            {({ inputRef, focus }) => (
+                                <TextField
+                                    id="outlined-multiline-static"
+                                    multiline
+                                    rows={4}
+                                    value={questionResponse}
+                                    helperText={displayDate}
+                                    onChange={(e) => onAnswerChangeHandler(e)}
+                                    disabled={!edit}
+                                    className={focus ? "input--focused" : ""}
+                                    InputProps={{
+                                        inputRef
+                                    }}
+                                />
+                            )}
+                        </ShadowFocus>
                     </FormControl>
                 </Grid>
 

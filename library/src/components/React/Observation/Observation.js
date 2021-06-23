@@ -13,14 +13,9 @@ import {
 
 
 export default function Observation(props) {
-    const {
-        configuration,
-        observations,
-        saveObservations,
-        getObservations
-    } = props
+    const { configuration, observations, saveObservations, getObservations } = props
 
-    const observationsState = useSelector(selectObservations);
+    const observationsState = useSelector(selectObservations)
 
     const dispatch = useDispatch()
 
@@ -88,18 +83,6 @@ export default function Observation(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item>
-                    <Grid
-                        container
-                        direction="row"
-                        justify="space-evenly"
-                        alignItems="stretch"
-                        spacing={3}>
-                        <Grid item xs={12}>
-                            <Content saveObservations={saveObservations} getObservations={getObservations} />
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid >
+            </Grid>
     )
 }

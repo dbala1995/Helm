@@ -32,7 +32,7 @@ services:
     #image: "rabbitmq-delayed"
     build:
       context: "./rabbitmq"
-      dockerfile: "RabbitDockerfile"
+      dockerfile: "Dockerfile"
     ports:
         - "5672:5672"
 
@@ -157,7 +157,7 @@ services:
 
   helm-yhcr:
     build:
-      dockerfile: ./yhcr/YhcrDockerfile  
+      dockerfile: ./YhcrDockerfile  
       context: ./run/k8s/local
     ports:
       - 3443:443

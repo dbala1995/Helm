@@ -1,9 +1,9 @@
-import { TextField, Grid, FormControl, Button, MobileStepper } from '@material-ui/core';
-import { KeyboardArrowLeft, KeyboardArrowRight } from '@material-ui/icons';
-import { useTheme } from '@material-ui/core/styles';
-import React, { useEffect } from 'react';
+import { TextField, Grid, FormControl, Button, MobileStepper } from "@material-ui/core"
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons"
+import { useTheme } from "@material-ui/core/styles"
+import React, { useEffect } from "react"
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux"
 
 import {
     selectActiveStep,
@@ -16,19 +16,18 @@ import {
     nextPage,
     prevPage,
     selectGroupedPrevAnswers,
-    resetPageNo
-} from './PastAnswersSlice';
-import {
-    selectQuestions
-} from '../QuestionnaireSlice';
-
+    resetPageNo,
+} from "./PastAnswersSlice"
+import { selectQuestions } from "../QuestionnaireSlice"
 
 export default function PastAnswers(props) {
-    const activeStep = useSelector(selectActiveStep);
-    const maxPrevAnswers = useSelector(selectMaxPrevAnswers);
-    const pageNo = useSelector(selectPageNo);
-    const groupedPrevAnswers = useSelector(selectGroupedPrevAnswers);
-    var totalPages = groupedPrevAnswers[activeStep] ? Math.ceil(groupedPrevAnswers[activeStep].length / maxPrevAnswers) : 0
+    const activeStep = useSelector(selectActiveStep)
+    const maxPrevAnswers = useSelector(selectMaxPrevAnswers)
+    const pageNo = useSelector(selectPageNo)
+    const groupedPrevAnswers = useSelector(selectGroupedPrevAnswers)
+    var totalPages = groupedPrevAnswers[activeStep]
+        ? Math.ceil(groupedPrevAnswers[activeStep].length / maxPrevAnswers)
+        : 0
     const theme = useTheme()
     const dispatch = useDispatch()
 
@@ -39,7 +38,7 @@ export default function PastAnswers(props) {
 
     useEffect(() => {
         const extractPrevAnswers = () => {
-            requestResources("QuestionnaireResponse", "", {})
+            requestResources()
         }
         extractPrevAnswers()
         totalPages = groupedPrevAnswers[activeStep + adjustActiveStep] ? Math.ceil(groupedPrevAnswers[activeStep + adjustActiveStep].length / maxPrevAnswers) : 0
@@ -58,7 +57,7 @@ export default function PastAnswers(props) {
             justify="flex-start"
             alignItems="stretch"
             spacing={2}>
-            { groupedPrevAnswers[activeStep + adjustActiveStep] && groupedPrevAnswers[activeStep + adjustActiveStep].map((item, index) => (
+            {groupedPrevAnswers[activeStep + adjustActiveStep] && groupedPrevAnswers[activeStep + adjustActiveStep].map((item, index) => (
                 index < maxPrevAnswers * (pageNo + 1) && index >= maxPrevAnswers * pageNo &&
 
                 < Grid item >
@@ -82,18 +81,23 @@ export default function PastAnswers(props) {
                     position="static"
                     activeStep={pageNo}
                     nextButton={
-                        <Button size="small" onClick={() => dispatch(nextPage())} disabled={pageNo === totalPages - 1 || totalPages === 0}>
+                        <Button
+                            size="small"
+                            onClick={() => dispatch(nextPage())}
+                            disabled={pageNo === totalPages - 1 || totalPages === 0}
+                        >
                             Next
-                    {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                            {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                         </Button>
                     }
                     backButton={
                         <Button size="small" onClick={() => dispatch(prevPage())} disabled={pageNo === 0}>
-                            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                    Back
-                  </Button>
-                    } />
+                            {theme.direction === "rtl" ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                            Back
+                        </Button>
+                    }
+                />
             </Grid>
-        </Grid >
+        </Grid>
     )
 }

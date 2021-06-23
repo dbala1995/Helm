@@ -1,11 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
 
 const TableSlice = createSlice({
     name: "table",
     initialState: {
         headers: [],
         rows: [],
-        displayRows: []
+        displayRows: [],
     },
     reducers: {
         populateRows: (state, action) => {
@@ -22,9 +22,8 @@ const TableSlice = createSlice({
                             dateArray.push(valueObj.date)
                         })
                         objToPush["Date"] = dateArray
-                        objToPush[observationKey] = valueArray;
+                        objToPush[observationKey] = valueArray
                     }
-
                 }
                 newRowsArray.push(objToPush)
             })
@@ -36,11 +35,10 @@ const TableSlice = createSlice({
             fieldsArray.map((tabFieldsObj) => {
                 const headersArray = []
                 headersArray.push({
-                    "header": "Date",
-                    "unit": ""
+                    header: "Date",
+                    unit: "",
                 })
                 for (var key in tabFieldsObj) {
-
                     tabFieldsObj[key].map((observationObj) => {
                         const headerObj = {}
                         const text = observationObj.text
@@ -51,22 +49,20 @@ const TableSlice = createSlice({
                     })
 
                     newHeadersArray.push(headersArray)
-
                 }
-
             })
             state.headers = newHeadersArray
         },
         populateDisplayRows: (state, action) => {
             state.displayRows = action.payload
-        }
-    }
+        },
+    },
 })
 
-export const selectHeaders = (state) => state.table.headers;
-export const selectRows = (state) => state.table.rows;
+export const selectHeaders = (state) => state.table.headers
+export const selectRows = (state) => state.table.rows
 export const selectDisplayRows = (state) => state.table.displayRows
 
-export const { populateRows, populateHeaders, populateDisplayRows } = TableSlice.actions;
+export const { populateRows, populateHeaders, populateDisplayRows } = TableSlice.actions
 
-export default TableSlice.reducer;
+export default TableSlice.reducer

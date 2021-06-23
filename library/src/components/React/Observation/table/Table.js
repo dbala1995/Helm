@@ -20,15 +20,15 @@ import { selectPrevResponses } from '../ObservationSlice';
 import { selectValue } from '../tabs/ObservationTabsSlice';
 import { selectFieldsArray } from '../form/ObservationFormSlice';
 
-
 const useStyles = makeStyles({
     table: {
-        minWidth: 800,
+        minWidth: "auto",
     },
-});
+})
+
 export default function BasicTable() {
-    const classes = useStyles();
-    const headers = useSelector(selectHeaders);
+    const classes = useStyles()
+    const headers = useSelector(selectHeaders)
     const rows = useSelector(selectRows)
     const prevResponses = useSelector(selectPrevResponses)
     const fieldsArray = useSelector(selectFieldsArray)
@@ -70,7 +70,7 @@ export default function BasicTable() {
         displayRows.map((row, index) => {
             const rowJSX = []
             for (var key in row) {
-                rowJSX.push(<TableCell >{row[key]}</TableCell>)
+                rowJSX.push(<TableCell>{row[key]}</TableCell>)
             }
             const finalRowJSX = <TableRow>{rowJSX}</TableRow>
 
@@ -83,15 +83,15 @@ export default function BasicTable() {
         const dateA = a.Date
         const dateB = b.Date
 
-        let comparison = 0;
+        let comparison = 0
         if (dateA > dateB) {
-            comparison = 1;
-        };
+            comparison = 1
+        }
         if (dateB > dateA) {
             comparison = -1
-        };
+        }
 
-        return comparison;
+        return comparison
     }
 
     return (
@@ -107,10 +107,8 @@ export default function BasicTable() {
 
                     </TableRow>
                 </TableHead>
-                <TableBody>
-                    {tableRows()}
-                </TableBody>
+                <TableBody>{tableRows()}</TableBody>
             </Table>
         </TableContainer >
-    );
+    )
 }

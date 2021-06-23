@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit"
 
 const ObservationFormSlice = createSlice({
     name: "observationForm",
@@ -9,28 +9,28 @@ const ObservationFormSlice = createSlice({
     },
     reducers: {
         populateFieldsArray: (state, action) => {
-            const observations = action.payload;
+            const observations = action.payload
             const newFieldsArray = []
             observations.map((obj) => {
                 const titleObj = {}
                 const titleArray = []
-                const title = obj.title;
+                const title = obj.title
                 obj.input.definitions.map((defObj) => {
                     const objToPush = {
-                        "text": defObj.code.text,
-                        "unit": defObj.quantitativeDetails.unit.coding[0].unit,
-                        "display": defObj.display == "false" ? false : true,
-                        "type": defObj.permittedDataType,
-                        "decimalPlaces": defObj.quantitativeDetails.decimalPrecision,
-                        "code": defObj.code,
-                        "calculated": defObj.calculated
+                        text: defObj.code.text,
+                        unit: defObj.quantitativeDetails.unit.coding[0].unit,
+                        display: defObj.display == "false" ? false : true,
+                        type: defObj.permittedDataType,
+                        decimalPlaces: defObj.quantitativeDetails.decimalPrecision,
+                        code: defObj.code,
+                        calculated: defObj.calculated,
                     }
                     titleArray.push(objToPush)
                 })
                 titleObj[title] = titleArray
                 newFieldsArray.push(titleObj)
             })
-            state.fieldsArray = newFieldsArray;
+            state.fieldsArray = newFieldsArray
         },
         populateFieldsValue: (state, action) => {
             if (state.fieldsValue.length === 0) {
@@ -76,19 +76,25 @@ const ObservationFormSlice = createSlice({
             const newValue = action.payload.newValue
             const fieldName = action.payload.fieldName
             const errorMessage = action.payload.errorMessage
-            state.fieldsValue[tabNo][fieldName].error = newValue;
-            state.fieldsValue[tabNo][fieldName].errorMessage = errorMessage;
+            state.fieldsValue[tabNo][fieldName].error = newValue
+            state.fieldsValue[tabNo][fieldName].errorMessage = errorMessage
         },
         setOpen: (state, action) => {
             state.open = action.payload
-        }
-    }
+        },
+    },
 })
 
-export const selectFieldsArray = (state) => state.observationForm.fieldsArray;
-export const selectFieldsValue = (state) => state.observationForm.fieldsValue;
+export const selectFieldsArray = (state) => state.observationForm.fieldsArray
+export const selectFieldsValue = (state) => state.observationForm.fieldsValue
 export const selectOpen = (state) => state.observationForm.open
 
-export const { populateFieldsArray, populateFieldsValue, onFieldsValueChangeHandler, onFieldsErrorChangeHandler, setOpen } = ObservationFormSlice.actions;
+export const {
+    populateFieldsArray,
+    populateFieldsValue,
+    onFieldsValueChangeHandler,
+    onFieldsErrorChangeHandler,
+    setOpen,
+} = ObservationFormSlice.actions
 
-export default ObservationFormSlice.reducer;
+export default ObservationFormSlice.reducer

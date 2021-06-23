@@ -23,13 +23,11 @@ import {
 } from '../QuestionnaireSlice';
 
 
-import {
-  setOpen
-} from '../confirmationDialog/ConfirmationDialogSlice';
+import { setOpen } from "../confirmationDialog/ConfirmationDialogSlice"
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
   },
   button: {
     marginTop: theme.spacing(1),
@@ -45,19 +43,19 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
+    display: "none",
+    [theme.breakpoints.up("md")]: {
+      display: "flex",
+      justifyContent: "center"
     },
   },
   sectionMobile: {
-    display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
+    display: "flex",
+    [theme.breakpoints.up("md")]: {
+      display: "none",
     },
   },
-}));
-
+}))
 
 export default function VerticalLinearStepper(props) {
 
@@ -76,14 +74,7 @@ export default function VerticalLinearStepper(props) {
 
 
   const onSubmitHandler = async () => {
-    // dispatch(obtainAnsweredQuestions())
-    // const changedResources = {
-    //   changedResource: questionnaireResponse,
-    //   changeOperation: "POST",
-    // }
-    // await props.submit(changedResources)
     dispatch(setOpen(true))
-    // sessionStorage.removeItem("questionResponseItems")
   }
 
   return (
@@ -158,7 +149,6 @@ export default function VerticalLinearStepper(props) {
           />
         }
       </div>
-
-    </div >
-  );
+    </div>
+  )
 }

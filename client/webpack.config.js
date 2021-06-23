@@ -37,16 +37,37 @@ module.exports = (env) => {
       module: {
         rules: [
           {
+            test: /\.(woff|woff2|eot|ttf|otf)$/,
+            use: [
+              {
+                loader: "file-loader",
+                options: {
+                  name: "fonts/[name].[ext]",
+                  publicPath: "/",
+                },
+              },
+            ],
+          },
+          {
+            test: /\.(PNG|png|jpg|gif)$/,
+            use: [
+              {
+                loader: "file-loader",
+                options: {
+                  name: "[name].[ext]",
+                  publicPath: "/",
+                  outputPath: "/",
+                },
+              },
+            ],
+          },
+          {
             test: /\.css$/,
-            use: ["style-loader", "css-loader"],
+            use: [{ loader: "./loader.js" }, { loader: "css-loader" }],
           },
           {
             test: /\.svg$/,
             use: ["@svgr/webpack", "url-loader"],
-          },
-          {
-            test: /\.(PNG|png|jpg|gif)$/,
-            use: ["file-loader"],
           },
           {
             test: /\.(js|jsx)$/,
@@ -65,10 +86,6 @@ module.exports = (env) => {
                 ],
               },
             },
-          },
-          {
-            test: /\.(woff|woff2|eot|ttf|otf)$/,
-            use: ["file-loader"],
           },
         ],
       },
@@ -96,8 +113,8 @@ module.exports = (env) => {
       mode: "development",
       entry: {
         "ie/uuid": "./node_modules/uuid/dist/esm-browser/index.js",
-        "ie/synrb-canvas-library": "./node_modules/synrb-canvas-library/src/index.js",
-        "ie/synrb-panel-library": "./node_modules/synrb-panel-library/src/index.js",
+        "ie/synrb-canvas-library": "./node_modules/@synrichardbrown/synrb-canvas-library-test/src/index.js",
+        "ie/synrb-panel-library": "./node_modules/@synrichardbrown/synrb-panel-library-test/src/index.js",
         "ie/react": "./node_modules/react/index.js",
         "ie/react-dom": "./node_modules/react-dom/index.js",
         "ie/app": "./src/index.js",
@@ -120,6 +137,31 @@ module.exports = (env) => {
       },
       module: {
         rules: [
+          {
+            test: /\.(woff|woff2|eot|ttf|otf)$/,
+            use: [
+              {
+                loader: "file-loader",
+                options: {
+                  name: "fonts/[name].[ext]",
+                  publicPath: "/",
+                },
+              },
+            ],
+          },
+          {
+            test: /\.(PNG|png|jpg|gif)$/,
+            use: [
+              {
+                loader: "file-loader",
+                options: {
+                  name: "[name].[ext]",
+                  publicPath: "/",
+                  outputPath: "/",
+                },
+              },
+            ],
+          },
           {
             test: /\.(js|jsx)$/,
             exclude: /node_modules/,
@@ -146,14 +188,6 @@ module.exports = (env) => {
           {
             test: /\.svg$/,
             use: ["@svgr/webpack", "url-loader"],
-          },
-          {
-            test: /\.(PNG|png|jpg|gif)$/,
-            use: ["file-loader"],
-          },
-          {
-            test: /\.(woff|woff2|eot|ttf|otf)$/,
-            use: ["file-loader"],
           },
         ],
       },
