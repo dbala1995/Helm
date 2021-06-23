@@ -22,6 +22,27 @@ export const nonCoreSynopsisData = [
   // { id: "block-vaccinations", title: "Vaccinations", list: "vaccinations", icon: faSyringe, isActive: true },
   // { id: "block-top3Things", title: "Top Three Things", list: "top3Things", icon: faUserMd, isActive: true },
   {
+    id: "block-aboutme",
+    title: "About Me",
+    list: "about-me",
+    icon: faUserMd,
+    isActive: true
+  },
+  {
+    id: "block-observation",
+    title: "Measurements",
+    list: "measurements",
+    icon: faUserMd,
+    isActive: true
+  },
+  {
+    id: "block-loop",
+    title: "Leeds Information",
+    list: "leeds-information",
+    icon: faSearch,
+    isActive: true
+  },
+  {
     id: "block-nhsServices",
     title: "NHS Resources",
     list: "nhs-resources",
@@ -35,26 +56,5 @@ export const nonCoreSynopsisData = [
     icon: faCommentMedical,
     isActive: true,
     listOnly: true,
-  },
-  {
-    id: "block-loop",
-    title: "Leeds Information",
-    list: "leeds-information",
-    icon: faSearch,
-    isActive: true
-  },
-  {
-    id: "block-aboutme",
-    title: "About Me",
-    list: "about-me",
-    icon: faUserMd,
-    isActive: true
-  },
-  {
-    id: "block-observation",
-    title: "Measurements",
-    list: "measurements",
-    icon: faUserMd,
-    isActive: true
   },
 ]
