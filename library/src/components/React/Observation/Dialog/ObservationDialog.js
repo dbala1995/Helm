@@ -10,12 +10,13 @@ import { useSelector, useDispatch } from "react-redux"
 import { selectOpen, setOpen } from "../form/ObservationFormSlice"
 
 export default function ObservationDialog(props) {
-    const { title, contentText, buttonName } = props
+    const { title, contentText, buttonName, onClose } = props
     const open = useSelector(selectOpen)
     const dispatch = useDispatch()
 
     const handleClose = () => {
         dispatch(setOpen(false))
+        onClose()
     }
 
     return (

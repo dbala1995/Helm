@@ -113,8 +113,8 @@ module.exports = (env) => {
       mode: "development",
       entry: {
         "ie/uuid": "./node_modules/uuid/dist/esm-browser/index.js",
-        "ie/synrb-canvas-library": "./node_modules/@synrichardbrown/synrb-canvas-library-test/src/index.js",
-        "ie/synrb-panel-library": "./node_modules/@synrichardbrown/synrb-panel-library-test/src/index.js",
+        "ie/synrb-canvas-library": "./node_modules/synrb-canvas-library/src/index.js",
+        "ie/synrb-panel-library": "./node_modules/synrb-panel-library/src/index.js",
         "ie/react": "./node_modules/react/index.js",
         "ie/react-dom": "./node_modules/react-dom/index.js",
         "ie/app": "./src/index.js",
@@ -164,7 +164,6 @@ module.exports = (env) => {
           },
           {
             test: /\.(js|jsx)$/,
-            exclude: /node_modules/,
             use: {
               loader: "babel-loader",
               options: {
@@ -183,7 +182,7 @@ module.exports = (env) => {
           },
           {
             test: /\.css$/,
-            use: ["style-loader", "css-loader"],
+            use: [{ loader: "./loader.js" }, { loader: "css-loader" }],
           },
           {
             test: /\.svg$/,

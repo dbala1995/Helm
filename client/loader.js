@@ -21,7 +21,7 @@ module.exports.pitch = function (request) {
 if (typeof options.attributes !== 'object') {
   options.attributes = {}
 }
-options.attributes["id"] = '${filename}' // do anything you want
+options.attributes["data-id"] = '${filename}' // do anything you want
   `
 
   return result.slice(0, insertIndex) + insertAttr + result.slice(insertIndex)

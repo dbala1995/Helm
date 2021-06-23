@@ -54,16 +54,17 @@ const AccessibilityNotice = ({ message }) => {
   const classes = useStyles()
 
   useEffect(() => {
-    setTimeout(() => setCurrentMessage(message), 100)
+    console.log(message)
+    setTimeout(() => setCurrentMessage(message), 10000)
   }, [message])
 
   useEffect(() => {
-    setTimeout(() => setCurrentMessage(""), 1000)
+    setTimeout(() => setCurrentMessage(""), 5000)
   }, [currentMessage])
 
   return (
-    <div className={classes.srOnly} role="status" aria-live="polite" aria-atomic="true">
-      {currentMessage ? <span>{currentMessage}</span> : ""}
+    <div className={classes.srOnly} role="status" aria-live="assertive" aria-atomic="true">
+      {currentMessage ? currentMessage : ""}
     </div>
   )
 }
@@ -80,40 +81,78 @@ const ConnectedAccessibilityNotice = connect(mapStateToProps, null)(Accessibilit
 const history = createHashHistory()
 
 const StyleLoader = ({ contrastMode }) => {
-    const theme = useRef(new CSSStyleSheet())
-    
-    useEffect(() => {
-        const themeStyles = document.getElementById("theme")
+  const theme = useRef(new CSSStyleSheet())
 
-        const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
+  useEffect(() => {
+    const styles = document.getElementsByTagName("style")
 
-        theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
+    console.log(styles)
 
-        document.adoptedStyleSheets = [theme.current]
-    }, [])
+    let themeStyles = null
+    let darkStyles = null
+    let lightStyles = null
 
-    useEffect(() => {
-        const themeStyles = document.getElementById("theme")
+    for (let i = 0; i < styles.length; i++) {
+        console.log(styles[i].getAttribute("data-id"))
 
-        const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
+        if (styles[i].getAttribute("data-id") === "theme") {
+            themeStyles = styles[i]
+        }
+        if (styles[i].getAttribute("data-id") === "dark") {
+            darkStyles = styles[i]
+        }
+        if (styles[i].getAttribute("data-id") === "light") {
+            lightStyles = styles[i]
+        }
+    }
 
-        theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
-    }, [contrastMode])
+    const additionalStyles = contrastMode ? darkStyles : lightStyles
 
-    return null
+    theme.current.replaceSync(`${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`)
+
+    document.adoptedStyleSheets = [theme.current]
+  }, [])
+
+  useEffect(() => {
+    const styles = document.getElementsByTagName("style")
+
+    console.log(styles)
+
+    let themeStyles = null
+    let darkStyles = null
+    let lightStyles = null
+
+    for (let i = 0; i < styles.length; i++) {
+        if (styles[i].getAttribute("data-id") === "theme") {
+            themeStyles = styles[i]
+        }
+        if (styles[i].getAttribute("data-id") === "dark") {
+            darkStyles = styles[i]
+        }
+        if (styles[i].getAttribute("data-id") === "light") {
+            lightStyles = styles[i]
+        }
+    }
+
+    const additionalStyles = contrastMode ? darkStyles : lightStyles
+
+    theme.current.replaceSync(`${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`)
+  }, [contrastMode])
+
+  return null
 }
 
 const mapStyleStateToProps = (state) => {
-    const preferences = get(state, "custom.preferences", {})
-  
-    const userPrefs = (preferences && preferences.data && preferences.data.preferences) || {}
-  
-    const contrastMode = get(userPrefs, "general.preferences.contrastMode", false)
-  
-    return {
-      contrastMode: contrastMode,
-    }
+  const preferences = get(state, "custom.preferences", {})
+
+  const userPrefs = (preferences && preferences.data && preferences.data.preferences) || {}
+
+  const contrastMode = get(userPrefs, "general.preferences.contrastMode", false)
+
+  return {
+    contrastMode: contrastMode,
   }
+}
 
 const ConnectedStyleLoader = connect(mapStyleStateToProps)(StyleLoader)
 

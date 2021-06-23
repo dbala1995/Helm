@@ -15,7 +15,7 @@ export default function content(props) {
     const observations = useSelector(selectObservations)
     const dispatch = useDispatch()
 
-    const { saveObservations, getObservations } = props
+    const { saveObservations, getObservations, sendMessage } = props
 
     useEffect(() => {
         dispatch(populateInformation(observations))
@@ -26,7 +26,11 @@ export default function content(props) {
             <Grid item xs={12}>
                 <Grid container direction="row" justify="space-evenly" alignItems="stretch" spacing={2}>
                     <Grid item xs={12} md={6}>
-                        <ObservationForm saveObservations={saveObservations} getObservations={getObservations} />
+                        <ObservationForm
+                            sendMessage={sendMessage}
+                            saveObservations={saveObservations}
+                            getObservations={getObservations}
+                        />
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <Typography variant="h4">

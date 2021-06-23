@@ -3,6 +3,17 @@ import "core-js/stable"
 import "systemjs/dist/system.js"
 import "regenerator-runtime/runtime"
 import "@webcomponents/webcomponentsjs/webcomponents-bundle.js"
+import "construct-style-sheets-polyfill"
+import "proxy-polyfill/proxy.min.js"
+import cssVars from "css-vars-ponyfill"
+
+window.cssVars = cssVars
+
+cssVars({
+    shadowDOM: true,
+    watch: true,
+    updateURLs: false
+})
 
 if (Element.prototype.getAttributeNames == undefined) {
   Element.prototype.getAttributeNames = function () {
@@ -16,22 +27,16 @@ if (Element.prototype.getAttributeNames == undefined) {
   }
 }
 
-if (window.NodeList && !NodeList.prototype.forEach) {
-  NodeList.prototype.forEach = Array.prototype.forEach
+if (window.NodeList && !window.NodeList.prototype.forEach) {
+    window.NodeList.prototype.forEach = Array.prototype.forEach
 }
+
+console.log(window.NodeList.prototype.forEach)
 
 const script = document.createElement("script")
 script.src = "./importmapie.json"
 script.type = "systemjs-importmap"
 document.head.appendChild(script)
-
-// const script2 = document.createElement("script")
-// script2.src = "https://cdn.jsdelivr.net/npm/systemjs/dist/system.js"
-// script2.onload = function () {
-//   window.System.import("synrb-canvas-library")
-//   window.System.import("app")
-// }
-//document.head.appendChild(script2)
 
 window.System.import("synrb-canvas-library")
 window.System.import("app")

@@ -1,11 +1,11 @@
 {
     "imports": {
-        "react": "./react.js",
-        "react-dom": "./react-dom.js",
-        "synrb-canvas-library": "./synrb-canvas-library.js",
+        "react": "./ie/react.js",
+        "react-dom": "./ie/react-dom.js",
+        "synrb-canvas-library": "./ie/synrb-canvas-library.js",
         "synrb-panel-library": "http://localhost:8881/ie/synrb-panel-library.js",
-        "app": "./app.js",
-        "uuid": "./uuid.js",
+        "app": "./ie/app.js",
+        "uuid": "./ie/uuid.js",
         "fhirpath": "http://localhost:8881/ie/fhirpath.js",
         "@material-ui/core": "http://localhost:8881/ie/@material-ui/core.js",
         "@material-ui/styles": "http://localhost:8881/ie/@material-ui/styles.js",

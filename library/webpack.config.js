@@ -127,7 +127,6 @@ module.exports = (env, argv) => {
                     },
                     {
                         test: /\.(js|jsx)$/,
-                        exclude: /(node_modules\/(?!@lhncbc)|bower_components)/,
                         use: {
                             loader: "babel-loader",
                             options: {

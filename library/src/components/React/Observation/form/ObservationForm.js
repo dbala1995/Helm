@@ -27,10 +27,11 @@ export default function ObservationForm(props) {
     const open = useSelector(selectOpen)
     const prevResponses = useSelector(selectPrevResponses)
     const dispatch = useDispatch()
+    const [operationOutcome, setOperationOutcome] = useState(null)
 
     const [errorPresent, setErrorPresent] = useState(false)
 
-    const { saveObservations, getObservations } = props
+    const { saveObservations, getObservations, sendMessage } = props
 
     useEffect(() => {
         dispatch(populateFieldsArray(observations))
@@ -216,9 +217,19 @@ export default function ObservationForm(props) {
             observationsToSave.push(observationResource)
         })
 
+        const observationPromises = []
+
         observationsToSave.map((observationResource) => {
-            saveObservations(observationResource)
+            observationPromises.push(saveObservations(observationResource))
         })
+
+        const results = await Promise.all(observationPromises)
+
+        // check if any submit event resulted in failure
+        const failedResult = results.find((res) => res && res.resourceType === "OperationOutcome") || null
+
+        setOperationOutcome(failedResult)
+
         getObservations()
         dispatch(setOpen(true))
     }
@@ -226,8 +237,6 @@ export default function ObservationForm(props) {
     const calculateDerivedField = (derivedString) => {
         return (fieldsValue[value]["Weight"].value / (fieldsValue[value]["Height"].value / 100) ** 2).toFixed(2)
     }
-
-    console.log(document.activeElement)
 
     return (
         <div>
@@ -291,13 +300,15 @@ export default function ObservationForm(props) {
                                 className={focus ? "input--focused" : ""}
                                 onChange={(e) => onDateNoteValueChange(e, "Date")}
                                 error={fieldsValue[value]["Date"].error}
-                                helperText={fieldsValue[value]["Date"].error ? fieldsValue[value]["Date"].errorMessage : "Date"}
+                                helperText={
+                                    fieldsValue[value]["Date"].error ? fieldsValue[value]["Date"].errorMessage : "Date"
+                                }
                                 value={fieldsArray.length > 0 && fieldsValue[value]["Date"].value}
                                 InputLabelProps={{
                                     shrink: false,
                                 }}
                                 InputProps={{
-                                    inputRef
+                                    inputRef,
                                 }}
                             />
                         )}
@@ -307,29 +318,26 @@ export default function ObservationForm(props) {
             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={3}>
                 <Grid item xs={9}>
                     <FormControl fullWidth>
-                    <ShadowFocus>
-                        {({ inputRef, focus }) => (
-                            <TextField
-                                fullWidth
-                                helperText="Notes"
-                                className={focus ? "input--focused" : ""}
-                                onChange={(e) => onDateNoteValueChange(e, "Notes")}
-                                value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}
-                                multiline
-                                rowsMax={3}
-                                InputProps={{
-                                    inputRef
-                                }}
-                            />
-                        )}
-                    </ShadowFocus>
+                        <ShadowFocus>
+                            {({ inputRef, focus }) => (
+                                <TextField
+                                    fullWidth
+                                    helperText="Notes"
+                                    className={focus ? "input--focused" : ""}
+                                    onChange={(e) => onDateNoteValueChange(e, "Notes")}
+                                    value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}
+                                    multiline
+                                    rowsMax={3}
+                                    InputProps={{
+                                        inputRef,
+                                    }}
+                                />
+                            )}
+                        </ShadowFocus>
                     </FormControl>
                 </Grid>
                 <Grid item xs={3}>
-                    <IconButton
-                        className={"button--primary"}
-                        onClick={() => onClickSaveButton()}
-                    >
+                    <IconButton className={"button--primary"} onClick={() => onClickSaveButton()}>
                         Save
                         <SaveIcon />
                     </IconButton>
@@ -339,6 +347,15 @@ export default function ObservationForm(props) {
                 title={errorPresent ? "Error" : "Saved entries"}
                 contentText={errorPresent ? "Fix all the errors before saving entries" : ""}
                 buttonName={errorPresent ? "Understood" : "OK"}
+                onClose={() => {
+                    if (!operationOutcome) {
+                        sendMessage("Measurements saved successfully")
+                    }
+
+                    sendMessage("Failed to save all measurements")
+
+                    setOperationOutcome(null)
+                }}
             />
         </div>
     )

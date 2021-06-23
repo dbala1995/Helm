@@ -19,6 +19,7 @@ class ObservationComponent extends ReactMaterialComponentBase {
                         observations={observations}
                         getObservations={(codes) => this.refreshResources(codes)}
                         saveObservations={(observations) => this.saveResources(observations)}
+                        sendMessage={(message) => this.message(this.createMessage(message))}
                     />
                 </Provider>
             )
@@ -32,14 +33,44 @@ class ObservationComponent extends ReactMaterialComponentBase {
     refreshResources(codes) {
         // const codeString = codes.map((code) => (code.system ? `${code.system}|${code.code}` : code)).join(",")
 
+        this.message(this.createMessage("Getting measurements"))
+
         return this.requestResources("Observation", "", {})
+    }
+
+    resourcesChangedCallback(resourceType) {
+        if (resourceType !== "Observation") {
+            return
+        }
+
+        this.message(this.createMessage("Measurements loaded"))
+    }
+
+    /**
+     * @param {string} message
+     * @returns {fhir.OperationOutcome}
+     */
+    createMessage(message) {
+        /** @type {fhir.OperationOutcome} */
+        const operationOutcome = {
+            resourceType: "OperationOutcome",
+            issue: [
+                {
+                    severity: "information",
+                    code: "informational",
+                    diagnostics: message,
+                },
+            ],
+        }
+
+        return operationOutcome
     }
 
     /**
      * @param {fhir.Observation[]} observations
      * @returns {Promise<void>}
      */
-    saveResources(observations) {
+    async saveResources(observations) {
         // const changeRequests = observations.map((observation) => ({
         //     changeOperation: "POST",
         //     changedResource: observation,
@@ -49,7 +80,9 @@ class ObservationComponent extends ReactMaterialComponentBase {
             changedResource: observations,
         }
 
-        return this.submit([changeRequest])
+        const result = await this.submit([changeRequest])
+
+        return result
     }
 
     configurationChangedCallback() {
