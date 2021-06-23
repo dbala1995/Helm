@@ -87,7 +87,7 @@ const StyleLoader = ({ contrastMode }) => {
 
     const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
 
-    theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
+    theme.current.replaceSync(`${themeStyles && themeStyles.innerHTML} ${additionalStyles && additionalStyles.innerHTML}`)
 
     document.adoptedStyleSheets = [theme.current]
   }, [])
@@ -97,7 +97,7 @@ const StyleLoader = ({ contrastMode }) => {
 
     const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
 
-    theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
+    theme.current.replaceSync(`${themeStyles && themeStyles.innerHTML} ${additionalStyles && additionalStyles.innerHTML}`)
   }, [contrastMode])
 
   return null

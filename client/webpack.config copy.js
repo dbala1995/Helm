@@ -37,33 +37,8 @@ module.exports = (env) => {
       module: {
         rules: [
           {
-            test: /\.(woff|woff2|eot|ttf|otf)$/,
-            use: [
-              {
-                loader: "file-loader",
-                options: {
-                  name: "fonts/[name].[ext]",
-                  publicPath: "/",
-                },
-              },
-            ],
-          },
-          {
-            test: /\.(PNG|png|jpg|gif)$/,
-            use: [
-              {
-                loader: "file-loader",
-                options: {
-                  name: "[name].[ext]",
-                  publicPath: "/",
-                  outputPath: "/",
-                },
-              },
-            ],
-          },
-          {
             test: /\.css$/,
-            use: [{ loader: "./loader.js" }, { loader: "css-loader" }],
+            use: ["style-loader", "css-loader"],
           },
           {
             test: /\.svg$/,
@@ -146,32 +121,8 @@ module.exports = (env) => {
       module: {
         rules: [
           {
-            test: /\.(woff|woff2|eot|ttf|otf)$/,
-            use: [
-              {
-                loader: "file-loader",
-                options: {
-                  name: "fonts/[name].[ext]",
-                  publicPath: "/",
-                },
-              },
-            ],
-          },
-          {
-            test: /\.(PNG|png|jpg|gif)$/,
-            use: [
-              {
-                loader: "file-loader",
-                options: {
-                  name: "[name].[ext]",
-                  publicPath: "/",
-                  outputPath: "/",
-                },
-              },
-            ],
-          },
-          {
             test: /\.(js|jsx)$/,
+            exclude: /node_modules/,
             use: {
               loader: "babel-loader",
               options: {
@@ -190,7 +141,7 @@ module.exports = (env) => {
           },
           {
             test: /\.css$/,
-            use: [{ loader: "./loader.js" }, { loader: "css-loader" }],
+            use: ["style-loader", "css-loader"],
           },
           {
             test: /\.svg$/,

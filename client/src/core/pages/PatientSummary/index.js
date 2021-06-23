@@ -124,9 +124,9 @@ class PatientSummaryInfo extends Component {
 
   render() {
     const { classes, loading, showMode, displayMode, location } = this.props
-    console.log(this.props)
     const breadcrumbsResource = [{ url: location.pathname, title: "Patient Summary", isActive: false }]
     const FeedsPanels = get(themeCommonElements, "feedsPanels", false)
+    console.log(window.navigator.oscpu)
     return (
       <Grid className={classes.container}>
         <PageTitle />

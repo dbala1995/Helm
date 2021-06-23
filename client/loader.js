@@ -12,8 +12,15 @@ module.exports.pitch = function (request) {
 
   // eslint-disable-next-line prefer-destructuring
   const resourcePath = this.resourcePath
+  let filepath = [""]
+  if (process.platform.includes("win")) {
+    filepath = resourcePath.split("\\")
+  }
+  else if (process.platform.includes("linux")) {
+    filepath = resourcePath.split("/")
+  }
 
-  const filepath = resourcePath.split("\\")
+
 
   const filename = filepath[filepath.length - 1].replace(".css", "")
 

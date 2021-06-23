@@ -12,10 +12,10 @@ class QuestionnaireComponent extends ReactMaterialComponentBase {
         this.jsxRootComponent = () => {
             const questionnaireList = this.resources.Questionnaire
             const top3ThingsQuestionnaire = this.resources.top3ThingsQuestionnaire
-            return <Provider store={store} ><ThemeProvider theme={getCurrentTheme()}><Questionnaire
+            return <Provider store={store} ><Questionnaire
                 resources={this.resources}
                 submit={(changedResource) => this.submit([changedResource])}
-                requestResources={(questionResponse, queryParams, bodyParams) => this.requestResources(questionResponse, queryParams, bodyParams)} /></ThemeProvider></Provider >
+                requestResources={(questionResponse, queryParams, bodyParams) => this.requestResources(questionResponse, queryParams, bodyParams)} /></Provider >
         }
     }
 

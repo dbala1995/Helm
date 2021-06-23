@@ -127,7 +127,6 @@ module.exports = (env, argv) => {
                     },
                     {
                         test: /\.(js|jsx)$/,
-                        exclude: /(node_modules\/(?!@lhncbc)|bower_components)/,
                         use: {
                             loader: "babel-loader",
                             options: {
@@ -153,16 +152,16 @@ module.exports = (env, argv) => {
     return webpackConfigurations.map((wpc) => {
         return argv.mode === "production"
             ? merge(wpc, {
-                  optimization: {
-                      minimize: true,
-                      minimizer: [
-                          new TerserPlugin({
-                              extractComments: "all",
-                              parallel: true,
-                          }),
-                      ],
-                  },
-              })
+                optimization: {
+                    minimize: true,
+                    minimizer: [
+                        new TerserPlugin({
+                            extractComments: "all",
+                            parallel: true,
+                        }),
+                    ],
+                },
+            })
             : wpc
     })
 }
