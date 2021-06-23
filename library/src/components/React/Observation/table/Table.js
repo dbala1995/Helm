@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react"
-import { makeStyles } from "@material-ui/core/styles"
-import Table from "@material-ui/core/Table"
-import TableBody from "@material-ui/core/TableBody"
-import TableCell from "@material-ui/core/TableCell"
-import TableContainer from "@material-ui/core/TableContainer"
-import TableHead from "@material-ui/core/TableHead"
-import TableRow from "@material-ui/core/TableRow"
-import Paper from "@material-ui/core/Paper"
+import React, { useEffect, useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 
-import { useSelector, useDispatch } from "react-redux"
-import { selectHeaders, selectRows, populateHeaders, populateRows, populateDisplayRows } from "./TableSlice"
-import { selectPrevResponses } from "../ObservationSlice"
-import { selectValue } from "../tabs/ObservationTabsSlice"
-import { selectFieldsArray } from "../form/ObservationFormSlice"
-import { Typography } from "@material-ui/core"
+import { useSelector, useDispatch } from 'react-redux';
+import {
+    selectHeaders,
+    selectRows,
+    populateHeaders,
+    populateRows,
+    populateDisplayRows
+} from './TableSlice';
+import { selectPrevResponses } from '../ObservationSlice';
+import { selectValue } from '../tabs/ObservationTabsSlice';
+import { selectFieldsArray } from '../form/ObservationFormSlice';
 
 const useStyles = makeStyles({
     table: {
@@ -94,12 +99,12 @@ export default function BasicTable() {
             <Table className={classes.table} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        {headers.length > 0 &&
-                            headers[value].map((headersObj, index) => (
-                                <TableCell>
-                                    {headersObj.header}&nbsp;{headersObj.unit ? `(${headersObj.unit})` : null}
-                                </TableCell>
-                            ))}
+                        {headers.length > 0 && headers[value].map((headersObj, index) => (
+                            <TableCell key={index}>
+                                {headersObj.header}&nbsp;{headersObj.unit ? `(${headersObj.unit})` : null}
+                            </TableCell>
+                        ))}
+
                     </TableRow>
                 </TableHead>
                 <TableBody>{tableRows()}</TableBody>

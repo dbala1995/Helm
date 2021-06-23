@@ -232,54 +232,56 @@ export default function ObservationForm(props) {
     return (
         <div>
             <FormControl margin="normal">
-                {fieldsArray.length > 0
-                    ? getFieldsArrayForTab().map((fieldObj) =>
-                          fieldObj.display ? (
-                              <Grid container direction="row" justify="flex-start" alignItems="center" spacing={3}>
-                                  <Grid item xs={12}>
-                                      <ShadowFocus>
-                                          {({ inputRef, focus }) => (
-                                              <TextField
-                                                  color="primary"
-                                                  fullWidth={true}
-                                                  className={focus ? "input--focused" : ""}
-                                                  label={fieldsValue[value][fieldObj.text].error ? fieldObj.text : null}
-                                                  value={fieldsValue[value][fieldObj.text].value}
-                                                  onChange={(e) => onFieldValueChange(e, fieldObj.text)}
-                                                  helperText={
-                                                      fieldsValue[value][fieldObj.text].error
-                                                          ? fieldsValue[value][fieldObj.text].errorMessage
-                                                          : fieldObj.text
-                                                  }
-                                                  error={fieldsValue[value][fieldObj.text].error}
-                                                  type={(fieldObj.type === "Quantity" && "number") || ""}
-                                                  InputProps={{
-                                                      endAdornment: (
-                                                          <InputAdornment position="end">
-                                                              {fieldObj.unit}
-                                                          </InputAdornment>
-                                                      ),
-                                                      inputRef,
-                                                  }}
-                                              />
-                                          )}
-                                      </ShadowFocus>
-                                  </Grid>
-                                  <Grid item>
-                                      {prevResponses[value][fieldObj.text].values.length > 0 ? (
-                                          <Typography>
-                                              Last updated on:&nbsp;
-                                              {
-                                                  prevResponses[value][fieldObj.text].values[
-                                                      prevResponses[value][fieldObj.text].values.length - 1
-                                                  ].date
-                                              }
-                                          </Typography>
-                                      ) : null}
-                                  </Grid>
-                              </Grid>
-                          ) : null
-                      )
+                {fieldsArray.length > 0 ?
+                    getFieldsArrayForTab().map((fieldObj) => (
+                        fieldObj.display ?
+                            <Grid
+                                container
+                                direction="row"
+                                justify="flex-start"
+                                alignItems="center"
+                                spacing={3}>
+                                <Grid item>
+                                    <ShadowFocus>
+                                        {({ inputRef, focus }) => (
+                                            <TextField
+                                                color="primary"
+                                                fullWidth={true}
+                                                className={focus ? "input--focused" : ""}
+                                                label={fieldsValue[value][fieldObj.text].error ? fieldObj.text : null}
+                                                value={fieldsValue[value][fieldObj.text].value}
+                                                onChange={(e) => onFieldValueChange(e, fieldObj.text)}
+                                                helperText={
+                                                    fieldsValue[value][fieldObj.text].error
+                                                        ? fieldsValue[value][fieldObj.text].errorMessage
+                                                        : fieldObj.text
+                                                }
+                                                error={fieldsValue[value][fieldObj.text].error}
+                                                type={(fieldObj.type === "Quantity" && "number") || ""}
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            {fieldObj.unit}
+                                                        </InputAdornment>
+                                                    ),
+                                                    inputRef,
+                                                }}
+                                            />
+                                        )}
+                                    </ShadowFocus>
+                                </Grid>
+                                <Grid item>
+
+
+                                    {prevResponses[value][fieldObj.text].values.length > 0 ?
+                                        <Typography>Last updated on:&nbsp;{prevResponses[value][fieldObj.text].values[prevResponses[value][fieldObj.text].values.length - 1].date}
+                                        </Typography>
+                                        : null}
+
+                                </Grid>
+                            </Grid>
+                            : null
+                    ))
                     : null}
 
                 {fieldsArray.length > 0 ? (
@@ -307,22 +309,22 @@ export default function ObservationForm(props) {
             <Grid container direction="row" justify="flex-start" alignItems="center" spacing={3}>
                 <Grid item xs={9}>
                     <FormControl fullWidth>
-                    <ShadowFocus>
-                        {({ inputRef, focus }) => (
-                            <TextField
-                                fullWidth
-                                helperText="Notes"
-                                className={focus ? "input--focused" : ""}
-                                onChange={(e) => onDateNoteValueChange(e, "Notes")}
-                                value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}
-                                multiline
-                                rowsMax={3}
-                                InputProps={{
-                                    inputRef
-                                }}
-                            />
-                        )}
-                    </ShadowFocus>
+                        <ShadowFocus>
+                            {({ inputRef, focus }) => (
+                                <TextField
+                                    fullWidth
+                                    helperText="Notes about this measurement"
+                                    className={focus ? "input--focused" : ""}
+                                    onChange={(e) => onDateNoteValueChange(e, "Notes")}
+                                    value={fieldsArray.length > 0 && fieldsValue[value]["Notes"].value}
+                                    multiline
+                                    rowsMax={3}
+                                    InputProps={{
+                                        inputRef
+                                    }}
+                                />
+                            )}
+                        </ShadowFocus>
                     </FormControl>
                 </Grid>
                 <Grid item xs={3}>
@@ -334,12 +336,12 @@ export default function ObservationForm(props) {
                         <SaveIcon />
                     </IconButton>
                 </Grid>
-            </Grid>
+            </Grid >
             <ObservationDialog
                 title={errorPresent ? "Error" : "Saved entries"}
                 contentText={errorPresent ? "Fix all the errors before saving entries" : ""}
                 buttonName={errorPresent ? "Understood" : "OK"}
             />
-        </div>
+        </div >
     )
 }

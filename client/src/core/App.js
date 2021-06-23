@@ -80,40 +80,40 @@ const ConnectedAccessibilityNotice = connect(mapStateToProps, null)(Accessibilit
 const history = createHashHistory()
 
 const StyleLoader = ({ contrastMode }) => {
-    const theme = useRef(new CSSStyleSheet())
-    
-    useEffect(() => {
-        const themeStyles = document.getElementById("theme")
+  const theme = useRef(new CSSStyleSheet())
 
-        const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
+  useEffect(() => {
+    const themeStyles = document.getElementById("theme")
 
-        theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
+    const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
 
-        document.adoptedStyleSheets = [theme.current]
-    }, [])
+    theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
 
-    useEffect(() => {
-        const themeStyles = document.getElementById("theme")
+    document.adoptedStyleSheets = [theme.current]
+  }, [])
 
-        const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
+  useEffect(() => {
+    const themeStyles = document.getElementById("theme")
 
-        theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
-    }, [contrastMode])
+    const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
 
-    return null
+    theme.current.replaceSync(`${themeStyles.innerHTML} ${additionalStyles.innerHTML}`)
+  }, [contrastMode])
+
+  return null
 }
 
 const mapStyleStateToProps = (state) => {
-    const preferences = get(state, "custom.preferences", {})
-  
-    const userPrefs = (preferences && preferences.data && preferences.data.preferences) || {}
-  
-    const contrastMode = get(userPrefs, "general.preferences.contrastMode", false)
-  
-    return {
-      contrastMode: contrastMode,
-    }
+  const preferences = get(state, "custom.preferences", {})
+
+  const userPrefs = (preferences && preferences.data && preferences.data.preferences) || {}
+
+  const contrastMode = get(userPrefs, "general.preferences.contrastMode", false)
+
+  return {
+    contrastMode: contrastMode,
   }
+}
 
 const ConnectedStyleLoader = connect(mapStyleStateToProps)(StyleLoader)
 

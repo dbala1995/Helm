@@ -7,21 +7,40 @@ import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Slide from "@material-ui/core/Slide"
 
-import { useDispatch, useSelector } from "react-redux"
-import { selectOpen, setOpen } from "./ConfirmationDialogSlice"
-import { handleReset } from "../stepper/VerticalLinearStepperSlice"
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    selectOpen,
+    setOpen
+} from './ConfirmationDialogSlice';
+import {
+    selectQuestions,
+    selectQuestionnaireResponse,
+    obtainAnsweredQuestions,
+} from '../QuestionnaireSlice';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
 })
 
-export default function AlertDialogSlide() {
-    const open = useSelector(selectOpen)
-    const dispatch = useDispatch()
+export default function AlertDialogSlide(props) {
+    const open = useSelector(selectOpen);
+    const questionnaireResponse = useSelector(selectQuestionnaireResponse);
+    const dispatch = useDispatch();
 
     const onCloseHandler = () => {
-        dispatch(handleReset())
+        // dispatch(handleReset())
         dispatch(setOpen(false))
+    }
+
+    const onSubmitHandler = async () => {
+        dispatch(obtainAnsweredQuestions())
+        const changedResources = {
+            changedResource: questionnaireResponse,
+            changeOperation: "POST",
+        }
+        await props.submit(changedResources)
+        dispatch(setOpen(false))
+        sessionStorage.removeItem("questionResponseItems")
     }
 
     return (
@@ -36,15 +55,24 @@ export default function AlertDialogSlide() {
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle id="alert-dialog-slide-title">{"About me submitted successfully"}</DialogTitle>
+                <DialogTitle id="alert-dialog-slide-title">{"Don't forget"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
-                        About me responses have been submitted successfully.
+                        If you need urgent medical attention please contact your GP surgery, ring 111 or 999.
+
+                        You remain responsible for acting on the health concerns you may have. The information you enter here will be shared with health and care practitioners involved in your care.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button color="primary" onClick={() => onCloseHandler()}>
-                        OK
+                    <Button
+                        color="primary"
+                        onClick={() => onCloseHandler()} >
+                        Cancel
+                    </Button>
+                    <Button
+                        color="primary"
+                        onClick={() => onSubmitHandler()} >
+                        Accept &amp; Continue
                     </Button>
                 </DialogActions>
             </Dialog>

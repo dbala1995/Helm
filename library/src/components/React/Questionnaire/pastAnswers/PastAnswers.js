@@ -5,7 +5,10 @@ import React, { useEffect } from "react"
 
 import { useSelector, useDispatch } from "react-redux"
 
-import { selectActiveStep } from "../stepper/VerticalLinearStepperSlice"
+import {
+    selectActiveStep,
+    selectAdjustedActiveStep
+} from '../stepper/VerticalLinearStepperSlice';
 import {
     selectMaxPrevAnswers,
     selectPreviousAnswers,
@@ -28,15 +31,18 @@ export default function PastAnswers(props) {
     const theme = useTheme()
     const dispatch = useDispatch()
 
-    const { requestResources } = props
+    const { requestResources } = props;
+
+    const adjustActiveStep = useSelector(selectAdjustedActiveStep)
+
 
     useEffect(() => {
         const extractPrevAnswers = () => {
             requestResources()
         }
         extractPrevAnswers()
-        totalPages = groupedPrevAnswers[activeStep]
-            ? Math.ceil(groupedPrevAnswers[activeStep].length / maxPrevAnswers)
+        totalPages = groupedPrevAnswers[activeStep + adjustActiveStep]
+            ? Math.ceil(groupedPrevAnswers[activeStep + adjustActiveStep].length / maxPrevAnswers)
             : 0
         dispatch(resetPageNo())
     }, [activeStep])
@@ -47,25 +53,29 @@ export default function PastAnswers(props) {
     }
 
     return (
-        <Grid container direction="column" justify="flex-start" alignItems="stretch" spacing={2}>
-            {groupedPrevAnswers[activeStep] &&
-                groupedPrevAnswers[activeStep].map(
-                    (item, index) =>
-                        index < maxPrevAnswers * (pageNo + 1) &&
-                        index >= maxPrevAnswers * pageNo && (
-                            <Grid item>
-                                <FormControl fullWidth>
-                                    <TextField
-                                        multiline
-                                        rows={3}
-                                        value={item.valueString}
-                                        disabled
-                                        helperText={obtainFormattedDate(item.valueDateTime)}
-                                    />
-                                </FormControl>
-                            </Grid>
-                        )
-                )}
+        <Grid
+            container
+            direction="column"
+            justify="flex-start"
+            alignItems="stretch"
+            spacing={2}>
+            {groupedPrevAnswers[activeStep + adjustActiveStep] && groupedPrevAnswers[activeStep + adjustActiveStep].map((item, index) => (
+                index < maxPrevAnswers * (pageNo + 1) && index >= maxPrevAnswers * pageNo &&
+
+                < Grid item >
+                    <FormControl fullWidth>
+                        <TextField
+                            multiline
+                            rows={3}
+                            value={item.valueString}
+                            variant="outlined"
+                            disabled
+                            helperText={obtainFormattedDate(item.valueDateTime)}
+                        />
+                    </FormControl>
+                </Grid>
+            ))
+            }
             <Grid item>
                 <MobileStepper
                     variant="dots"
