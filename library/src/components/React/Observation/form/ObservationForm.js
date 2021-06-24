@@ -44,7 +44,6 @@ export default function ObservationForm(props) {
     const populateFieldsWithPrevResponse = () => {
         for (var key in prevResponses[value]) {
             const values = prevResponses[value][key].values
-            console.log("values: ", values)
             if (values.length > 0) {
                 const payload = {
                     tabNo: value,
@@ -218,20 +217,14 @@ export default function ObservationForm(props) {
     const onClickSaveButton = () => {
         const error = anyErrorsActive()
         if (error) {
-            console.log("errors active")
-            console.log("error present: ", errorPresent)
             setErrorPresent(true)
             setOpen(true)
             return
         }
         const empty = anyEmptyResponses()
         if (empty) {
-            console.log("responses empty")
-            console.log(errorPresent)
             setErrorPresent(true)
             setOpen(true)
-            console.log("responses empty")
-            console.log(errorPresent)
             return
         }
 
