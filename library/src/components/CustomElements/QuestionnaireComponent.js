@@ -4,6 +4,7 @@ import { store } from "../app/questionnaireStore"
 import { withCanvas, withResource, withSubmit, withResourceRoot } from "synrb-panel-library"
 import { ReactMaterialComponentBase } from "./ReactMaterialComponentBase"
 import Questionnaire from "../React/Questionnaire/Questionnaire"
+import { ThemeProvider } from "@material-ui/styles"
 
 class QuestionnaireComponent extends ReactMaterialComponentBase {
     constructor() {
@@ -12,10 +13,12 @@ class QuestionnaireComponent extends ReactMaterialComponentBase {
         this.jsxRootComponent = () => {
             const questionnaireList = this.resources.Questionnaire
             const top3ThingsQuestionnaire = this.resources.top3ThingsQuestionnaire
-            return <Provider store={store} ><Questionnaire
-                resources={this.resources}
-                submit={(changedResource) => this.submit([changedResource])}
-                requestResources={(questionResponse, queryParams, bodyParams) => this.requestResources(questionResponse, queryParams, bodyParams)} /></Provider >
+            return <Provider store={store} >
+                <Questionnaire
+                    resources={this.resources}
+                    submit={(changedResource) => this.submit([changedResource])}
+                    requestResources={(questionResponse, queryParams, bodyParams) => this.requestResources(questionResponse, queryParams, bodyParams)} />
+            </Provider >
         }
     }
 

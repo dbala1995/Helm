@@ -5,35 +5,38 @@ import backgroundImage from "../../images/Artboard.png"
 import { useEffect, useState } from "react"
 import { PageTitle } from "../../../core/common/PageTitle"
 import ErrorDialog from "../../common/Dialogs/ErrorDialog"
-import jwt_decode from "jwt-decode";
-import moment from "moment";
 
 export default function Measurements(props) {
     const canvasRef = useRef(null)
 
     const [makeApiCall, setMakeApiCall] = useState(false)
-    const [apiReturnMsg, setApiReturnMsg] = useState({ message: false })
+    const [apiReturnMsg, setApiReturnMsg] = useState({ message: false, status: 200 })
 
     const removeErrorNotification = () => {
         setApiReturnMsg(
             {
-                message: false
+                message: false,
+                status: 200
             }
         )
     }
 
-    const checkTokenValid = async () => {
-        const token = localStorage.getItem("token")
-        const result = { message: false }
-        if (token) {
-            const decodedToken = jwt_decode(token)
-            const exp = decodedToken.exp
-            if (moment(moment.now()).isAfter(moment(exp * 1000))) {
-                result.message = true
-            } else {
-                result.message = false
+    const apiCall = async () => {
+        const response = await fetch("http://helm-local.com/api/patient/fhir/Observation", {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "X-Requested-With": "XMLHttpRequest",
+                "Content-Type": "application/json"
             }
+        })
+        const result = {}
+        if (response.status === 200) {
+            result.message = false
+        } else {
+            result.message = true
         }
+        result.status = response.status
         setApiReturnMsg(result)
     }
 
@@ -55,9 +58,9 @@ export default function Measurements(props) {
     }, [])
 
     useEffect(() => {
+        apiCall()
         window.setInterval(() => {
-            checkTokenValid()
-            console.log("insideInterval")
+            apiCall()
         }, 1.2 * 1000000)
     }, [makeApiCall])
 

@@ -10,27 +10,29 @@ const ObservationFormSlice = createSlice({
     reducers: {
         populateFieldsArray: (state, action) => {
             const observations = action.payload
-            const newFieldsArray = []
-            observations.map((obj) => {
-                const titleObj = {}
-                const titleArray = []
-                const title = obj.title
-                obj.input.definitions.map((defObj) => {
-                    const objToPush = {
-                        text: defObj.code.text,
-                        unit: defObj.quantitativeDetails.unit.coding[0].unit,
-                        display: defObj.display == "false" ? false : true,
-                        type: defObj.permittedDataType,
-                        decimalPlaces: defObj.quantitativeDetails.decimalPrecision,
-                        code: defObj.code,
-                        calculated: defObj.calculated,
-                    }
-                    titleArray.push(objToPush)
+            if (observations.length > 0) {
+                const newFieldsArray = []
+                observations.map((obj) => {
+                    const titleObj = {}
+                    const titleArray = []
+                    const title = obj.title
+                    obj.input.definitions.map((defObj) => {
+                        const objToPush = {
+                            text: defObj.code.text,
+                            unit: defObj.quantitativeDetails.unit.coding[0].unit,
+                            display: defObj.display == "false" ? false : true,
+                            type: defObj.permittedDataType,
+                            decimalPlaces: defObj.quantitativeDetails.decimalPrecision,
+                            code: defObj.code,
+                            calculated: defObj.calculated,
+                        }
+                        titleArray.push(objToPush)
+                    })
+                    titleObj[title] = titleArray
+                    newFieldsArray.push(titleObj)
                 })
-                titleObj[title] = titleArray
-                newFieldsArray.push(titleObj)
-            })
-            state.fieldsArray = newFieldsArray
+                state.fieldsArray = newFieldsArray
+            }
         },
         populateFieldsValue: (state, action) => {
             if (state.fieldsValue.length === 0) {

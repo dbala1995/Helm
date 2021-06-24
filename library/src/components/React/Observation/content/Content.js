@@ -107,7 +107,7 @@ export default function content(props) {
             </div>
             <Divider />
             <div className={classes.sectionDesktop}>
-                <Grid item>
+                <Grid item xs={10}>
                     <Grid
                         container
                         direction="row"
@@ -138,7 +138,7 @@ export default function content(props) {
                                 justify="space-evenly"
                                 alignItems="stretch"
                                 spacing={3}>
-                                <Grid item >
+                                <Grid item  >
                                     <Table />
                                 </Grid>
                                 <Grid item >

@@ -12,8 +12,7 @@ import {
     selectFieldsValue,
     onFieldsValueChangeHandler,
     onFieldsErrorChangeHandler,
-    selectOpen,
-    setOpen,
+
 } from "./ObservationFormSlice"
 import ObservationDialog from "../Dialog/ObservationDialog"
 import { ShadowFocus } from "../../Shadow/ShadowFocus"
@@ -24,11 +23,11 @@ export default function ObservationForm(props) {
     const tabTitles = useSelector(selectTabTitles)
     const fieldsArray = useSelector(selectFieldsArray)
     const fieldsValue = useSelector(selectFieldsValue)
-    const open = useSelector(selectOpen)
     const prevResponses = useSelector(selectPrevResponses)
     const dispatch = useDispatch()
 
     const [errorPresent, setErrorPresent] = useState(false)
+    const [open, setOpen] = useState(false)
 
     const { saveObservations, getObservations } = props
 
@@ -52,7 +51,7 @@ export default function ObservationForm(props) {
                     fieldName: key,
                     newValue: values[values.length - 1].value,
                 }
-                dispatch(onFieldsValueChangeHandler(payload))
+                checkIfEmpty(payload) && dispatch(onFieldsValueChangeHandler(payload))
             }
         }
     }
@@ -70,6 +69,31 @@ export default function ObservationForm(props) {
     }
     const getFieldsArrayForTab = () => {
         return fieldsArray[value][tabTitles[value]]
+    }
+
+    const getFieldObj = (payload) => {
+        const fieldsForTab = getFieldsArrayForTab()
+        const fieldObj = fieldsForTab.find((fieldObj) => fieldObj.text === payload.fieldName)
+        return fieldObj
+    }
+
+    const checkIfEmpty = (payload) => {
+        if (payload.newValue.toString().length == 0) {
+            dispatch(onFieldsValueChangeHandler(payload))
+            onFieldErrorChange(payload.fieldName, true, `Response empty`)
+            setErrorPresent(true)
+            return false
+        } else {
+            const errorPayload = {
+                tabNo: value,
+                fieldName: payload.fieldName,
+                newValue: false,
+                errorMessage: ``,
+            }
+            setErrorPresent(false)
+            dispatch(onFieldsErrorChangeHandler(errorPayload))
+            return true
+        }
     }
 
     const decimalPlaceCheck = (payload, fieldObj) => {
@@ -172,6 +196,7 @@ export default function ObservationForm(props) {
         var returnVal = false
         getFieldsArrayForTab().map((fieldObj) => {
             if (fieldsValue[value][fieldObj.text].error) {
+                setErrorPresent(true)
                 returnVal = true
             }
         })
@@ -190,13 +215,23 @@ export default function ObservationForm(props) {
         return returnVal
     }
 
-    const onClickSaveButton = async () => {
-        if (anyErrorsActive()) {
-            dispatch(setOpen(true))
+    const onClickSaveButton = () => {
+        const error = anyErrorsActive()
+        if (error) {
+            console.log("errors active")
+            console.log("error present: ", errorPresent)
+            setErrorPresent(true)
+            setOpen(true)
             return
         }
-        if (anyEmptyResponses()) {
-            dispatch(setOpen(true))
+        const empty = anyEmptyResponses()
+        if (empty) {
+            console.log("responses empty")
+            console.log(errorPresent)
+            setErrorPresent(true)
+            setOpen(true)
+            console.log("responses empty")
+            console.log(errorPresent)
             return
         }
 
@@ -220,14 +255,16 @@ export default function ObservationForm(props) {
             saveObservations(observationResource)
         })
         getObservations()
-        dispatch(setOpen(true))
+        setOpen(true)
     }
 
     const calculateDerivedField = (derivedString) => {
         return (fieldsValue[value]["Weight"].value / (fieldsValue[value]["Height"].value / 100) ** 2).toFixed(2)
     }
 
-    console.log(document.activeElement)
+    const handleClose = () => {
+        setOpen(false)
+    }
 
     return (
         <div>
@@ -338,9 +375,9 @@ export default function ObservationForm(props) {
                 </Grid>
             </Grid >
             <ObservationDialog
-                title={errorPresent ? "Error" : "Saved entries"}
-                contentText={errorPresent ? "Fix all the errors before saving entries" : ""}
-                buttonName={errorPresent ? "Understood" : "OK"}
+                open={open}
+                onClose={() => handleClose()}
+            errorPresent={errorPresent}
             />
         </div >
     )

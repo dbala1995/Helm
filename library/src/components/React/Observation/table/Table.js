@@ -104,11 +104,10 @@ export default function BasicTable() {
                                 {headersObj.header}&nbsp;{headersObj.unit ? `(${headersObj.unit})` : null}
                             </TableCell>
                         ))}
-
                     </TableRow>
                 </TableHead>
                 <TableBody>{tableRows()}</TableBody>
             </Table>
-        </TableContainer>
+        </TableContainer >
     )
 }

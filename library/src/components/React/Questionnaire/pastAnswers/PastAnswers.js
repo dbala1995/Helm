@@ -18,13 +18,14 @@ import {
     selectGroupedPrevAnswers,
     resetPageNo,
 } from "./PastAnswersSlice"
-import { selectQuestions } from "../QuestionnaireSlice"
+import { selectId, selectQuestions } from "../QuestionnaireSlice"
 
 export default function PastAnswers(props) {
     const activeStep = useSelector(selectActiveStep)
     const maxPrevAnswers = useSelector(selectMaxPrevAnswers)
     const pageNo = useSelector(selectPageNo)
     const groupedPrevAnswers = useSelector(selectGroupedPrevAnswers)
+    const id = "https://fhir.myhelm.org/questionnaire-identifier|aboutMe"
     var totalPages = groupedPrevAnswers[activeStep]
         ? Math.ceil(groupedPrevAnswers[activeStep].length / maxPrevAnswers)
         : 0
@@ -37,8 +38,9 @@ export default function PastAnswers(props) {
 
 
     useEffect(() => {
+        console.log("in pastAnswers")
         const extractPrevAnswers = () => {
-            requestResources()
+            requestResources("QuestionnaireResponse", `questionnaire.identifier=${id}`, {})
         }
         extractPrevAnswers()
         totalPages = groupedPrevAnswers[activeStep + adjustActiveStep]

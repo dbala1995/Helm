@@ -75,9 +75,23 @@ class ErrorDialog extends Component {
         }
     }
 
-    getErrorDescription() {
-        let result = "Your session has expired. Click the button to log in again."
+    isJwtMessage(status) {
+        return Number(status) === 401 || Number(status) === 403
+    }
 
+    isSessionExpired(status) {
+        return this.isJwtMessage(status)
+    }
+
+    getErrorDescription(status, isJwtOld) {
+        let result = "Something is wrong"
+        if (Number(status) === 404) {
+            result = "API is currently unavailable"
+        } else if (Number(status) > 499) {
+            result = "Something is wrong with the server. Please try again later."
+        } else if (isJwtOld) {
+            result = "Your session has expired. Click the button to log in again."
+        }
         return result
     }
 
@@ -93,11 +107,13 @@ class ErrorDialog extends Component {
         const { classes, httpErrors, ...rest } = this.props
         const { isErrorModalOpen } = this.state
 
+        const errorStatus = get(httpErrors, "status", null)
         const errorMessage = get(httpErrors, "message", null)
 
-        const isOpen = isErrorModalOpen || errorMessage
+        const isOpen = isErrorModalOpen || (errorStatus && errorMessage)
 
-        const errorDescription = this.getErrorDescription()
+        const isJwtOld = this.isSessionExpired(errorStatus)
+        const errorDescription = this.getErrorDescription(errorStatus, isJwtOld)
         return (
             <React.Fragment>
                 <Dialog

@@ -17,6 +17,9 @@ import {
     selectQuestionnaireResponse,
     obtainAnsweredQuestions,
 } from '../QuestionnaireSlice';
+import { Grid, Typography } from "@material-ui/core"
+
+
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />
@@ -49,33 +52,49 @@ export default function AlertDialogSlide(props) {
                 open={open}
                 TransitionComponent={Transition}
                 keepMounted
+                fullWidth
                 maxWidth="md"
                 onBackdropClick={() => onCloseHandler()}
                 onClose={() => onCloseHandler()}
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
+                style={{ overflow: "hidden" }}
             >
-                <DialogTitle id="alert-dialog-slide-title">{"Don't forget"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText id="alert-dialog-slide-description">
-                        If you need urgent medical attention please contact your GP surgery, ring 111 or 999.
+                <div className="modal--primary">
+                    <DialogTitle id="alert-dialog-slide-title" className="modal--title">
+                        Don't forget
+                    </DialogTitle>
+                </div>
+                <Typography id="alert-dialog-slide-description" className="modal--description">
+                    If you need urgent medical attention please contact your GP surgery, ring 111 or 999.
 
-                        You remain responsible for acting on the health concerns you may have. The information you enter here will be shared with health and care practitioners involved in your care.
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button
-                        color="primary"
-                        onClick={() => onCloseHandler()} >
-                        Cancel
-                    </Button>
-                    <Button
-                        color="primary"
-                        onClick={() => onSubmitHandler()} >
-                        Accept &amp; Continue
-                    </Button>
-                </DialogActions>
+                    You remain responsible for acting on the health concerns you may have. The information you enter here will be shared with health and care practitioners involved in your care.
+                </Typography>
+                <div className="modal--toolbar">
+                    <Grid container
+                        direction="row"
+                        justify="flex-end"
+                        alignItems="center"
+                        >
+                        <Grid item>
+                            <Button
+                                aria-label="Cancel"
+                                onClick={() => onCloseHandler()} >
+                                Cancel
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                className="modal--button"
+                                aria-label="Accept &amp; Continue"
+                                onClick={() => onSubmitHandler()} >
+                                Accept &amp; Continue
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </div>
+
             </Dialog>
-        </div>
+        </div >
     )
 }
