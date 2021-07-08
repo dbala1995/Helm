@@ -7,7 +7,7 @@ import PatientSummary from "../../core/pages/PatientSummary"
 
 export const themeShortMenu = [
   { url: "/summary", label: "Patient Summary" },
-  { url: "/about-me", label: "About Me" },
+  { url: "/what-matters-to-me", label: "What Matters to me?" },
   { url: "/measurements", label: "Measurements" },
   // { url: "/top3Things", label: "TopThreeThings" },
   { url: "/leeds-information", label: "Leeds Information" },
@@ -16,7 +16,7 @@ export const themeShortMenu = [
 
 export const themeFullMenu = [
   { url: "/summary", label: "Patient Summary" },
-  { url: "/about-me", label: "About Me" },
+  { url: "/what-matters-to-me", label: "What Matters to me?" },
   { url: "/measurements", label: "Measurements" },
   // { url: "/top3Things", label: "TopThreeThings" },
   { url: "/leeds-information", label: "Leeds Information" },

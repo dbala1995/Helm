@@ -22,8 +22,8 @@ export default [
     list: NhsWidgets,
   },
   {
-    name: "about-me",
-    label: "About Me",
+    name: "what-matters-to-me",
+    label: "What Matters to me?",
     list: AboutMe,
   },
   {

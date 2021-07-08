@@ -24,6 +24,7 @@ import {
 
 
 import { setOpen } from "../confirmationDialog/ConfirmationDialogSlice"
+import { setEdit } from '../question/QuestionSlice';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -72,6 +73,8 @@ export default function VerticalLinearStepper(props) {
         steps.push(step)
     })
 
+    steps.push({ prefix: "Submit & Save" })
+
 
     const onSubmitHandler = async () => {
         // dispatch(obtainAnsweredQuestions())
@@ -81,6 +84,7 @@ export default function VerticalLinearStepper(props) {
         // }
         // await props.submit(changedResources)
         dispatch(setOpen(true))
+        dispatch(setEdit(false))
         // sessionStorage.removeItem("questionResponseItems")
     }
 
@@ -105,7 +109,7 @@ export default function VerticalLinearStepper(props) {
                             ))}
                         </Stepper>
                         {
-                            activeStep === steps.length && (
+                            activeStep === steps.length + adjustedActiveStep && (
                                 <Paper square elevation={0} className={classes.resetContainer}>
                                     {/* <Typography>All steps completed - you&apos;re finished</Typography> */}
                                     <Button onClick={() => {

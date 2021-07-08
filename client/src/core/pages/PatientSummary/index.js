@@ -154,7 +154,7 @@ class PatientSummaryInfo extends Component {
           open={this.state.open}
           onClose={this.closeDialog}
           title="Looking for Top 3 Things?"
-          message="Top Three Things has now changed to About Me. Any information that was in Top Three Things has now moved to the About Me section."
+          message="Top Three Things has now changed to What Matters to me? Any information that was in Top Three Things has now moved to the What Matters to me? section."
           options={[<ConfirmButton label="Ok" onClick={() => this.closeDialog()} />]}
         />
         }

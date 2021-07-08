@@ -26,15 +26,16 @@ export default function PastAnswers(props) {
     const pageNo = useSelector(selectPageNo)
     const groupedPrevAnswers = useSelector(selectGroupedPrevAnswers)
     const id = "https://fhir.myhelm.org/questionnaire-identifier|aboutMe"
-    var totalPages = groupedPrevAnswers[activeStep]
-        ? Math.ceil(groupedPrevAnswers[activeStep].length / maxPrevAnswers)
-        : 0
+
     const theme = useTheme()
     const dispatch = useDispatch()
 
     const { requestResources } = props;
 
     const adjustActiveStep = useSelector(selectAdjustedActiveStep)
+    var totalPages = groupedPrevAnswers[activeStep + adjustActiveStep]
+        ? Math.ceil(groupedPrevAnswers[activeStep + adjustActiveStep].length / maxPrevAnswers)
+        : 0
 
 
     useEffect(() => {
@@ -90,14 +91,14 @@ export default function PastAnswers(props) {
                             onClick={() => dispatch(nextPage())}
                             disabled={pageNo === totalPages - 1 || totalPages === 0}
                         >
-                            Next
+                            {/* Next */}
                             {theme.direction === "rtl" ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
                         </Button>
                     }
                     backButton={
                         <Button size="small" onClick={() => dispatch(prevPage())} disabled={pageNo === 0}>
                             {theme.direction === "rtl" ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-                            Back
+                            {/* Back */}
                         </Button>
                     }
                 />

@@ -73,8 +73,8 @@ function AboutMe(props) {
         window.setInterval(() => apiCall(), 1.2 * 1000000)
     }, [makeApiCall])
 
-    const resourceUrl = "about-me"
-    const title = "About Me"
+    const resourceUrl = "what-matters-to-me"
+    const title = "What Matters to me?"
 
     const breadcrumbsResource = [{ url: "/" + resourceUrl, title: title, isActive: false }]
 

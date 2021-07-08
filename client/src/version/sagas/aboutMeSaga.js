@@ -1,13 +1,12 @@
 import React from "react"
 import { takeEvery, put } from "redux-saga/effects"
-import { Link } from "react-router-dom"
 import Typography from "@material-ui/core/Typography"
 
 import { SYNOPSIS_ABOUT_ME_ACTION, synopsisAboutMeAction } from "../actions/synopsisActions"
-import { Grid } from "@material-ui/core"
 
 const getLastResponse = async () => {
-    const response = await fetch("http://helm-local.com/api/patient/fhir/QuestionnaireResponse?_sort=-authored&_count=1&questionnaire.identifier=https://fhir.myhelm.org/questionnaire-identifier|aboutMe",
+    const response = await fetch(
+        "http://helm-local.com/api/patient/fhir/QuestionnaireResponse?_sort=-authored&_count=1&questionnaire.identifier=https://fhir.myhelm.org/questionnaire-identifier|aboutMe",
         {
             method: "GET",
             headers: {
@@ -52,7 +51,7 @@ export const getAboutMeSaga = takeEvery(SYNOPSIS_ABOUT_ME_ACTION.REQUEST, functi
 
     yield put(
         synopsisAboutMeAction.success({
-            heading: "about-me",
+            heading: "what-matters-to-me",
             synopsis: response ? [
                 {
                     text: (

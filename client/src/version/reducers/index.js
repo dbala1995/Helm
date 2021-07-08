@@ -26,7 +26,7 @@ export default {
   "health-and-adviceSynopsis": createCustomReducer(SYNOPSIS_LEEDSSERVICES_ACTION, "data.synopsis"),
   "leeds-informationSynopsis": createCustomReducer(SYNOPSIS_LOOPSERVICES_ACTION, "data.synopsis"),
   measurementsSynopsis: createCustomReducer(SYNOPSIS_MEASUREMENTS_ACTION, "data.synopsis"),
-  "about-meSynopsis": createCustomReducer(SYNOPSIS_ABOUT_ME_ACTION, "data.synopsis"),
+  "what-matters-to-meSynopsis": createCustomReducer(SYNOPSIS_ABOUT_ME_ACTION, "data.synopsis"),
   terms,
   fhir: fhirReducer,
   createFhirResource: createFhirResourceReducer,

@@ -22,9 +22,9 @@ export const nonCoreSynopsisData = [
   // { id: "block-vaccinations", title: "Vaccinations", list: "vaccinations", icon: faSyringe, isActive: true },
   // { id: "block-top3Things", title: "Top Three Things", list: "top3Things", icon: faUserMd, isActive: true },
   {
-    id: "block-aboutme",
-    title: "About Me",
-    list: "about-me",
+    id: "block-whatmatterstome",
+    title: "What Matters to me?",
+    list: "what-matters-to-me",
     icon: faUserMd,
     isActive: true
   },

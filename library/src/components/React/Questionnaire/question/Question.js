@@ -93,16 +93,17 @@ export default function Question(props) {
 
     const onAnswerChangeHandler = (e) => {
         dispatch(setQuestionResponse(e.target.value))
+        dispatch(setDate(new Date().toString()))
     }
 
     const onNextClickHandler = async () => {
-        edit ? dispatch(setEdit(false)) : null
+        dispatch(setEdit(true))
         await dispatch(handleNext())
         onUpdateAnswer(adjustActiveStep)
     }
 
     const onBackClickHandler = async () => {
-        edit ? dispatch(setEdit(false)) : null
+        dispatch(setEdit(true))
         await dispatch(handleBack())
         onUpdateAnswer(adjustActiveStep)
     }
@@ -179,7 +180,7 @@ export default function Question(props) {
                                     value={questionResponse}
                                     helperText={displayDate}
                                     onChange={(e) => onAnswerChangeHandler(e)}
-                                    disabled={!edit}
+                                    // disabled={!edit}
                                     className={focus ? "input--focused" : ""}
                                     InputProps={{
                                         inputRef
@@ -213,7 +214,7 @@ export default function Question(props) {
                         <Grid item>
                             {/* Ensuring button does not show after all questions answered */}
                             <div className={classes.buttonRight}>
-                                {
+                                {/* {
                                     edit ?
                                         activeStep === questionsObjects.length ?
                                             <Button
@@ -222,15 +223,15 @@ export default function Question(props) {
                                                 endIcon={<NavigateNextIcon />}
                                                 onClick={() => onNextClickHandler()}>
                                                 Finish
-                                            </Button> :
-                                            <Button
-                                                variant="contained"
-                                                color="primary"
-                                                endIcon={<NavigateNextIcon />}
-                                                onClick={() => onNextClickHandler()}>
-                                                Next
-                                            </Button>
-                                        :
+                                            </Button> : */}
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    endIcon={<NavigateNextIcon />}
+                                    onClick={() => onNextClickHandler()}>
+                                    Next
+                                </Button>
+                                {/* :
                                         <Button
                                             variant="contained"
                                             color="primary"
@@ -243,7 +244,7 @@ export default function Question(props) {
                                             }>
                                             edit
                                         </Button>
-                                }
+                                } */}
                             </div>
                         </Grid>
                     </Grid>
