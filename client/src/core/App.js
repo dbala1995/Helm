@@ -54,16 +54,16 @@ const AccessibilityNotice = ({ message }) => {
   const classes = useStyles()
 
   useEffect(() => {
-    setTimeout(() => setCurrentMessage(message), 100)
+    setTimeout(() => setCurrentMessage(message), 10000)
   }, [message])
 
   useEffect(() => {
-    setTimeout(() => setCurrentMessage(""), 1000)
+    setTimeout(() => setCurrentMessage(""), 5000)
   }, [currentMessage])
 
   return (
-    <div className={classes.srOnly} role="status" aria-live="polite" aria-atomic="true">
-      {currentMessage ? <span>{currentMessage}</span> : ""}
+    <div className={classes.srOnly} role="status" aria-live="assertive" aria-atomic="true">
+      {currentMessage ? currentMessage : ""}
     </div>
   )
 }
@@ -83,21 +83,57 @@ const StyleLoader = ({ contrastMode }) => {
   const theme = useRef(new CSSStyleSheet())
 
   useEffect(() => {
-    const themeStyles = document.getElementById("theme")
+    const styles = document.getElementsByTagName("style")
 
-    const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
+    let themeStyles = null
+    let darkStyles = null
+    let lightStyles = null
 
-    theme.current.replaceSync(`${themeStyles && themeStyles.innerHTML} ${additionalStyles && additionalStyles.innerHTML}`)
+    for (let i = 0; i < styles.length; i++) {
+      if (styles[i].getAttribute("data-id") === "theme") {
+        themeStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "dark") {
+        darkStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "light") {
+        lightStyles = styles[i]
+      }
+    }
+
+    const additionalStyles = contrastMode ? darkStyles : lightStyles
+
+    theme.current.replaceSync(
+      `${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`
+    )
 
     document.adoptedStyleSheets = [theme.current]
   }, [])
 
   useEffect(() => {
-    const themeStyles = document.getElementById("theme")
+    const styles = document.getElementsByTagName("style")
 
-    const additionalStyles = contrastMode ? document.getElementById("dark") : document.getElementById("light")
+    let themeStyles = null
+    let darkStyles = null
+    let lightStyles = null
 
-    theme.current.replaceSync(`${themeStyles && themeStyles.innerHTML} ${additionalStyles && additionalStyles.innerHTML}`)
+    for (let i = 0; i < styles.length; i++) {
+      if (styles[i].getAttribute("data-id") === "theme") {
+        themeStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "dark") {
+        darkStyles = styles[i]
+      }
+      if (styles[i].getAttribute("data-id") === "light") {
+        lightStyles = styles[i]
+      }
+    }
+
+    const additionalStyles = contrastMode ? darkStyles : lightStyles
+
+    theme.current.replaceSync(
+      `${(themeStyles && themeStyles.innerHTML) || ""} ${(additionalStyles && additionalStyles.innerHTML) || ""}`
+    )
   }, [contrastMode])
 
   return null

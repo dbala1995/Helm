@@ -16,8 +16,6 @@ import { PageTitle } from "../../common/PageTitle"
 import GeneralDialog from "../../../version/common/Dialogs/GeneralDialog"
 import ConfirmButton from "../../../version/common/Buttons/ConfirmButton"
 
-
-
 const styles = (theme) => ({
   summaryContainer: getSummaryContainerStyles(synopsisData),
   card: {
@@ -94,13 +92,12 @@ const styles = (theme) => ({
 })
 
 class PatientSummaryInfo extends Component {
-
   constructor(props) {
     super(props)
 
     this.state = {
       open: true,
-      dialogShown: sessionStorage.getItem("top3thingsInfo") || false
+      dialogShown: sessionStorage.getItem("top3thingsInfo") || false,
     }
   }
 
@@ -113,7 +110,7 @@ class PatientSummaryInfo extends Component {
 
     this.setState({
       open: true,
-      dialogShown: sessionStorage.getItem("top3thingsInfo") || false
+      dialogShown: sessionStorage.getItem("top3thingsInfo") || false,
     })
   }
 
@@ -150,14 +147,15 @@ class PatientSummaryInfo extends Component {
           })}
           {FeedsPanels && <FeedsPanels />}
         </Grid>
-        {this.state.dialogShown !== "true" && <GeneralDialog
-          open={this.state.open}
-          onClose={this.closeDialog}
-          title="Looking for Top 3 Things?"
-          message="Top Three Things has now changed to What Matters to me? Any information that was in Top Three Things has now moved to the What Matters to me? section."
-          options={[<ConfirmButton label="Ok" onClick={() => this.closeDialog()} />]}
-        />
-        }
+        {this.state.dialogShown !== "true" && (
+          <GeneralDialog
+            open={this.state.open}
+            onClose={this.closeDialog}
+            title="Looking for Top 3 Things?"
+            message="Top Three Things has now changed to About Me. Any information that was in Top Three Things has now moved to the About Me section."
+            options={[<ConfirmButton label="Ok" onClick={() => this.closeDialog()} />]}
+          />
+        )}
       </Grid>
     )
   }

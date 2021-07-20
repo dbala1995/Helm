@@ -13,7 +13,7 @@ export default function Summary() {
             <Typography variant="h4">
                 <b>What Matters to me?</b>
             </Typography>
-            <Typography vartiant="h6">
+            <Typography variant="h6">
                 <b>What is Leeds trying to do?</b>
             </Typography>
             <Typography>
@@ -26,14 +26,11 @@ export default function Summary() {
                     This may be something specific such as goals and hopes or it could be something more general.<br></br></p>
             </Typography>
             <Typography>
-                What matters to you will also be shared others who support you to ensure that everyone works together to help you achieve this.
+                What matters to you will also be shared others who support you to ensure that everyone works together to
+                help you achieve this.
             </Typography>
 
-            <Grid
-                container
-                direction="row"
-                justify="flex-end"
-            >
+            <Grid container direction="row" justify="flex-end">
                 <Grid item>
                     <Button
                         variant="contained"
@@ -47,6 +44,6 @@ export default function Summary() {
                     </Button>
                 </Grid>
             </Grid>
-        </div >
+        </div>
     )
 }

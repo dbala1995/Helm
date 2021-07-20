@@ -252,7 +252,6 @@ const dataProvider = (type, resource, params) => {
       return convertHTTPResponse(res, type, resource, params)
     })
     .catch((err) => {
-      console.log("Error: ", err)
       throw new Error(err)
     })
 }

@@ -352,7 +352,6 @@ const PatientFhirService = {
             return patientResourceChecker.checkResource(searchResult, reference, identifier)
         },
         async createActionHandler(ctx) {
-            console.log("patientFhirService.create ctx: ", ctx)
             const { reference } = ctx.meta.user
 
             if (!reference) {

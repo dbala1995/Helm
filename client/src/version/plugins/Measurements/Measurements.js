@@ -5,95 +5,119 @@ import backgroundImage from "../../images/Artboard.png"
 import { useEffect, useState } from "react"
 import { PageTitle } from "../../../core/common/PageTitle"
 import ErrorDialog from "../../common/Dialogs/ErrorDialog"
+import { setAccessibilityMessage } from "../../../core/actions/accessibilityActions"
+import { connect } from "react-redux"
 
-export default function Measurements(props) {
-    const canvasRef = useRef(null)
+function Measurements(props) {
+  const { setAccessibilityMessage } = props
 
-    const [makeApiCall, setMakeApiCall] = useState(false)
-    const [apiReturnMsg, setApiReturnMsg] = useState({ message: false, status: 200 })
+  const canvasRef = useRef(null)
 
-    const removeErrorNotification = () => {
-        setApiReturnMsg(
-            {
-                message: false,
-                status: 200
-            }
-        )
+  const [makeApiCall, setMakeApiCall] = useState(false)
+  const [apiReturnMsg, setApiReturnMsg] = useState({ message: false, status: 200 })
+
+  const removeErrorNotification = () => {
+    setApiReturnMsg({
+      message: false,
+      status: 200,
+    })
+  }
+
+  const apiCall = async () => {
+    const response = await fetch("http://helm-local.com/api/patient/fhir/Observation", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "X-Requested-With": "XMLHttpRequest",
+        "Content-Type": "application/json",
+      },
+    })
+    const result = {}
+    if (response.status === 200) {
+      result.message = false
+    } else {
+      result.message = true
+    }
+    result.status = response.status
+    setApiReturnMsg(result)
+  }
+
+  useEffect(() => {
+    window.analytics.page({ url: window.location.hash })
+    const token = localStorage.getItem("token")
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "X-Requested-With": "XMLHttpRequest",
+      "Content-Type": "application/json",
     }
 
-    const apiCall = async () => {
-        const response = await fetch("http://helm-local.com/api/patient/fhir/Observation", {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "X-Requested-With": "XMLHttpRequest",
-                "Content-Type": "application/json"
-            }
-        })
-        const result = {}
-        if (response.status === 200) {
-            result.message = false
-        } else {
-            result.message = true
-        }
-        result.status = response.status
-        setApiReturnMsg(result)
+    if (!canvasRef.current) {
+      return
     }
 
-    useEffect(() => {
-        window.analytics.page({ url: window.location.hash })
-        const token = localStorage.getItem("token");
+    canvasRef.current.setAuthHandler((request) => {
+      request.headers = headers
+      return request
+    })
 
-        const headers = {
-            Authorization: `Bearer ${token}`,
-            "X-Requested-With": "XMLHttpRequest",
-            "Content-Type": "application/json"
-        }
+    canvasRef.current.setMessageHandler((_, message) => {
+      const outcome = /** @type {fhir.OperationOutcome} */ (message)
 
-        canvasRef.current.setAuthHandler((request, options) => {
-            request.headers = headers
-            return request
-        })
-        setMakeApiCall(!makeApiCall)
-    }, [])
+      const diagnostics = outcome.issue[0].diagnostics
 
-    useEffect(() => {
-        apiCall()
-        window.setInterval(() => {
-            apiCall()
-        }, 1.2 * 1000000)
-    }, [makeApiCall])
+      setAccessibilityMessage(diagnostics)
+    })
+    setMakeApiCall(!makeApiCall)
+  }, [canvasRef.current])
 
-    const resourceUrl = "measurements"
-    const title = "Measurements"
+  useEffect(() => {
+    window.setInterval(() => {
+      apiCall()
+    }, 1.2 * 1000000)
+  }, [makeApiCall])
 
-    const breadcrumbsResource = [{ url: "/" + resourceUrl, title: title, isActive: false }]
+  const resourceUrl = "measurements"
+  const title = "Measurements"
 
-    return (
-        <React.Fragment>
-            <PageTitle />
-            <Breadcrumbs resource={breadcrumbsResource} />
-            <TableHeader resource={resourceUrl} />
+  const breadcrumbsResource = [{ url: "/" + resourceUrl, title: title, isActive: false }]
 
-            {apiReturnMsg.message ? (
-                <ErrorDialog
-                    fullScreen={false}
-                    width="md"
-                    httpErrors={apiReturnMsg}
-                    removeErrorNotification={removeErrorNotification}
-                />) :
-                <syn-canvas ref={canvasRef} library-root="http://localhost:8882/registry">
-                    <div style={{ background: `url${backgroundImage}` }}>
-                        <syn-panel
-                            panel-id="observation-panel"
-                            panel="observation-panel"
-                            submit="http://helm-local.com/api/patient/fhir"
-                            observation-root="http://helm-local.com/api/patient/fhir/Observation"
-                            configuration="http://helm-local.com/ObservationDefinitions.json"
-                        ></syn-panel>
-                    </div>
-                </syn-canvas>}
+  return (
+    <React.Fragment>
+      <PageTitle />
+      <Breadcrumbs resource={breadcrumbsResource} />
+      <TableHeader resource={resourceUrl} />
 
-        </React.Fragment >
-    )
+      {apiReturnMsg.message ? (
+        <ErrorDialog
+          fullScreen={false}
+          width="md"
+          httpErrors={apiReturnMsg}
+          removeErrorNotification={removeErrorNotification}
+        />
+      ) : (
+        <syn-canvas ref={canvasRef} library-root="/registry">
+          <div style={{ background: `url${backgroundImage}` }}>
+            <syn-panel
+              panel-id="observation-panel"
+              panel="observation-panel"
+              submit="/api/patient/fhir"
+              observation-root="/api/patient/fhir/Observation"
+              configuration="/ObservationDefinitions.json"
+            ></syn-panel>
+          </div>
+        </syn-canvas>
+      )}
+    </React.Fragment>
+  )
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setAccessibilityMessage: (message) => dispatch(setAccessibilityMessage(message)),
+  }
+}
+
+const ConnectedMeasurements = connect(null, mapDispatchToProps)(Measurements)
+
+export default ConnectedMeasurements

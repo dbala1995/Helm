@@ -57,22 +57,22 @@ function getBackground(isContrastMode, themeColor, imageName) {
 }
 
 function getCurrentPalette(target) {
-//   return isContrastMode
-//     ? DeepMerge(defaultDarkPalette, window.config.darkPalette)
-//     : DeepMerge(defaultLightPalette, window.config.lightPalette)
+  //   return isContrastMode
+  //     ? DeepMerge(defaultDarkPalette, window.config.darkPalette)
+  //     : DeepMerge(defaultLightPalette, window.config.lightPalette)
 
-    return {
-        mainColor: getComputedStyle(target).getPropertyValue("--main-color").trim(),
-        dangerColor: getComputedStyle(target).getPropertyValue("--danger-color").trim(),
-        viewButton: getComputedStyle(target).getPropertyValue("--view-button").trim(),
-        disabledColor: getComputedStyle(target).getPropertyValue("--disabled-color").trim(),
-        borderColor: getComputedStyle(target).getPropertyValue("--border-color").trim(),
-        paperColor: getComputedStyle(target).getPropertyValue("--paper-color").trim(),
-        toolbarColor: getComputedStyle(target).getPropertyValue("--toolbar-color").trim(),
-        fontColor: getComputedStyle(target).getPropertyValue("--font-color").trim(),
-        primaryFont: getComputedStyle(target).getPropertyValue("--primary-font").trim(),
-        primaryFontSize: getComputedStyle(target).getPropertyValue("--primary-font-size").trim()
-    }
+  return {
+    mainColor: getComputedStyle(target).getPropertyValue("--main-color").trim(),
+    dangerColor: getComputedStyle(target).getPropertyValue("--danger-color").trim(),
+    viewButton: getComputedStyle(target).getPropertyValue("--view-button").trim(),
+    disabledColor: getComputedStyle(target).getPropertyValue("--disabled-color").trim(),
+    borderColor: getComputedStyle(target).getPropertyValue("--border-color").trim(),
+    paperColor: getComputedStyle(target).getPropertyValue("--paper-color").trim(),
+    toolbarColor: getComputedStyle(target).getPropertyValue("--toolbar-color").trim(),
+    fontColor: getComputedStyle(target).getPropertyValue("--font-color").trim(),
+    primaryFont: getComputedStyle(target).getPropertyValue("--primary-font").trim(),
+    primaryFontSize: getComputedStyle(target).getPropertyValue("--primary-font-size").trim(),
+  }
 }
 
 /**
@@ -86,10 +86,10 @@ export function getCurrentTheme(isContrastMode) {
   return createMuiTheme({
     palette: palette,
     typography: {
-    //   fontFamily: '"HK Grotesk Regular", Arial, sans-serif',
-    //   fontSize: 14,
-        fontFamily: palette.primaryFont,
-        fontSize: palette.primaryFontSize
+      //   fontFamily: '"HK Grotesk Regular", Arial, sans-serif',
+      //   fontSize: 14,
+      fontFamily: palette.primaryFont,
+      fontSize: (palette.primaryFontSize && Number(palette.primaryFontSize)) || 14,
     },
     tableHeader: {
       tableHeaderBlock: {
@@ -174,7 +174,7 @@ export function getCurrentTheme(isContrastMode) {
       },
       MuiTableHead: {
         root: {
-            backgroundColor: "var(--table-background-color)", 
+          backgroundColor: "var(--table-background-color)",
           //backgroundColor: isContrastMode ? palette.paperColor : palette.borderColor,
           color: "var(--table-head-color)",
         },
