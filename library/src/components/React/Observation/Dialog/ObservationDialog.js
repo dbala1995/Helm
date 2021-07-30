@@ -13,7 +13,7 @@ import { Typography, Grid } from "@material-ui/core"
 export default function ObservationDialog(props) {
     const { onClose, open, errorPresent } = props
 
-    console.log("in dialog:", errorPresent)
+    // console.log("in dialog:", errorPresent)
 
     return (
         < React.Fragment >

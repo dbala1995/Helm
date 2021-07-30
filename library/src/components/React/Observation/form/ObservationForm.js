@@ -215,7 +215,7 @@ export default function ObservationForm(props) {
         return returnVal
     }
 
-    const onClickSaveButton = () => {
+    const onClickSaveButton = async () => {
         const error = anyErrorsActive()
         if (error) {
             setErrorPresent(true)
@@ -270,6 +270,17 @@ export default function ObservationForm(props) {
         setOpen(false)
     }
 
+    const handleOnKeyPress = (e) => {
+        // console.log(e.target.value)
+        console.log(e.key)
+        const bannedLetters = ["e", "+", "-"]
+        bannedLetters.map((banned) => {
+            if (e.key.includes(banned)) {
+                e.preventDefault()
+            }
+        })
+    }
+
     return (
         <div>
             <FormControl margin="normal">
@@ -302,6 +313,7 @@ export default function ObservationForm(props) {
                                                     ),
                                                     inputRef,
                                                 }}
+                                                onKeyPress={fieldObj.type === "Quantity" ? (e) => handleOnKeyPress(e) : null}
                                             />
                                         )}
                                     </ShadowFocus>
