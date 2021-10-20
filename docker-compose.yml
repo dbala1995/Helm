@@ -45,7 +45,7 @@ services:
       - "8081:8081"
 
   fhirstore:
-    image: synaneticsltd/synfhir-store:linux-v2.8.3
+    image: synaneticsltd/synfhir-store:linux-latest
     restart: always
     environment:
       - ADVANCED_CONSENT=false
@@ -73,7 +73,7 @@ services:
       - helm-configuration
 
   yhcr-fhirstore:
-    image: synaneticsltd/synfhir-store:linux-v2.8.3
+    image: synaneticsltd/synfhir-store:linux-latest
     restart: always
     environment:
       - ADVANCED_CONSENT=true
@@ -137,28 +137,28 @@ services:
     ports:
       - "5443:5432"
 
-  prometheus:
-    image: prom/prometheus:v2.16.0
-    ports:
-        - 9090:9090
-    volumes:
-        - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  # prometheus:
+  #   image: prom/prometheus:v2.16.0
+  #   ports:
+  #       - 9090:9090
+  #   volumes:
+  #       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
-  grafana:
-    image: grafana/grafana
-    ports:
-        - 3031:3000
-    depends_on:
-      - prometheus
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=zaq1ZAQ!
-        # - GF_AUTH_ANONYMOUS_ENABLED=true
-        # - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #       - 3031:3000
+  #   depends_on:
+  #     - prometheus
+  #   environment:
+  #     - GF_SECURITY_ADMIN_PASSWORD=zaq1ZAQ!
+  #       # - GF_AUTH_ANONYMOUS_ENABLED=true
+  #       # - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
 
   helm-yhcr:
     build:
-      dockerfile: ./YhcrDockerfile  
-      context: ./run/k8s/local
+      dockerfile: ./yhcr/YhcrDockerfile  
+      context: ./run/k8s/local/
     ports:
       - 3443:443
     volumes:
@@ -199,8 +199,6 @@ services:
     depends_on: 
       - fhir-database
       - helm-yhcr
-      - grafana
-      - prometheus
       - yhcr-fhirstore
       - fhirstore
 

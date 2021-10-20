@@ -16,6 +16,7 @@ import {
 } from "./ObservationFormSlice"
 import ObservationDialog from "../Dialog/ObservationDialog"
 import { ShadowFocus } from "../../Shadow/ShadowFocus"
+import { FormatListBulleted } from "@material-ui/icons"
 
 export default function ObservationForm(props) {
     const observations = useSelector(selectObservations)
@@ -401,6 +402,7 @@ export default function ObservationForm(props) {
                     sendMessage("Failed to save all measurements")
 
                     setOperationOutcome(null)
+                    setOpen(false)
                 }}
             />
         </div>

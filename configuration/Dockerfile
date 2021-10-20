@@ -1,11 +1,9 @@
 FROM node:10
 
-WORKDIR /code
-
 COPY package.json /code/package.json
-RUN npm install && npm ls
-RUN mv /code/node_modules /node_modules
+RUN npm install 
 
-COPY . /code
+WORKDIR /code
+COPY . .
 
 CMD ["npm", "run", "start"]
