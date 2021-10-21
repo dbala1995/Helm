@@ -34,6 +34,9 @@ async function addJobHandler(ctx) {
     const jobType = ctx.params.jobType
     const payload = ctx.params.payload
 
+    console.log(jobType)
+    console.log(payload)
+
     const config = await getProducerConfig()
 
     const jobProducerProvider = new JobProducerProvider(config)

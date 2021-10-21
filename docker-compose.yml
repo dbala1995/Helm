@@ -65,7 +65,7 @@ services:
       - PORT=3000
       - SERVICEDIR=services
       - TAG={"system":"https://yhcr.nhs.uk/Source","code":"YHCR","display":"YHCR Portal"}
-      - VALIDATE_JWT=true
+      - VALIDATE_JWT=false
       - JWT_SECRET_OR_PUBLIC_KEY=http://helm-configuration:8070/internal/certificate
     ports:
       - "3001:3000"
@@ -93,7 +93,7 @@ services:
       - PORT=3000
       - SERVICEDIR=services
       - TAG={"system":"https://yhcr.nhs.uk/Source","code":"YHCR","display":"YHCR Portal"}
-      - VALIDATE_JWT=true
+      - VALIDATE_JWT=false
       - JWT_SECRET_OR_PUBLIC_KEY=http://helm-configuration:8070/internal/certificate
     ports:
       - "3002:3000"
@@ -197,6 +197,7 @@ services:
       - "8890:8090"
       - "9230:9230"
     depends_on: 
+      - rabbitmq
       - fhir-database
       - helm-yhcr
       - yhcr-fhirstore

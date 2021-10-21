@@ -18,7 +18,7 @@ class CoreFhirDataProvider {
     }
 
     /** @protected */
-    configure(options) {}
+    configure(options) { }
 
     determineResponse(response) {
         const { body, statusCode } = response
